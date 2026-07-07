@@ -1,0 +1,17 @@
+{
+  "name": "quantecon",
+  "description": "QuantEcon's shared Claude Code skills and tools",
+  "version": "0.1.0",
+  "plugins": [
+    {
+      "name": "benchmark",
+      "source": {
+        "source": "github",
+        "repo": "QuantEcon/skills",
+        "path": "benchmark"
+      },
+      "version": "0.1.0",
+      "description": "Benchmarking and acceleration-evaluation tools for QuantEcon lecture code"
+    }
+  ]
+}
