@@ -51,7 +51,7 @@ Then the decision rule that falls out of the rubric weights: efficiency (0.15) c
 | markov_asset | 0.087 s | n=5/25, LAPACK-bound | don't convert | 2.25 net regression |
 | aiyagari pattern | 54.3 s | 200×7 fixed, 20 re-solves | convert | 23.8× as-used win |
 
-Scope limit, confirmed by the same test: triage predicts whether the prize is worth pursuing — it cannot predict conversion-quality outcomes (markov_asset's build-breaking bug was a property of the PR, invisible to triage).
+Scope limit, confirmed by the same test: triage predicts whether the prize is worth pursuing — it cannot predict conversion-quality outcomes (markov_asset's masked `err.throw()` defect was a property of the PR, invisible to triage). Note also that this validation is **in-sample** — the three cases are the ones the thresholds were calibrated on; out-of-sample validation accumulates as fresh lectures are triaged.
 
 ## Manual usage (no skill)
 

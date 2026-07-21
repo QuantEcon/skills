@@ -66,7 +66,7 @@ Lucas-tree, consol, and call-option pricing over a Markov chain (default: 25-sta
 
 ### The bug and the near-critical precision finding
 
-- `smoke_test.py` demonstrates the crash exactly as the lecture calls it: `call_option_jit(...)` → `NameError: name 'err' is not defined`. Two lecture cells (consol/call-option cell, Exercise 1) depend on it → **the lecture does not build as shipped** → correctness 1 by the does-not-build override.
+- `smoke_test.py` demonstrates the failure in a clean namespace: `call_option_jit(...)` → `NameError: name 'err' is not defined` → correctness 1 by the does-not-build override, under the system's fresh-process measurement regime. **Corrected 2026-07-21:** the notebook itself executes in cell order — earlier cells bind a global `err` that the stray `err.throw()` silently resolves to, which means the checkify stability validation is *never actually performed* in the shipped lecture (a masked failure rather than a crash); a reader copying the function into a clean namespace hits the `NameError`. See the REPORT's erratum.
 - `check_equivalence.py` additionally compares a **bug-patched copy** (verified line-identical to shipped logic minus the stray `err.throw()`) to establish that the *intended* logic is right: under x64 every asset matches NumPy to ≈1e-11. As shipped (float32) drift reaches **1.02e-2** on the exercise model — and that model's spectral radius (1.0618) sits **0.002 below** the stability bound 1/β = 1.0638, so float32 is not merely imprecise but close to flipping the stability check itself. Regimes are stored separately (`equivalence_x64_{True,False}.json`) with the x64 flag stamped in `_meta` — the pattern ge_arrow's template should adopt (caveat m3).
 
 ### The measurements
@@ -102,7 +102,7 @@ correctness 1 (does not build) + readability 2 + efficiency 2 + logic 3 (capped)
 2. **Scorecard reproduction:** `score.py` regenerates both committed scorecards **byte-identically** from `evidence.json` alone.
 3. **Evidence↔results cross-check (scripted):** every quantitative evidence slot matches its results-file source (Δprereq, docstring coverage, max\|Δ\| shipped, crash record, statements).
 4. **Rubric edge audit:** brute force over all 5⁷ score combinations found FP band-edge misclassifications (797 cases), fixed by computing the verdict from the rounded total; neither reference case was affected.
-5. **Fairness audit:** `block_until_ready` on every JAX timing; fresh processes for as-used; medians over repeats; identical call sequences per side; disclosed patches only where timing is otherwise impossible.
+5. **Fairness audit:** `block_until_ready` on every JAX timing; fresh processes for as-used; medians over repeats in the warm/scaling benchmarks (**correction:** the as-used totals themselves are single passes per side — a known limitation, tracked for v2); identical call sequences per side at the level the replay scripts encode (**correction:** later review found both replays deviate from the lecture in construction patterns — see the design-review documents in `reviews/`); disclosed patches only where timing is otherwise impossible.
 
 ## Known caveats (recorded, deliberate, or pending upstream)
 
@@ -111,5 +111,5 @@ correctness 1 (does not build) + readability 2 + efficiency 2 + logic 3 (capped)
 | **M1** | `n_prerequisite_concepts` (readability driver, weight 0.25) and `statements_for_one_result` (ergonomics) are **hand-curated judgements encoded in the measurement scripts**, disclosed as such — not AST measurements. When the skill adapts templates to a new lecture it authors these lists, so they need the same citation discipline as the structural checklists. Proposed: move them into `evidence.json` as cited judgement slots. | Raised with the system's author (@xuanguang-li) on skills PR #5 |
 | m3 | ge_arrow's `equivalence.json` does not stamp the x64 regime and is overwritten between regimes; markov_asset's split-file pattern (`equivalence_x64_{bool}.json` + `_meta`) is the better template | Adopt on next template revision |
 | n6 | `sweep_bench` asymmetry: the old sweep computes only α (constructor + `wealth_distribution`), while the new one-call API forcibly computes everything — faithful to each API as used, but part of the measured sweep disadvantage is API-induced | Documented; by design (the API's cost is real) |
-| — | markov_asset's as-used timing requires the bug-patched `call_option`; the shipped code cannot complete at all | Disclosed in script, output record, and report |
+| — | markov_asset's as-used timing requires the bug-patched `call_option`; the shipped code cannot complete in a clean namespace (in notebook order it runs with the validation silently masked — see the REPORT erratum) | Disclosed in script, output record, and report |
 | — | Benchmarks are CPU-only; timings vary ±~15% run-to-run — the rubric keys on orders of magnitude | Framework limitation note |

@@ -39,7 +39,7 @@ Decision rule from the weights: efficiency (0.15) gains at most +0.30 weighted; 
 The two worked evaluations in `references/examples/` are the validation baseline — re-running their pipelines must reproduce these verdicts:
 
 - **`ge_arrow`** ([#717](https://github.com/QuantEcon/lecture-python.myst/pull/717)): **2.85/5 — mixed/wash.** Tiny 2×2/3×3 economies, fresh static args per call → ~45× slower as-used despite warm wins.
-- **`markov_asset`** ([#654](https://github.com/QuantEcon/lecture-python.myst/pull/654)): **2.25/5 — net regression.** Build-breaking `NameError` (stray `err.throw()`), float32 drift near a critical stability margin.
+- **`markov_asset`** ([#654](https://github.com/QuantEcon/lecture-python.myst/pull/654)): **2.25/5 — net regression.** A stray `err.throw()` that crashes in any clean namespace and, in notebook order, silently disables the checkify stability validation (a masked failure — see the REPORT erratum); float32 drift near a critical stability margin.
 - **HIGH anchor:** the aiyagari Bellman pattern (`scripts/calibration/bellman_bench.py`) — large fixed-shape arrays, many re-solves; ~25× faster as-used → the "score 5" calibration.
 
 The rubric will also be distilled into the QuantEcon manual as the companion to the JAX style page ([QuantEcon.manual#104](https://github.com/QuantEcon/QuantEcon.manual/issues/104)).
