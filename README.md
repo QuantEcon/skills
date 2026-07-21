@@ -8,7 +8,10 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 | Plugin | Skills | Status | Tracking |
 |---|---|---|---|
+| `qe` | `/qe:check-style` (+ `check-writing`, `check-math`, `check-code`, `check-figures`, `check-jax`, `check-refs`) | scaffolding | [CATALOG.md](CATALOG.md), work plan in `project-style-guide` |
 | `benchmark` | `/benchmark:review-acceleration` | under construction | [meta#335](https://github.com/QuantEcon/meta/issues/335) |
+
+The `qe` plugin is the author-facing surface: one memorable prefix for the skills authors use while editing lectures and preparing PRs. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`); the per-category sub-skills run the same shared rules individually. `benchmark` is a specialist family for maintainers evaluating accelerated implementations. See [CATALOG.md](CATALOG.md) for the plan and [FUTURE-IDEAS.md](FUTURE-IDEAS.md) for parked candidates.
 
 ## Installation
 
@@ -24,6 +27,7 @@ Lecture repositories opt in by checking the following into their `.claude/settin
     }
   },
   "enabledPlugins": {
+    "qe@quantecon": true,
     "benchmark@quantecon": true
   }
 }
@@ -33,6 +37,7 @@ Lecture repositories opt in by checking the following into their `.claude/settin
 
 ```
 /plugin marketplace add QuantEcon/skills
+/plugin install qe@quantecon
 /plugin install benchmark@quantecon
 ```
 
@@ -53,7 +58,13 @@ The official action accepts the marketplace and plugin directly:
 ```
 .claude-plugin/marketplace.json   # the marketplace catalogue
 scripts/validate.py               # manifest + frontmatter validation (run in CI)
-benchmark/                        # one directory per plugin
+qe/                               # author-facing plugin
+  .claude-plugin/plugin.json
+  skills/check-style/SKILL.md     # umbrella skill
+  skills/check-<category>/        # thin per-category sub-skills
+  references/rules/               # shared rule files (style-guide schema)
+  scripts/                        # shared deterministic preflight checkers
+benchmark/                        # specialist plugin
   .claude-plugin/plugin.json
   skills/review-acceleration/SKILL.md
   scripts/                        # supporting Python scripts the skill drives
