@@ -29,4 +29,4 @@ Per-category entry points also exist as sub-skills (`/qe:check-writing`, `/qe:ch
 
 ## Rule source
 
-Rules live in `references/rules/*.md`, one file per category, in the `QuantEcon/style-guide` schema (frontmatter: `id`, `mode`, `severity`, `build_risk`, `auto_fix`, `detection`, `exclusions`). The canonical source of truth is the QuantEcon Manual style guide; the vendored copy here is kept in sync with `QuantEcon/style-guide` as it becomes the machine-readable canonical DB.
+Rules live in `references/rules/*.md`, one file per category, in the `QuantEcon/style-guide` schema (frontmatter: `id`, `mode`, `severity`, `build_risk`, `auto_fix`, `detection`, `exclusions`). Rule text is authored only in `QuantEcon/style-guide`; this directory is a rendered, drift-checked snapshot of it (see `references/rules/README.md` and [project-style-guide#6](https://github.com/QuantEcon/project-style-guide/issues/6)).

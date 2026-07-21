@@ -13,6 +13,6 @@ detection: ...             # regex + context for mechanical/hybrid rules
 exclusions: ...            # known carve-outs (e.g. f'(x) derivatives)
 ```
 
-Seeding plan (see the work plan in `QuantEcon/project-style-guide`): reconcile `action-style-guide`'s 49 rule prompts against the current QuantEcon Manual `manual/styleguide/` pages, author each rule in this schema, and submit each reconciled rule upstream to `QuantEcon/style-guide` for ratification. Once that DB leads, `scripts/sync-rules.py` (pending) plus a CI drift check keep this vendored copy aligned.
+Rule text is authored **only** in `QuantEcon/style-guide` (the programme's Phase 5 exit criterion — no drift). This directory is a **rendered consumer**: a `render-skill` target in `style-guide` (sibling of the planned `render-manual`/`render-action`) renders ratified rules here, and `scripts/sync-rules.py` (pending) plus a CI drift check keep the snapshot aligned. Transcription of the ~55 catalogued rules into `style-guide` is Phase 1 of the programme — proposal and sequencing in [project-style-guide#6](https://github.com/QuantEcon/project-style-guide/issues/6).
 
 The three `build_risk` rules land first: `align` inside `$$` (must be `aligned`), tick-count nesting in admonitions, floats inside exercise/solution/`prf:` directives.
