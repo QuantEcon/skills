@@ -1,6 +1,6 @@
 # Evaluation Report — `ge_arrow.md`: NumPy (`main`) → JAX (`update_ge_arrow`)
 
-Applies the system in [`../EVALUATION_FRAMEWORK.md`](../EVALUATION_FRAMEWORK.md) to the only code change on branch `update_ge_arrow`. All numbers below are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
+Applies the system in [`../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the only code change on branch `update_ge_arrow`. All numbers below are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
 
 ## TL;DR — weighted score **2.85 / 5** → *net mixed, slightly negative for this lecture*
 
@@ -74,7 +74,7 @@ Per-regime detail explaining why:
 | λ-sweep (100 pts), as run once | 1.8 ms | 300 ms cold | **170× slower** |
 | λ-sweep warm | — | 0.37 ms | 4.8× faster *(never realized)* |
 
-Scaling crossover (`benchmark.py`): NumPy and JAX-warm are even near **n≈10**; JAX wins **2–6×** for `n = 25…200`. **The lecture never exceeds n=3.** For calibration, the same machinery on the large, repeatedly-solved aiyagari pattern (shared `../../scoring/calibration/bellman_bench.py`) is **25× faster** — a score-5 case. `ge_arrow`'s `0.022×` maps to **score 2** (< 0.8×, but correct and fixable).
+Scaling crossover (`benchmark.py`): NumPy and JAX-warm are even near **n≈10**; JAX wins **2–6×** for `n = 25…200`. **The lecture never exceeds n=3.** For calibration, the same machinery on the large, repeatedly-solved aiyagari pattern (shared `../../../scripts/calibration/bellman_bench.py`) is **25× faster** — a score-5 case. `ge_arrow`'s `0.022×` maps to **score 2** (< 0.8×, but correct and fixable).
 
 ### 4 · Logic & design → **4/5**
 Genuine improvements, all verified in the diff:
