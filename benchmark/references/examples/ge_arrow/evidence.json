@@ -1,0 +1,75 @@
+{
+  "lecture": "ge_arrow",
+  "branch": "update_ge_arrow",
+  "_how": "Quantitative values are copied from results/*.json (source noted). Structural criteria are yes/no facts about the diff, each with a citation. Scores are computed by scoring/rubric.py — see scoring/score.py.",
+
+  "quantitative": {
+    "correctness": {
+      "builds": true,
+      "max_delta_shipped": 1.7e-4,
+      "matches_under_x64": true,
+      "source": "results/equivalence.json: float32 run worst=1.7e-4 (ex2); x64 run worst=1.4e-14"
+    },
+    "readability": {
+      "delta_prereq_concepts": 6,
+      "docstring_cov_new": 0.55,
+      "source": "results/static_metrics.json: prereq 7->13 (+6), docstring_coverage 0.90->0.55"
+    },
+    "efficiency": {
+      "as_used_speedup": 0.022,
+      "correct_or_fixable": true,
+      "source": "as_used_total.py: numpy 0.035s / jax 1.56s = 0.022x; fixable by not making s0_idx/T static"
+    },
+    "ergonomics": {
+      "statements_for_one_result": 1,
+      "fragile_protocol": false,
+      "source": "results/static_metrics.json: compute_rc_model(...) returns one immutable NamedTuple"
+    }
+  },
+
+  "structural": {
+    "logic_design": {
+      "criteria": {
+        "pure_no_order_dependence": true,
+        "no_global_state": true,
+        "good_algorithmic_choices": false,
+        "fixes_prior_bugs": true
+      },
+      "introduces_correctness_bug": false,
+      "citations": {
+        "pure_no_order_dependence": "single pure compute_rc_model; original needed 3 ordered stateful methods",
+        "no_global_state": "removes original's reliance on module-level P,n,K",
+        "good_algorithmic_choices": "FALSE: pricing kernel is an O(n^2) nested fori_loop scatter (ge_arrow.md:938-959) instead of a vectorised outer product",
+        "fixes_prior_bugs": "fixes value_functionss typo and de-duplicates R=sum(Q)"
+      }
+    },
+    "style_idiom": {
+      "criteria": {
+        "vectorised_where_natural": false,
+        "correct_control_flow_primitive": false,
+        "no_anti_idiomatic_constructs": false,
+        "clean_call_sites_and_naming": true
+      },
+      "citations": {
+        "vectorised_where_natural": "FALSE: kernel written as scalar loops",
+        "correct_control_flow_primitive": "FALSE: fori_loop used where broadcasting fits",
+        "no_anti_idiomatic_constructs": "FALSE: jax.lax.cond(T==0,...) traces both branches though T is static",
+        "clean_call_sites_and_naming": "TRUE: NamedTuple result, m.Q/m.alpha/... read cleanly"
+      }
+    },
+    "maintainability": {
+      "criteria": {
+        "pure_unit_testable": true,
+        "dtype_precision_safe": false,
+        "no_footgun_for_editors": true,
+        "robust_no_brittle_conditions": false
+      },
+      "citations": {
+        "pure_unit_testable": "pure function, trivially testable",
+        "dtype_precision_safe": "FALSE: float32 default, no jax_enable_x64",
+        "no_footgun_for_editors": "TRUE: simple call/return, no error-protocol",
+        "robust_no_brittle_conditions": "FALSE: jit+static_argnames+3-deep closures hinder step-debugging"
+      }
+    }
+  }
+}

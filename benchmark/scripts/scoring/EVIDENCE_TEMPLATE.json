@@ -1,0 +1,60 @@
+{
+  "lecture": "<name>",
+  "branch": "<update_branch>",
+  "_how": "Fill quantitative values from this lecture's results/*.json (note the source). Answer each structural criterion true/false with a citation to the diff. Then run: python scoring/score.py <name>. Never type a score — rubric.py computes it.",
+
+  "quantitative": {
+    "correctness": {
+      "builds": true,
+      "max_delta_shipped": 0.0,
+      "matches_under_x64": true,
+      "source": "results/equivalence*.json — worst max|Δ| as shipped (float32) and under x64; builds=false if any cell raises"
+    },
+    "readability": {
+      "delta_prereq_concepts": 0,
+      "docstring_cov_new": 1.0,
+      "source": "results/static_metrics.json — (new prereq count - old); new docstring_coverage"
+    },
+    "efficiency": {
+      "as_used_speedup": 1.0,
+      "correct_or_fixable": true,
+      "source": "as_used_total.py — numpy_total / jax_total over the lecture's real call sequence"
+    },
+    "ergonomics": {
+      "statements_for_one_result": 1,
+      "fragile_protocol": false,
+      "source": "results/static_metrics.json — calls needed to obtain one result; fragile if the call protocol is easy to misuse"
+    }
+  },
+
+  "structural": {
+    "logic_design": {
+      "criteria": {
+        "pure_no_order_dependence": false,
+        "no_global_state": false,
+        "good_algorithmic_choices": false,
+        "fixes_prior_bugs": false
+      },
+      "introduces_correctness_bug": false,
+      "citations": {}
+    },
+    "style_idiom": {
+      "criteria": {
+        "vectorised_where_natural": false,
+        "correct_control_flow_primitive": false,
+        "no_anti_idiomatic_constructs": false,
+        "clean_call_sites_and_naming": false
+      },
+      "citations": {}
+    },
+    "maintainability": {
+      "criteria": {
+        "pure_unit_testable": false,
+        "dtype_precision_safe": false,
+        "no_footgun_for_editors": false,
+        "robust_no_brittle_conditions": false
+      },
+      "citations": {}
+    }
+  }
+}

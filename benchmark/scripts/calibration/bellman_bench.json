@@ -1,0 +1,17 @@
+{
+  "grid": [
+    200,
+    7
+  ],
+  "vfi_iters": 397,
+  "agree_max_abs": 1.0658141036401503e-14,
+  "single_numpy_s": 2.9554021999938414,
+  "single_jax_cold_s": 0.1747544000390917,
+  "single_jax_warm_s": 0.11176240001805127,
+  "single_speedup_cold": 16.911746996543332,
+  "single_speedup_warm": 26.443617885053474,
+  "eq_loop_R": 20,
+  "eq_numpy_s": 54.29379700002028,
+  "eq_jax_total_s": 2.2794162000063807,
+  "eq_as_used_speedup": 23.819167820193737
+}
