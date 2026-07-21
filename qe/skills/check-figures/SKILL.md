@@ -5,7 +5,7 @@ description: Check a QuantEcon lecture's figures against the style guide — mys
 
 # check-figures
 
-> **Status: scaffolding.** Rule content lands in follow-up PRs; see [CATALOG.md](../../../CATALOG.md). Until then this skill reports that it is not yet operational.
+> **Status: scaffolding.** Rule content lands in follow-up PRs; see [CATALOG.md](https://github.com/QuantEcon/skills/blob/main/CATALOG.md). Until then this skill reports that it is not yet operational.
 
 Category entry point for the `figures` rules — figure and plotting conventions.
 

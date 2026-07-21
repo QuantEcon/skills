@@ -5,7 +5,7 @@ description: Check a QuantEcon lecture's prose against the style guide's writing
 
 # check-writing
 
-> **Status: scaffolding.** Rule content lands in follow-up PRs; see [CATALOG.md](../../../CATALOG.md). Until then this skill reports that it is not yet operational.
+> **Status: scaffolding.** Rule content lands in follow-up PRs; see [CATALOG.md](https://github.com/QuantEcon/skills/blob/main/CATALOG.md). Until then this skill reports that it is not yet operational.
 
 Category entry point for the `writing` rules — prose style and structure.
 

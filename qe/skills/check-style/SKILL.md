@@ -5,7 +5,7 @@ description: Check a QuantEcon lecture against the QuantEcon style guide and rep
 
 # check-style
 
-> **Status: scaffolding.** The rule content (`references/rules/`) and deterministic preflight scripts (`scripts/`) land in follow-up PRs, tracked in [CATALOG.md](../../../CATALOG.md) and the work plan in `QuantEcon/project-style-guide`. Until they land this skill reports that it is not yet operational.
+> **Status: scaffolding.** The rule content (`references/rules/`) and deterministic preflight scripts (`scripts/`) land in follow-up PRs, tracked in [CATALOG.md](https://github.com/QuantEcon/skills/blob/main/CATALOG.md) and the work plan in `QuantEcon/project-style-guide`. Until they land this skill reports that it is not yet operational.
 
 Umbrella style check for one lecture. Runs every category, or only the categories named in the arguments.
 
