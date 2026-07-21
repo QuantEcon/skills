@@ -1,6 +1,6 @@
 # Evaluation Report — `ge_arrow.md`: NumPy (`main`) → JAX (`update_ge_arrow`)
 
-Applies the system in [`../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the only code change on branch `update_ge_arrow`. All numbers below are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
+Applies the system in [`../../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the only code change on branch `update_ge_arrow`. All numbers below are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
 
 ## TL;DR — weighted score **2.85 / 5** → *net mixed, slightly negative for this lecture*
 

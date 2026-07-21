@@ -52,7 +52,7 @@ def main(lecture_dir):
         "weighted_total_out_of_5": result["total"],
         "verdict": result["verdict"],
         "dimensions": result["rows"],
-        "_note": "Scores are computed by scoring/rubric.py from "
+        "_note": "Scores are computed by scripts/scoring/rubric.py from "
                  f"{lecture}/evidence.json; do not edit by hand.",
     }
     res_dir = os.path.join(lec_dir, "results")

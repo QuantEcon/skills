@@ -1,6 +1,6 @@
 # Evaluation Report — `markov_asset.md`: NumPy (`main`) → JAX (`update_markov_asset`)
 
-Applies the system in [`../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the NumPy→JAX conversion of `markov_asset.md`. All numbers are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3, quantecon) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
+Applies the system in [`../../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the NumPy→JAX conversion of `markov_asset.md`. All numbers are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3, quantecon) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
 
 ## TL;DR — weighted score **2.25 / 5** → *net regression as shipped: do not merge until fixed*
 
@@ -74,7 +74,7 @@ Real improvements: the mutable class becomes two immutable `NamedTuple`s built b
 3 of the 4 idiom criteria are met: `M = P * G**(-γ)` is properly vectorised, `jax.lax.while_loop` (infinite-horizon option) and `fori_loop` (finite horizon) are the *correct* primitives for these genuinely iterative solvers (a better use of JAX than `ge_arrow`'s loop-ported pricing kernel), and `checkify` is the idiomatic way to keep a runtime assertion under `jit`. The one failing criterion is clean call sites: every usage carries `(err, val)` unpack + `err.throw()` ceremony.
 
 ### 6 · API ergonomics & reusability → **3/5**
-Factory functions and immutable models compose well (easily `vmap`-able over γ). But the `checkify` call protocol — unpack `(err, val)` then remember `err.throw()` — is error-prone, and the shipped code itself demonstrates the failure mode. `statements_for_one_asset`: 2 → 3.
+Factory functions and immutable models compose well (easily `vmap`-able over γ). But the `checkify` call protocol — unpack `(err, val)` then remember `err.throw()` — is error-prone, and the shipped code itself demonstrates the failure mode. `statements_for_one_result`: 2 → 3.
 
 ### 7 · Maintainability & robustness → **2/5**
 Purity aids testing, but two silent traps remain for future editors: float32 by default (worsened by the `0.002` stability margin) and the `checkify` return contract that already produced one shipped `NameError`.

@@ -8,11 +8,14 @@ The deterministic core of `/benchmark:review-acceleration`: the shared scoring e
 scoring/
   rubric.py               the standard as code: evidence → score, deterministically
   score.py                engine/CLI: <lecture-dir>/evidence.json → results/scorecard.json
+  env_stamp.py            provenance stamp: <lecture-dir>/results/env.json (+ failed steps)
   EVIDENCE_TEMPLATE.json  the judgement contract a new evaluation fills in
 calibration/
   bellman_bench.py        shared aiyagari Bellman benchmark — pins the "25× as-used
   bellman_bench.json      = score 5" efficiency anchor
 ```
+
+All commands below run from the plugin root (`benchmark/` in this repo).
 
 The rubric in prose — dimensions, weights, anchors, checklists, verdict bands, worked HIGH/LOW examples — is [`../references/EVALUATION_FRAMEWORK.md`](../references/EVALUATION_FRAMEWORK.md). Two complete worked evaluations (measurement scripts, results, evidence, reports) live in [`../references/examples/`](../references/examples/) and double as the regression baseline the skill must reproduce.
 
@@ -20,7 +23,7 @@ The rubric in prose — dimensions, weights, anchors, checklists, verdict bands,
 
 Scores are **never typed by hand** — each is a deterministic function of evidence:
 
-1. **Measure** — `python references/examples/<lecture>/scripts/run_all.py` runs the per-lecture measurement scripts and writes `results/*.json` plus a provenance stamp (`results/env.json`: Python/platform/library versions — the seed of the QuantEcon/meta#335 shared result schema).
+1. **Measure** — `python references/examples/<lecture>/scripts/run_all.py` runs the per-lecture measurement scripts and writes `results/*.json` plus a provenance stamp (`results/env.json`: Python/platform/library versions and any failed steps — the seed of the QuantEcon/meta#335 shared result schema; generated per-run, not committed).
 2. **Record evidence** — fill `<lecture>/evidence.json` (copy `scoring/EVIDENCE_TEMPLATE.json`): measured numbers into the quantitative slots with their source, and each structural checklist item answered true/false **with a citation to the diff**.
 3. **Score** — `python scripts/scoring/score.py references/examples/<lecture>` applies `rubric.py` and writes `results/scorecard.json`, printing the derivation of every score.
 
