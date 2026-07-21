@@ -1,6 +1,6 @@
 {
   "name": "benchmark",
   "description": "Benchmarking and acceleration-evaluation tools for QuantEcon lecture code",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": { "name": "QuantEcon" }
 }

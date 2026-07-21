@@ -17,8 +17,9 @@
     },
     "efficiency": {
       "as_used_speedup": 0.022,
+      "baseline_as_used_seconds": 0.035,
       "correct_or_fixable": true,
-      "source": "as_used_total.py: numpy 0.035s / jax 1.56s = 0.022x; fixable by not making s0_idx/T static"
+      "source": "as_used_total.py: numpy 0.035s / jax 1.56s = 0.022x; fixable by not making s0_idx/T static. Single-pass v1 measurement (v2 standard: median of >=3 fresh-process runs)"
     },
     "ergonomics": {
       "statements_for_one_result": 1,

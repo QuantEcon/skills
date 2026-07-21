@@ -35,6 +35,14 @@ weighted_total = Σ  weight_d × score_d        (range 1–5)
 | **2.5 – 2.9** | Mixed / wash — improvements offset by real regressions; revisit before merging. |
 | **< 2.5** | Net regression — do not merge as-is. |
 
+The band is the *starting point* of the verdict, not the whole of it. Three v2 rules (from the 2026-07-21 design review; all enforced in `score_all`, never by reviewer discipline) modify what the scorecard reports:
+
+- **Verdict gates.** Correctness 1 caps the verdict at *net regression*; correctness 2 caps it at *mixed/wash* — a candidate whose numbers are wrong cannot weighted-average its way into a merge band, whatever its polish. The logic&design correctness-bug cap is likewise **derived** from the correctness evidence (`builds` false, or x64 divergence) rather than trusted to a hand-set boolean.
+- **No-conversion.** When the efficiency evidence shows the triage don't-convert profile — baseline as-used total under the **1 s materiality floor** *and* the candidate slower as-used — the verdict says *no-conversion* instead of scoring the polish, with the banded candidate quality recorded alongside. The 1 s floor is a **policy choice, anchored not derived**: the validated don't-convert baselines (0.028 s, 0.087 s) sit far below it, the convert case (54.3 s) far above.
+- **Sensitivity stamp.** `score.py` perturbs every scored input one at a time (booleans flipped, integer counts ±1, measured floats ±10%) and stamps the scorecard **robust** or **fragile** with the deciding flips listed — the total is reported at the precision the instrument actually supports.
+
+The headline as-used metric is a **median of ≥ 3 fresh-process runs** per side (`run_all.py` repeats the as-used steps); when the runs alone span more than one efficiency band, the scorecard carries a *contested band* annotation.
+
 A score is only as good as its evidence. **Every dimension must cite at least one measured number or a concrete code excerpt** (see §3). The scripts in [each example's `scripts/`](examples/) produce the numbers automatically.
 
 ---
