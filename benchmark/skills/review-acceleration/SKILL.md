@@ -1,9 +1,9 @@
 ---
-name: eval-py-acceleration
-description: Evaluate whether an accelerated implementation (JAX, Numba) of QuantEcon lecture code actually improves the lecture. Measures as-used performance (fresh process, JIT compile time included), numerical fidelity (float32/float64), and readability, then produces a weighted scored report with a merge recommendation. Use when reviewing a NumPy→JAX/Numba conversion PR or deciding whether to convert a lecture.
+name: review-acceleration
+description: Review whether an accelerated implementation (JAX, Numba) of QuantEcon lecture code actually improves the lecture. Measures as-used performance (fresh process, JIT compile time included), numerical fidelity (float32/float64), and readability, then produces a weighted scored report with a merge recommendation. Use when reviewing a NumPy→JAX/Numba conversion PR or deciding whether to convert a lecture.
 ---
 
-# eval-py-acceleration
+# review-acceleration
 
 > **Status: under construction.** This skill is being built collaboratively with @xuanguang-li from the evaluation system he published on [QuantEcon/lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717). The supporting scripts referenced below are being collected into this plugin's `scripts/` directory. Tracking: [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (workstream B).
 
