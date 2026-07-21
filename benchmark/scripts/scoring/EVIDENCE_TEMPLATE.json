@@ -1,7 +1,7 @@
 {
   "lecture": "<name>",
   "branch": "<update_branch>",
-  "_how": "Fill quantitative values from this lecture's results/*.json (note the source). Answer each structural criterion true/false with a citation to the diff. Then run: python scoring/score.py <name>. Never type a score — rubric.py computes it.",
+  "_how": "Fill quantitative values from this lecture's results/*.json (note the source). Answer each structural criterion true/false with a citation to the diff. Then run: python scripts/scoring/score.py references/examples/<name> (from the plugin root). Never type a score — rubric.py computes it.",
 
   "quantitative": {
     "correctness": {
