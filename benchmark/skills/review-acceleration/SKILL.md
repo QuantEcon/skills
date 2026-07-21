@@ -23,6 +23,17 @@ Given a baseline implementation (usually `main`) and a candidate (usually a PR b
 
 Never present warm-only speedups as the headline — the ge_arrow case measured 1.4–4.8× faster warm and ~45× slower as-used.
 
+## Triage mode (no candidate yet)
+
+When the question is "should this lecture be converted at all," run the prospective subset — only the existing lecture is needed:
+
+1. **Baseline as-used total**: adapt just the baseline half of an `as_used_total.py` template and replay the lecture's real call sequence — this bounds the maximum possible win (a 30 ms lecture has nothing to give).
+2. **Pattern-match** against the calibrated poles: aiyagari-shaped (large fixed shapes, many re-solves, stable static args → ~24× win) vs ge_arrow-shaped (tiny models, fresh static args per call → ~45× loss).
+3. **Crossover check**: the lecture's problem sizes vs warm crossover-n.
+4. **Readability-cost forecast**: which prerequisite concepts the conversion would force.
+
+Decision rule from the weights: efficiency (0.15) gains at most +0.30 weighted; readability (0.25) losing two bands costs −0.50 — a conversion that costs meaningful readability cannot break even on speed alone, and structural wins are usually achievable in the baseline library. Report a predicted verdict band with the binding constraint named, not a scorecard. Validated 2026-07-21: blind triage on ge_arrow (0.028 s → don't convert), markov_asset (0.087 s → don't convert), and the aiyagari pattern (54.3 s → convert) reproduced all three known verdicts; triage cannot predict conversion-quality defects (markov_asset's build bug), and must say so.
+
 ## Calibration baseline (regression anchors)
 
 The two worked evaluations in `references/examples/` are the validation baseline — re-running their pipelines must reproduce these verdicts:
