@@ -63,6 +63,7 @@ def check_skill(skill_dir, plugin_name):
     fields = parse_frontmatter(skill_md)
     if fields is None:
         return
+    errors_before = len(errors)
     rel = skill_md.relative_to(ROOT)
     name = fields.get("name")
     if not name:
@@ -74,10 +75,16 @@ def check_skill(skill_dir, plugin_name):
         error(f"{rel}: frontmatter missing `description`")
     elif len(description) < 40:
         error(f"{rel}: description too short to trigger reliably ({len(description)} chars)")
-    print(f"  ok  /{plugin_name}:{skill_dir.name}")
+    if len(errors) == errors_before:
+        print(f"  ok  /{plugin_name}:{skill_dir.name}")
+    else:
+        print(f"  !!  /{plugin_name}:{skill_dir.name} — see problems below")
 
 
 def check_plugin(entry):
+    if not isinstance(entry, dict):
+        error(f"marketplace.json: plugin entry must be an object, got {type(entry).__name__}")
+        return
     name = entry.get("name")
     if not name:
         error("marketplace.json: plugin entry missing `name`")
@@ -123,7 +130,10 @@ def main():
         return 1
 
     plugins = marketplace.get("plugins", [])
-    if not plugins:
+    if not isinstance(plugins, list):
+        error(f"marketplace.json: `plugins` must be a list, got {type(plugins).__name__}")
+        plugins = []
+    elif not plugins:
         error("marketplace.json: no plugins registered")
     for entry in plugins:
         check_plugin(entry)
