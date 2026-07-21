@@ -2,7 +2,37 @@
   "lecture": "ge_arrow",
   "branch": "update_ge_arrow",
   "weighted_total_out_of_5": 2.85,
-  "verdict": "mixed / wash — improvements offset by real regressions; revisit before merging",
+  "verdict": "no-conversion — the baseline as-used total 0.035 s is under the 1 s materiality floor and the candidate is slower as-used (0.022×): this lecture should not be converted, whatever the candidate's polish. Candidate quality for the record: 2.85/5, mixed/wash",
+  "band_verdict": "mixed / wash — improvements offset by real regressions; revisit before merging",
+  "verdict_gate": null,
+  "no_conversion": true,
+  "sensitivity": {
+    "stamp": "fragile",
+    "perturbations_tested": 29,
+    "deciding_flips": [
+      {
+        "input": "quantitative.correctness.builds",
+        "from": true,
+        "to": false,
+        "total": 2.3,
+        "outcome": "no-conversion; net regression — do not merge as-is"
+      },
+      {
+        "input": "quantitative.correctness.matches_under_x64",
+        "from": true,
+        "to": false,
+        "total": 2.3,
+        "outcome": "no-conversion; net regression — do not merge as-is"
+      },
+      {
+        "input": "structural.logic_design.criteria.good_algorithmic_choices",
+        "from": false,
+        "to": true,
+        "total": 3.0,
+        "outcome": "no-conversion; net positive with fixable regressions — merge after addressing them"
+      }
+    ]
+  },
   "dimensions": [
     {
       "dim": "correctness",
@@ -31,8 +61,8 @@
       "weight": 0.15,
       "score": 2,
       "weighted": 0.3,
-      "reason": "as-used speedup 0.022× < 0.8 (slower) but correct/fixable → 2",
-      "citations": "as_used_total.py: numpy 0.035s / jax 1.56s = 0.022x; fixable by not making s0_idx/T static"
+      "reason": "as-used speedup 0.022× < 0.8 (slower) but correct/fixable → 2 [single-run measurement; the v2 standard is a median of ≥3 fresh-process runs — see as_used_runs in the evidence template]",
+      "citations": "as_used_total.py: numpy 0.035s / jax 1.56s = 0.022x; fixable by not making s0_idx/T static. Single-pass v1 measurement (v2 standard: median of >=3 fresh-process runs)"
     },
     {
       "dim": "logic_design",

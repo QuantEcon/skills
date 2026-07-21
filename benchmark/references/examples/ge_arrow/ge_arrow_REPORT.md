@@ -2,6 +2,8 @@
 
 Applies the system in [`../../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the only code change on branch `update_ge_arrow`. All numbers below are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
 
+> **Rubric v2 note (2026-07-22).** Re-scored under rubric v2 (verdict gates, no-conversion, sensitivity stamp — see `reviews/`): the total is unchanged at **2.85/5**, but the headline verdict is now **no-conversion** — the baseline as-used total (0.035 s) is under the 1 s materiality floor and the candidate is slower as-used (0.022×), so this lecture should not be converted regardless of the candidate's polish (candidate band for the record: mixed/wash). Sensitivity stamp: **fragile** — flipping `good_algorithmic_choices` alone moves the candidate band to 3.00/net-positive, and flipping either correctness boolean drops it to a gated net regression. Derivation: `results/scorecard.json`.
+
 ## TL;DR — weighted score **2.85 / 5** → *net mixed, slightly negative for this lecture*
 
 The rewrite is **better software** (one-call pure API, real bug fixes) but a **worse lecture** on the two axes that matter most here: it is harder to read and — contrary to the stated motivation — **slower in every regime this lecture actually runs**, while silently dropping numerical precision.

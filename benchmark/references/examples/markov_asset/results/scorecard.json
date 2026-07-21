@@ -2,7 +2,15 @@
   "lecture": "markov_asset",
   "branch": "update_markov_asset",
   "weighted_total_out_of_5": 2.25,
-  "verdict": "net regression — do not merge as-is",
+  "verdict": "no-conversion — the baseline as-used total 0.18 s is under the 1 s materiality floor and the candidate is slower as-used (0.17×): this lecture should not be converted, whatever the candidate's polish. Candidate quality for the record: 2.25/5, net regression",
+  "band_verdict": "net regression — do not merge as-is",
+  "verdict_gate": null,
+  "no_conversion": true,
+  "sensitivity": {
+    "stamp": "robust",
+    "perturbations_tested": 29,
+    "deciding_flips": []
+  },
   "dimensions": [
     {
       "dim": "correctness",
@@ -31,8 +39,8 @@
       "weight": 0.15,
       "score": 2,
       "weighted": 0.3,
-      "reason": "as-used speedup 0.17× < 0.8 (slower) but correct/fixable → 2",
-      "citations": "as_used_total.py (bug-patched to run): numpy 0.18s / jax 1.05s = 0.17x; scaling.json: JAX only wins at n>=250, lecture uses n=5,25"
+      "reason": "as-used speedup 0.17× < 0.8 (slower) but correct/fixable → 2 [single-run measurement; the v2 standard is a median of ≥3 fresh-process runs — see as_used_runs in the evidence template]",
+      "citations": "as_used_total.py (bug-patched to run): numpy 0.18s / jax 1.05s = 0.17x; scaling.json: JAX only wins at n>=250, lecture uses n=5,25. Single-pass v1 measurement (v2 standard: median of >=3 fresh-process runs)"
     },
     {
       "dim": "logic_design",

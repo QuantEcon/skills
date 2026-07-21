@@ -17,8 +17,10 @@
     },
     "efficiency": {
       "as_used_speedup": 1.0,
+      "as_used_runs": [],
+      "baseline_as_used_seconds": null,
       "correct_or_fixable": true,
-      "source": "as_used_total.py — numpy_total / jax_total over the lecture's real call sequence"
+      "source": "as_used_total.py via run_all.py — baseline_total / candidate_total over the lecture's real call sequence, median of >=3 fresh-process runs per side. as_used_runs: the per-run speedups (drives the contested-band annotation). baseline_as_used_seconds: median baseline total (drives the no-conversion floor)"
     },
     "ergonomics": {
       "statements_for_one_result": 1,

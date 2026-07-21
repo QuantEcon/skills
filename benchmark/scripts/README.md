@@ -23,9 +23,9 @@ The rubric in prose — dimensions, weights, anchors, checklists, verdict bands,
 
 Scores are **never typed by hand** — each is a deterministic function of evidence:
 
-1. **Measure** — `python references/examples/<lecture>/scripts/run_all.py` runs the per-lecture measurement scripts and writes `results/*.json` plus a provenance stamp (`results/env.json`: Python/platform/library versions and any failed steps — the seed of the QuantEcon/meta#335 shared result schema; generated per-run, not committed).
+1. **Measure** — `python references/examples/<lecture>/scripts/run_all.py` runs the per-lecture measurement scripts and writes `results/*.json` plus a provenance stamp (`results/env.json`: Python/platform/library versions and any failed steps — the seed of the QuantEcon/meta#335 shared result schema; generated per-run, not committed). The as-used steps repeat 3× per side in fresh processes; the headline speedup is a **median**, with per-run values kept for the contested-band check.
 2. **Record evidence** — fill `<lecture>/evidence.json` (copy `scoring/EVIDENCE_TEMPLATE.json`): measured numbers into the quantitative slots with their source, and each structural checklist item answered true/false **with a citation to the diff**.
-3. **Score** — `python scripts/scoring/score.py references/examples/<lecture>` applies `rubric.py` and writes `results/scorecard.json`, printing the derivation of every score.
+3. **Score** — `python scripts/scoring/score.py references/examples/<lecture>` applies `rubric.py` and writes `results/scorecard.json`, printing the derivation of every score, the final verdict (after the v2 correctness gates and the no-conversion rule), and the one-flip **sensitivity stamp** (robust/fragile with deciding flips).
 
 ## Evaluating a new lecture
 

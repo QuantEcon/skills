@@ -17,6 +17,11 @@ Two kinds of dimension:
     evidence.json must carry a citation.
 
 Each scorer returns (score:int, reason:str) so the derivation is auditable.
+
+v2 (2026-07, from the three-way design review): the logic&design bug-cap is
+derived from the correctness evidence inside `score_all`; correctness 1/2
+gates the verdict band; a "no-conversion" verdict fires on the triage
+don't-convert profile; the as-used metric accepts a median-of-runs list.
 """
 
 # ---- weights (sum to 1.0); rationale in EVALUATION_FRAMEWORK.md -------------
@@ -72,14 +77,44 @@ CHECKLISTS = {
 
 
 # ---- total → verdict bands -------------------------------------------------
-def verdict(total):
+# Ordered worst → best; verdict gating compares indices into this list.
+BANDS = [
+    "net regression — do not merge as-is",
+    "mixed / wash — improvements offset by real regressions; revisit before merging",
+    "net positive with fixable regressions — merge after addressing them",
+    "clear improvement — merge",
+]
+SHORT_BANDS = ["net regression", "mixed/wash", "net positive", "clear improvement"]
+
+
+def band_index(total):
     if total >= 4.0:
-        return "clear improvement — merge"
+        return 3
     if total >= 3.0:
-        return "net positive with fixable regressions — merge after addressing them"
+        return 2
     if total >= 2.5:
-        return "mixed / wash — improvements offset by real regressions; revisit before merging"
-    return "net regression — do not merge as-is"
+        return 1
+    return 0
+
+
+def verdict(total):
+    return BANDS[band_index(total)]
+
+
+# Policy floor (a policy choice, anchored not derived): a lecture whose whole
+# baseline replay finishes in under this many seconds has no as-used time worth
+# buying, so a candidate that is *also slower* as-used earns the
+# "no-conversion" verdict regardless of its polish. Reconciles review mode
+# with triage — both blind-validated don't-convert baselines (ge_arrow
+# 0.028 s, markov_asset 0.087 s) sit far below this floor, the convert case
+# (aiyagari pattern, 54.3 s) far above it.
+NO_CONVERSION_BASELINE_S = 1.0
+
+
+def _median(xs):
+    s = sorted(xs)
+    n = len(s)
+    return s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2.0
 
 
 # =====================  QUANTITATIVE SCORERS  ===============================
@@ -143,8 +178,11 @@ def score_structural(dim, criteria, overrides=None):
     score = 1 + len(met)
     note = ""
     if dim == "logic_design" and overrides.get("introduces_correctness_bug"):
+        derived = overrides.get("_bug_derived_from")
+        why = (f"correctness-bug cap derived from correctness evidence: {derived}"
+               if derived else "introduces a correctness bug")
         if score > 3:
-            note = " (capped at 3: introduces a correctness bug)"
+            note = f" (capped at 3: {why})"
         score = min(score, 3)
     reason = (f"{len(met)}/4 criteria met [{', '.join(met) or 'none'}] "
               f"→ 1+{len(met)}={1+len(met)}{note}")
@@ -161,7 +199,25 @@ def score_dimension(dim, ev):
         return score_readability(ev["delta_prereq_concepts"],
                                  ev["docstring_cov_new"])
     if dim == "efficiency":
-        return score_efficiency(ev["as_used_speedup"], ev["correct_or_fixable"])
+        runs = ev.get("as_used_runs")
+        if runs:
+            sp = _median(runs)
+            s, reason = score_efficiency(sp, ev["correct_or_fixable"])
+            per_run = {score_efficiency(r, ev["correct_or_fixable"])[0]
+                       for r in runs}
+            if len(per_run) > 1:
+                reason += (f" [median of {len(runs)} fresh-process runs, spread "
+                           f"{min(runs):.3g}–{max(runs):.3g}×; CONTESTED BAND: "
+                           f"runs alone would score {sorted(per_run)}]")
+            else:
+                reason += (f" [median of {len(runs)} fresh-process runs, spread "
+                           f"{min(runs):.3g}–{max(runs):.3g}× within one band]")
+            return s, reason
+        s, reason = score_efficiency(ev["as_used_speedup"],
+                                     ev["correct_or_fixable"])
+        return s, reason + (" [single-run measurement; the v2 standard is a "
+                            "median of ≥3 fresh-process runs — see "
+                            "as_used_runs in the evidence template]")
     if dim == "ergonomics":
         return score_ergonomics(ev["statements_for_one_result"],
                                 ev["fragile_protocol"])
@@ -180,12 +236,30 @@ def score_all(evidence):
     merged.update(evidence.get("quantitative", {}))
     merged.update(evidence.get("structural", {}))
 
-    rows, total = [], 0.0
+    # ---- derived safety coupling: the logic&design correctness-bug cap
+    # follows from the correctness evidence itself, so one forgotten boolean
+    # can no longer leave a non-building (or x64-divergent) candidate uncapped.
+    corr = merged.get("correctness", {})
+    derived = None
+    if not corr.get("builds", True):
+        derived = "does not build as shipped"
+    elif (not corr.get("matches_under_x64", True)
+          and corr.get("max_delta_shipped", 0.0) > 1e-8):
+        derived = "logic diverges under x64"
+    if derived and "logic_design" in merged \
+            and not merged["logic_design"].get("introduces_correctness_bug"):
+        ld = dict(merged["logic_design"])
+        ld["introduces_correctness_bug"] = True
+        ld["_bug_derived_from"] = derived
+        merged["logic_design"] = ld
+
+    rows, total, scores = [], 0.0, {}
     for dim in WEIGHTS:
         ev = merged[dim]
         s, reason = score_dimension(dim, ev)
         w = WEIGHTS[dim]
         total += w * s
+        scores[dim] = s
         rows.append({"dim": dim, "title": TITLES[dim], "kind": KIND[dim],
                      "weight": w, "score": s, "weighted": round(w * s, 3),
                      "reason": reason,
@@ -194,4 +268,38 @@ def score_all(evidence):
     # shown: raw FP sums can land at e.g. 2.4999999999999996 for combinations
     # that are exactly 2.50 in exact arithmetic.
     total = round(total, 2)
-    return {"rows": rows, "total": total, "verdict": verdict(total)}
+
+    # ---- verdict gates: a candidate whose correctness is broken cannot
+    # weighted-average its way into a merge band, whatever its polish.
+    base_idx = band_index(total)
+    final_idx, gate = base_idx, None
+    if scores["correctness"] == 1 and base_idx > 0:
+        final_idx = 0
+        gate = "correctness 1 caps the verdict at net regression"
+    elif scores["correctness"] == 2 and base_idx > 1:
+        final_idx = 1
+        gate = "correctness 2 caps the verdict at mixed/wash"
+
+    # ---- no-conversion: when the efficiency evidence shows the triage
+    # don't-convert profile, the verdict says so instead of scoring the polish.
+    eff = merged.get("efficiency", {})
+    runs = eff.get("as_used_runs")
+    sp = _median(runs) if runs else eff.get("as_used_speedup")
+    base_s = eff.get("baseline_as_used_seconds")
+    no_conv = bool(base_s is not None and base_s < NO_CONVERSION_BASELINE_S
+                   and sp is not None and sp < 1.0)
+
+    v = BANDS[final_idx]
+    if gate:
+        v += (f" [gated: {gate}; the ungated total {total:.2f} would band as "
+              f"{SHORT_BANDS[base_idx]}]")
+    if no_conv:
+        v = (f"no-conversion — the baseline as-used total {base_s:.3g} s is under "
+             f"the {NO_CONVERSION_BASELINE_S:g} s materiality floor and the "
+             f"candidate is slower as-used ({sp:.3g}×): this lecture should not "
+             f"be converted, whatever the candidate's polish. Candidate quality "
+             f"for the record: {total:.2f}/5, {SHORT_BANDS[final_idx]}"
+             + (f" [{gate}]" if gate else ""))
+    return {"rows": rows, "total": total, "verdict": v,
+            "band_verdict": BANDS[final_idx], "verdict_gate": gate,
+            "no_conversion": no_conv}

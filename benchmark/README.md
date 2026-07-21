@@ -28,7 +28,7 @@ The skill follows the measure → record-evidence → score contract ([scripts/R
 4. **Evidence by dimension** — `max|Δ|` in both dtype regimes, prerequisite-concept and docstring deltas, the as-used vs warm timing table, crossover-n, recompile audit
 5. **Recommendation** — a must-fix list where each item is tagged with the dimension it lifts, plus where the score lands after fixes
 
-See [references/examples/ge_arrow/ge_arrow_REPORT.md](references/examples/ge_arrow/ge_arrow_REPORT.md) (2.85/5, mixed/wash) and [references/examples/markov_asset/markov_asset_REPORT.md](references/examples/markov_asset/markov_asset_REPORT.md) (2.25/5, net regression) for complete real reports. Verdict bands, weights, and scoring anchors: [references/EVALUATION_FRAMEWORK.md](references/EVALUATION_FRAMEWORK.md) §1–2.
+See [references/examples/ge_arrow/ge_arrow_REPORT.md](references/examples/ge_arrow/ge_arrow_REPORT.md) (2.85/5, no-conversion; candidate band mixed/wash) and [references/examples/markov_asset/markov_asset_REPORT.md](references/examples/markov_asset/markov_asset_REPORT.md) (2.25/5, no-conversion + gated net regression) for complete real reports. Verdict bands, the v2 verdict gates / no-conversion rule / sensitivity stamp, weights, and scoring anchors: [references/EVALUATION_FRAMEWORK.md](references/EVALUATION_FRAMEWORK.md) §1–2.
 
 **The one rule to remember:** warm-only speedups are never the headline. The ge_arrow case measured 1.4–4.8× faster warm and **45× slower as-used** — the as-used number (fresh process, actual problem sizes, compile time included) decides the efficiency score.
 
@@ -64,7 +64,7 @@ python references/examples/<lecture>/scripts/run_all.py      # measure + provena
 python scripts/scoring/score.py references/examples/<lecture>
 ```
 
-Sanity anchors: re-running either worked example must reproduce **2.85** / **2.25**.
+Sanity anchors: re-running either worked example must reproduce **2.85** / **2.25** (both now carrying the v2 **no-conversion** verdict; ge_arrow stamps *fragile*, markov_asset *robust*).
 
 ## Map
 
