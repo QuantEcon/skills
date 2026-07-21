@@ -4,6 +4,16 @@
   "version": "0.1.0",
   "plugins": [
     {
+      "name": "qe",
+      "source": {
+        "source": "github",
+        "repo": "QuantEcon/skills",
+        "path": "qe"
+      },
+      "version": "0.1.0",
+      "description": "QuantEcon's author-facing base skills — style checking and lecture editing support"
+    },
+    {
       "name": "benchmark",
       "source": {
         "source": "github",

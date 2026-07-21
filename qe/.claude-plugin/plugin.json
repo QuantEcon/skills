@@ -1,0 +1,6 @@
+{
+  "name": "qe",
+  "description": "QuantEcon's author-facing base skills — style checking and lecture editing support",
+  "version": "0.1.0",
+  "author": { "name": "QuantEcon" }
+}
