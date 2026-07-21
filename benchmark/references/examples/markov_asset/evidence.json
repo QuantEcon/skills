@@ -1,0 +1,76 @@
+{
+  "lecture": "markov_asset",
+  "branch": "update_markov_asset",
+  "_how": "Quantitative values are copied from results/*.json (source noted). Structural criteria are yes/no facts about the diff, each with a citation. Scores are computed by scoring/rubric.py — see scoring/score.py.",
+
+  "quantitative": {
+    "correctness": {
+      "builds": false,
+      "max_delta_shipped": 1.02e-2,
+      "matches_under_x64": true,
+      "source": "smoke_test.py: call_option_jit raises NameError ('err' undefined) => does not build. equivalence_x64_False.json worst=1.02e-2; equivalence_x64_True.json worst~1e-11"
+    },
+    "readability": {
+      "delta_prereq_concepts": 5,
+      "docstring_cov_new": 0.75,
+      "source": "results/static_metrics.json: prereq 8->13 (+5), docstring_coverage 0.86->0.75"
+    },
+    "efficiency": {
+      "as_used_speedup": 0.17,
+      "correct_or_fixable": true,
+      "source": "as_used_total.py (bug-patched to run): numpy 0.18s / jax 1.05s = 0.17x; scaling.json: JAX only wins at n>=250, lecture uses n=5,25"
+    },
+    "ergonomics": {
+      "statements_for_one_result": 3,
+      "fragile_protocol": true,
+      "source": "results/static_metrics.json: `err, v = f_jit(ap); err.throw()`; checkify (err,val) contract is easy to misuse (the shipped bug proves it)"
+    }
+  },
+
+  "structural": {
+    "logic_design": {
+      "criteria": {
+        "pure_no_order_dependence": true,
+        "no_global_state": true,
+        "good_algorithmic_choices": true,
+        "fixes_prior_bugs": true
+      },
+      "introduces_correctness_bug": true,
+      "citations": {
+        "pure_no_order_dependence": "immutable NamedTuples + factory functions replace the mutable class",
+        "no_global_state": "create_ap_model uses a local n; original __init__ referenced module-global n",
+        "good_algorithmic_choices": "M = P*G**(-gamma) vectorised; precomputes G",
+        "fixes_prior_bugs": "removes global-n reliance; extracts pure test_stability",
+        "introduces_correctness_bug": "TRUE (override->cap 3): stray err.throw() in call_option (undefined err) is a build-breaking defect"
+      }
+    },
+    "style_idiom": {
+      "criteria": {
+        "vectorised_where_natural": true,
+        "correct_control_flow_primitive": true,
+        "no_anti_idiomatic_constructs": true,
+        "clean_call_sites_and_naming": false
+      },
+      "citations": {
+        "vectorised_where_natural": "TRUE: M=P*G**(-gamma)",
+        "correct_control_flow_primitive": "TRUE: lax.while_loop (infinite option) and fori_loop (finite) are the right primitives for genuinely iterative solvers",
+        "no_anti_idiomatic_constructs": "TRUE: checkify is the idiomatic jit-safe runtime check",
+        "clean_call_sites_and_naming": "FALSE: every call site carries (err,val) unpack + err.throw() ceremony"
+      }
+    },
+    "maintainability": {
+      "criteria": {
+        "pure_unit_testable": true,
+        "dtype_precision_safe": false,
+        "no_footgun_for_editors": false,
+        "robust_no_brittle_conditions": false
+      },
+      "citations": {
+        "pure_unit_testable": "pure NamedTuples + functions",
+        "dtype_precision_safe": "FALSE: float32 default, no jax_enable_x64",
+        "no_footgun_for_editors": "FALSE: checkify (err,val) return-contract already produced the shipped NameError",
+        "robust_no_brittle_conditions": "FALSE: exercise spectral radius 1.0618 vs 1/beta 1.0638 (margin 0.002) is fragile under float32"
+      }
+    }
+  }
+}
