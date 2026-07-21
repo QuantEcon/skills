@@ -8,7 +8,7 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 | Plugin | Skills | Status | Tracking |
 |---|---|---|---|
-| `benchmark` | `/benchmark:eval-py-acceleration` | under construction | [meta#335](https://github.com/QuantEcon/meta/issues/335) |
+| `benchmark` | `/benchmark:review-acceleration` | under construction | [meta#335](https://github.com/QuantEcon/meta/issues/335) |
 
 ## Installation
 
@@ -45,19 +45,24 @@ The official action accepts the marketplace and plugin directly:
   with:
     plugin_marketplaces: "https://github.com/QuantEcon/skills.git"
     plugins: "benchmark@quantecon"
-    prompt: "/benchmark:eval-py-acceleration <args>"
+    prompt: "/benchmark:review-acceleration <args>"
 ```
 
 ## Layout
 
 ```
 .claude-plugin/marketplace.json   # the marketplace catalogue
+scripts/validate.py               # manifest + frontmatter validation (run in CI)
 benchmark/                        # one directory per plugin
   .claude-plugin/plugin.json
-  skills/eval-py-acceleration/SKILL.md
+  skills/review-acceleration/SKILL.md
   scripts/                        # supporting Python scripts the skill drives
 ```
 
 ## Contributing
 
-Open a PR adding or modifying a plugin directory and registering it in `.claude-plugin/marketplace.json`. Test locally with `claude --plugin-dir ./<plugin>` before submitting. Broader context for this repository: [QuantEcon/meta#304](https://github.com/QuantEcon/meta/issues/304) (toolkit proposal) and [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (benchmarking programme).
+Open a PR adding or modifying a plugin directory and registering it in `.claude-plugin/marketplace.json`. Test locally with `claude --plugin-dir ./<plugin>` before submitting.
+
+Run `python scripts/validate.py` before pushing — it checks that every plugin resolves, that `plugin.json` agrees with `marketplace.json` on name, version, and description, and that each `SKILL.md` has frontmatter whose `name` matches its directory. CI runs the same script on every PR; a malformed manifest otherwise breaks installation silently in every consuming lecture repository.
+
+Broader context for this repository: [QuantEcon/meta#304](https://github.com/QuantEcon/meta/issues/304) (toolkit proposal) and [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (benchmarking programme).

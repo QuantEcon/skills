@@ -1,6 +1,6 @@
 # benchmark plugin — scripts
 
-Supporting scripts for `/benchmark:eval-py-acceleration`.
+Supporting scripts for `/benchmark:review-acceleration`.
 
 **Pending:** these are being collected from the evaluation work on [QuantEcon/lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717), where they were developed and validated against `ge_arrow.md` (and the `aiyagari.md` Bellman pattern as the HIGH calibration case):
 
