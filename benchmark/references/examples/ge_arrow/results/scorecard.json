@@ -90,5 +90,5 @@
       }
     }
   ],
-  "_note": "Scores are computed by scoring/rubric.py from ge_arrow/evidence.json; do not edit by hand."
+  "_note": "Scores are computed by scripts/scoring/rubric.py from ge_arrow/evidence.json; do not edit by hand."
 }

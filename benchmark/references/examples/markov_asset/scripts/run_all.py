@@ -21,12 +21,15 @@ STEPS = [
 ]
 
 collected = {}
+failed = []
 for title, cmd, agg in STEPS:
     print("\n" + "=" * 70 + f"\n== {title}\n" + "=" * 70)
     parts = cmd.split()
     argv = [PY, os.path.join(HERE, parts[0])] + parts[1:]
     if agg is None:
-        subprocess.run(argv, cwd=HERE, check=False)
+        p = subprocess.run(argv, cwd=HERE, check=False)
+        if p.returncode:
+            failed.append(title)
         continue
     # Persist the script's JSON line (these run as fresh processes and only
     # print their result; the headline as-used metric must not live on the
@@ -35,12 +38,20 @@ for title, cmd, agg in STEPS:
     sys.stdout.write(p.stdout)
     if p.stderr:
         sys.stderr.write(p.stderr)
+    if p.returncode:
+        failed.append(title)
     for line in reversed(p.stdout.strip().splitlines()):
         try:
             rec = json.loads(line)
         except ValueError:
             continue
-        collected.setdefault(agg, {})[rec.get("mode", "?")] = rec
+        if not isinstance(rec, dict):
+            continue  # a stray scalar/list line is not a result record
+        bucket = collected.setdefault(agg, {})
+        key = rec.get("mode", "?")
+        if key in bucket:
+            print(f"WARNING: duplicate mode {key!r} for {agg}", file=sys.stderr)
+        bucket[key] = rec
         break
 
 RES = os.path.join(os.path.dirname(HERE), "results")
@@ -49,38 +60,24 @@ for fname, recs in collected.items():
     modes = list(recs)
     if fname == "as_used.json" and "numpy" in recs and len(modes) == 2:
         other = next(m for m in modes if m != "numpy")
-        if recs[other].get("total_s"):
+        if recs[other].get("total_s") and recs["numpy"].get("total_s"):
             recs["as_used_speedup"] = recs["numpy"]["total_s"] / recs[other]["total_s"]
     with open(os.path.join(RES, fname), "w", encoding="utf-8") as f:
         json.dump(recs, f, indent=2)
     print(f"wrote results/{fname}")
 
-# Provenance stamp for this measurement run (seed of the QuantEcon/meta#335
-# shared result + environment-descriptor schema).
-def write_env():
-    import json
-    import platform
-    from importlib import metadata
-    info = {"python": sys.version.split()[0],
-            "platform": platform.platform(), "machine": platform.machine()}
-    for pkg in ("numpy", "jax", "jaxlib", "quantecon"):
-        try:
-            info[pkg] = metadata.version(pkg)
-        except metadata.PackageNotFoundError:
-            pass
-    res = os.path.join(os.path.dirname(HERE), "results")
-    os.makedirs(res, exist_ok=True)
-    with open(os.path.join(res, "env.json"), "w", encoding="utf-8") as f:
-        json.dump(info, f, indent=2)
+LEC_DIR = os.path.dirname(HERE)                       # this example's folder
+PLUGIN = os.path.dirname(os.path.dirname(os.path.dirname(LEC_DIR)))
 
-
-write_env()
+# Provenance stamp (shared: scripts/scoring/env_stamp.py — the seed of the
+# QuantEcon/meta#335 result + environment-descriptor schema). Failed step
+# titles are recorded so a partial run cannot claim full provenance.
+subprocess.run([PY, os.path.join(PLUGIN, "scripts", "scoring", "env_stamp.py"),
+                LEC_DIR] + failed, check=False)
 
 # Scoring is shared across lectures: fill ../evidence.json from the results
 # above, then apply the common rubric (scripts/scoring/rubric.py) via the engine.
 print("\n" + "=" * 70 + "\n== Scorecard (shared rubric)\n" + "=" * 70)
-LEC_DIR = os.path.dirname(HERE)                       # this example's folder
-PLUGIN = os.path.dirname(os.path.dirname(os.path.dirname(LEC_DIR)))
 subprocess.run([PY, os.path.join(PLUGIN, "scripts", "scoring", "score.py"),
                 LEC_DIR], check=False)
 

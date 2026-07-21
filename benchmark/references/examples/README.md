@@ -41,7 +41,7 @@ The lecture solves a recursive competitive equilibrium with one-period Arrow sec
 | `matches_under_x64` | true | same script re-run with `JAX_ENABLE_X64=1` | max\|Δ\| ≈ 1.4e-14 under x64 → logic identical, drift is purely float32. *Caveat m3: the x64 run overwrites the same results file; regime not stamped* |
 | `delta_prereq_concepts` | +6 (7→13) | `static_metrics.py` → `results/static_metrics.json` | **Hand-curated lists** (see caveat M1), disclosed as such in the script |
 | `docstring_cov_new` | 0.55 (from 0.90) | same | AST-measured (objective) |
-| `as_used_speedup` | **0.022× (≈45× slower)** | `as_used_total.py` (two fresh processes) → `results/as_used.json` | The replayed sequence mirrors the lecture exactly: ex1–ex3 × 2 initial states, the λ-sweep (NumPy: 100-iteration Python loop; JAX: one jitted `fori_loop` sweep, *as each lecture version does it*), ex4 × 3 states, finite T=10 × 2, T=10000 × 1. `block_until_ready` on every JAX call |
+| `as_used_speedup` | **0.022× (≈45× slower)** | `as_used_total.py` (two fresh processes) → `results/as_used.json` *(generated per-run, not committed — the committed provenance is `evidence.json`)* | The replayed sequence mirrors the lecture exactly: ex1–ex3 × 2 initial states, the λ-sweep (NumPy: 100-iteration Python loop; JAX: one jitted `fori_loop` sweep, *as each lecture version does it*), ex4 × 3 states, finite T=10 × 2, T=10000 × 1. `block_until_ready` on every JAX call |
 | `statements_for_one_result` | 1 (from 4) | `static_metrics.py` | Hand-asserted constant (caveat M1); the 4 is the ordered old protocol, the 1 is the single factory call |
 | structural checklists | 1–4 criteria each | `evidence.json` citations | e.g. style meets only clean-call-sites → 1+1 = 2 |
 
@@ -49,7 +49,7 @@ Supporting (context, not scored directly): `benchmark.py` (cold ≈ 300 ms incl.
 
 ### Why 2.85
 
-Weighted: correctness 3 (logic identical under x64 but ships float32 with unflagged 4th–5th-significant-figure drift) + readability 2 (kernel one-liner becomes nested `fori_loop` plumbing) + efficiency 2 (45× slower as-used; warm wins never materialize at n≤3) + logic 5 (genuinely fixes the ordered-mutation/global-state/typo defects) + style 2 + ergonomics 5 (one immutable call) + maintainability 3. The verdict captures the case's essence: **a structurally better rewrite that is slower and harder to read in the regime the lecture actually runs.**
+Weighted: correctness 3 (logic identical under x64 but ships float32 with unflagged 4th–5th-significant-figure drift) + readability 2 (kernel one-liner becomes nested `fori_loop` plumbing) + efficiency 2 (45× slower as-used; warm wins never materialize at n≤3) + logic 4 (fixes the ordered-mutation/global-state/typo defects, minus the unvectorised O(n²) kernel) + style 2 + ergonomics 5 (one immutable call) + maintainability 3. The verdict captures the case's essence: **a structurally better rewrite that is slower and harder to read in the regime the lecture actually runs.**
 
 ---
 
@@ -78,7 +78,7 @@ Lucas-tree, consol, and call-option pricing over a Markov chain (default: 25-sta
 | `matches_under_x64` | true | `equivalence_x64_True.json` | ≈1e-11 on all working assets |
 | `delta_prereq_concepts` | +5 (8→13) | `static_metrics.py` | All five additions are checkify/JAX-structural (hand-curated; caveat M1) |
 | `docstring_cov_new` | 0.75 (from 0.86) | same | AST-measured |
-| `as_used_speedup` | 0.17× (≈6× slower) | `as_used_total.py` → `results/as_used.json` | JAX side uses the patched `call_option` **so an end-to-end timing exists at all** — disclosed in the docstring and in the output record (`"mode": "jax_patched"`). Sequence mirrors the lecture: γ-sweep ×5, consol+call at β=0.9, exercise model (tree, consol, call, finite k=5,25) |
+| `as_used_speedup` | 0.17× (≈6× slower) | `as_used_total.py` → `results/as_used.json` *(generated per-run, not committed)* | JAX side uses the patched `call_option` **so an end-to-end timing exists at all** — disclosed in the docstring and in the output record (`"mode": "jax_patched"`). Sequence mirrors the lecture: γ-sweep ×5, consol+call at β=0.9, exercise model (tree, consol, call, finite k=5,25) |
 | `statements_for_one_result` | 3 (from 2) | `static_metrics.py` | The `(err, val)` unpack + `err.throw()` ceremony |
 | logic checklist | 4/4 met, **capped at 3** | evidence citations | The cap (introduces a correctness bug) is the rubric's override working as designed |
 
@@ -98,7 +98,7 @@ correctness 1 (does not build) + readability 2 + efficiency 2 + logic 3 (capped)
 
 ## Verification performed (2026-07-21)
 
-1. **Line-by-line review** of all 17 scripts (models, measurements, orchestration, scoring engine, calibration).
+1. **Line-by-line review** of every script in the package (models, measurements, orchestration, scoring engine, calibration).
 2. **Scorecard reproduction:** `score.py` regenerates both committed scorecards **byte-identically** from `evidence.json` alone.
 3. **Evidence↔results cross-check (scripted):** every quantitative evidence slot matches its results-file source (Δprereq, docstring coverage, max\|Δ\| shipped, crash record, statements).
 4. **Rubric edge audit:** brute force over all 5⁷ score combinations found FP band-edge misclassifications (797 cases), fixed by computing the verdict from the rounded total; neither reference case was affected.

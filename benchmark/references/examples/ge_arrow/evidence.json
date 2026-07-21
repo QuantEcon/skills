@@ -1,7 +1,7 @@
 {
   "lecture": "ge_arrow",
   "branch": "update_ge_arrow",
-  "_how": "Quantitative values are copied from results/*.json (source noted). Structural criteria are yes/no facts about the diff, each with a citation. Scores are computed by scoring/rubric.py — see scoring/score.py.",
+  "_how": "Quantitative values are copied from results/*.json (source noted). Structural criteria are yes/no facts about the diff, each with a citation. Scores are computed by scoring/rubric.py — run: python scripts/scoring/score.py references/examples/<name> (from the plugin root).",
 
   "quantitative": {
     "correctness": {
