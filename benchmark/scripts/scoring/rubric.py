@@ -1,7 +1,8 @@
 """
 THE SCORING STANDARD  (single source of truth, shared by every lecture).
 
-This module encodes the rubric described in prose in ../EVALUATION_FRAMEWORK.md
+This module encodes the rubric described in prose in
+../../references/EVALUATION_FRAMEWORK.md
 so that a score is a *deterministic function of evidence*, never a hand-typed
 number. Nothing here is lecture-specific: the same rubric is applied to every
 lecture. Only the per-lecture `evidence.json` changes.
@@ -189,4 +190,8 @@ def score_all(evidence):
                      "weight": w, "score": s, "weighted": round(w * s, 3),
                      "reason": reason,
                      "citations": ev.get("citations", ev.get("source"))})
-    return {"rows": rows, "total": round(total, 2), "verdict": verdict(total)}
+    # Verdict on the rounded total so the band always agrees with the number
+    # shown: raw FP sums can land at e.g. 2.4999999999999996 for combinations
+    # that are exactly 2.50 in exact arithmetic.
+    total = round(total, 2)
+    return {"rows": rows, "total": total, "verdict": verdict(total)}
