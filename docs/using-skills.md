@@ -6,7 +6,7 @@ For lecture authors, reviewers, and maintainers who want to *use* the skills. (B
 
 **In a lecture repo that has opted in** — nothing to do. Repos that check the marketplace into `.claude/settings.json` (see the [repo README](../README.md)) install everything automatically when you open the repo in Claude Code and trust it.
 
-**Anywhere else** — two commands in a Claude Code session:
+**Anywhere else** — three commands in a Claude Code session (the marketplace first, then the plugins you want):
 
 ```
 /plugin marketplace add QuantEcon/skills

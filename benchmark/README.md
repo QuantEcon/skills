@@ -71,7 +71,7 @@ Sanity anchors: re-running either worked example must reproduce **2.85** / **2.2
 | Path | What |
 |---|---|
 | [skills/review-acceleration/](skills/review-acceleration/SKILL.md) | The skill (procedure, both modes) |
-| [scripts/scoring/](scripts/README.md) | Deterministic engine: rubric, scorer, evidence template, provenance stamp |
+| [scripts/README.md](scripts/README.md) | Deterministic engine (`scripts/scoring/`): rubric, scorer, evidence template, provenance stamp |
 | [scripts/calibration/](scripts/calibration/bellman_bench.py) | The shared HIGH-efficiency anchor (~24× ⇒ score 5) |
 | [references/EVALUATION_FRAMEWORK.md](references/EVALUATION_FRAMEWORK.md) | The standard in prose — weights, anchors, checklists, verdict bands |
 | [references/examples/](references/examples/README.md) | Two complete worked evaluations + the logic-check/provenance audit; the regression baseline |
