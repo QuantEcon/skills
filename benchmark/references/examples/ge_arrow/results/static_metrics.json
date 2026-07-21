@@ -5,7 +5,7 @@
     "docstring_coverage": 0.9,
     "max_nesting_depth": 3,
     "explicit_loops": 6,
-    "concept_token_hits": 110,
+    "concept_token_hits": 105,
     "n_prerequisite_concepts": 7,
     "prerequisite_concepts": [
       "Python class / OOP",

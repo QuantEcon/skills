@@ -29,7 +29,7 @@ os.makedirs(RESULTS, exist_ok=True)
 CONCEPTS = {
     "old": [
         r"\bclass\b", r"def __init__", r"self\.", r"@", r"for .+ in ",
-        r"np\.linalg\.inv", r"np\.empty", r"\.dot\(", r"@",
+        r"np\.linalg\.inv", r"np\.empty", r"\.dot\(",
     ],
     "new": [
         r"NamedTuple", r"@partial", r"jax\.jit", r"static_argnames",

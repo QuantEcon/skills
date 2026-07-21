@@ -16,7 +16,7 @@
       "Python while/for loops",
       "raise/except for errors"
     ],
-    "statements_for_one_asset": 2
+    "statements_for_one_result": 2
   },
   "new": {
     "code_lines": 101,
@@ -40,6 +40,6 @@
       "jax.lax.fori_loop",
       "functional array update .at[].set()"
     ],
-    "statements_for_one_asset": 3
+    "statements_for_one_result": 3
   }
 }
