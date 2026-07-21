@@ -7,6 +7,7 @@ Current focus, validated against ~630 merged PRs across the four main lecture re
 - **Few, high-frequency skills** over many niche ones; every skill is validated against actual PR history.
 - **Focal point is PR management**: consistent review results, plus the same checks run by authors on a working copy before opening a PR.
 - **Report first, fix on request.** Skills produce a structured report and offer fixes; they never silently edit. Safe in CI, authors stay in control.
+- **Cited claims; computed scores.** Every finding carries a citation (rule ID + `file:line`, or a number + its source). Skills whose output is a findings list need nothing more. Skills that aggregate judgements into a scored verdict use the evidence-file pattern from the benchmark plugin: judgement recorded as cited answers, every score computed by a deterministic engine, never typed by hand (see [docs/developing-skills.md](docs/developing-skills.md)).
 
 ## 1. Style skill family — flagship
 

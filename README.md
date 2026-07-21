@@ -14,6 +14,14 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 The `qe` plugin is the author-facing surface: one memorable prefix for the skills authors use while editing lectures and preparing PRs. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`); the per-category sub-skills run the same shared rules individually. `benchmark` is a specialist family for maintainers evaluating accelerated implementations. `audit` is the maintainer-facing family for bulk, read-only sweeps of a whole repository — every issue, every PR, a whole codebase, a whole translated series — each delivering a report bundle rather than a chat answer. See [CATALOG.md](CATALOG.md) for the plan and [FUTURE-IDEAS.md](FUTURE-IDEAS.md) for parked candidates.
 
+## Documentation
+
+| Guide | For |
+|---|---|
+| [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
+| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, versioning, PR flow |
+| [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
+
 ## Installation
 
 ### Automatic (lecture repos)
