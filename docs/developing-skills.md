@@ -33,14 +33,45 @@ The two live plugins show the two shapes: `qe` (umbrella skill + thin per-catego
 ## Development loop
 
 ```bash
-# try a plugin against a real project without installing it
-claude --plugin-dir ./benchmark
-
 # validate everything the marketplace serves
 python scripts/validate.py
 ```
 
 `validate.py` checks: every catalogue entry resolves to a real directory; `plugin.json` agrees with `marketplace.json` on name/version/description; every SKILL.md has frontmatter whose `name` matches its directory. Negative-test your changes (break something on purpose; the validator must fail loudly) — a malformed manifest breaks installation silently in every consuming repo.
+
+## Testing locally
+
+Two tiers, fastest first. Either way, **test from a real consuming project** (a lecture repo checkout), not from inside this repo — the whole class of path-resolution bugs (`${CLAUDE_PLUGIN_ROOT}`, workspace-vs-plugin working directories) only surfaces when the plugin runs read-only from an install location while the working directory is somewhere else.
+
+**Tier 1 — skill iteration, no install.** Load one plugin directly into a session:
+
+```bash
+claude --plugin-dir /path/to/skills/<plugin>    # e.g. .../skills/benchmark
+```
+
+Nothing is installed and no marketplace state is touched. Best while editing SKILL.md or scripts; restart the session to pick up changes.
+
+**Tier 2 — full install simulation, before merging to `main`.** Add your checkout as a local-path marketplace so you exercise exactly what users get (marketplace metadata, install, versioning, plugin-root resolution). In a Claude Code session in the consuming project:
+
+```
+/plugin marketplace add /path/to/your/skills-checkout
+/plugin install benchmark@quantecon
+```
+
+Two things to know:
+
+- **The marketplace serves whatever your checkout has checked out.** To test a PR branch, leave the working tree on that branch for the duration of the test.
+- **Local and GitHub sources share the marketplace name** (`quantecon`, from `marketplace.json`) and cannot coexist — if the production marketplace is already added, `/plugin marketplace remove quantecon` first.
+
+**Switching back to production** once the PR has merged:
+
+```
+/plugin marketplace remove quantecon
+/plugin marketplace add QuantEcon/skills
+/plugin install benchmark@quantecon
+```
+
+Confirm with `/plugin marketplace list` (the source should read `QuantEcon/skills`, not your local path) and `/plugin list` (the version should match the merged `plugin.json`). Routine setup and updating for end users is covered in [using-skills.md](using-skills.md).
 
 ## Versioning and releases
 
