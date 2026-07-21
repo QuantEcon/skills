@@ -17,7 +17,7 @@ mode = sys.argv[1] if len(sys.argv) > 1 else "jax_first"
 import numpy as np
 
 if mode == "numpy":
-    import ge_arrow.scripts.model_old as old
+    import model_old as old
     s = np.array([0, 1]); P = np.array([[.5, .5], [.5, .5]])
     ys = np.empty((2, 2)); ys[:, 0] = 1 - s; ys[:, 1] = s
     t0 = time.perf_counter()
@@ -29,7 +29,7 @@ if mode == "numpy":
 else:
     import jax
     import jax.numpy as jnp
-    import ge_arrow.scripts.model_new as new
+    import model_new as new
     s = jnp.array([0., 1.]); P = jnp.array([[.5, .5], [.5, .5]])
     ys = jnp.array([[1., 0.], [0., 1.]])
     t0 = time.perf_counter()

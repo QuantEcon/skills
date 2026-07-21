@@ -37,7 +37,7 @@ def economies():
 
 
 if mode == "numpy":
-    import ge_arrow.scripts.model_old as old
+    import model_old as old
     E = economies()
     t0 = time.perf_counter()
     # ex1, ex2, ex3 : two initial states each
@@ -69,7 +69,7 @@ if mode == "numpy":
 else:
     import jax
     import jax.numpy as jnp
-    import ge_arrow.scripts.model_new as new
+    import model_new as new
     E = economies()
 
     def J(s, P, ys, s0, T=0):

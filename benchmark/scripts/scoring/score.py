@@ -3,10 +3,11 @@ Scoring engine / CLI.  Applies the shared rubric (rubric.py) to one lecture's
 evidence and writes an auditable scorecard.
 
 Usage:
-    python scoring/score.py <lecture>        # e.g. ge_arrow, markov_asset
+    python scripts/scoring/score.py <lecture-dir>
+    # e.g. python scripts/scoring/score.py references/examples/ge_arrow
 
-It reads   <lecture>/evidence.json      (inputs + citations; filled from results/)
-and writes <lecture>/results/scorecard.json  and prints the derivation table.
+It reads   <lecture-dir>/evidence.json  (inputs + citations; filled from results/)
+and writes <lecture-dir>/results/scorecard.json  and prints the derivation table.
 
 The score of every dimension is COMPUTED here from the evidence via rubric.py —
 no score is ever written by hand. To change a score you change the measured
@@ -17,13 +18,13 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import rubric  # noqa: E402
 
 
-def main(lecture):
-    lec_dir = os.path.join(ROOT, lecture)
+def main(lecture_dir):
+    lec_dir = os.path.abspath(lecture_dir)
+    lecture = os.path.basename(lec_dir)
     ev_path = os.path.join(lec_dir, "evidence.json")
     if not os.path.exists(ev_path):
         sys.exit(f"no evidence file at {ev_path}")
@@ -59,10 +60,10 @@ def main(lecture):
     dst = os.path.join(res_dir, "scorecard.json")
     with open(dst, "w", encoding="utf-8") as f:
         json.dump(out, f, indent=2, ensure_ascii=False)
-    print(f"\nwrote {os.path.relpath(dst, ROOT)}")
+    print(f"\nwrote {os.path.relpath(dst)}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        sys.exit("usage: python scoring/score.py <lecture>")
+        sys.exit("usage: python scripts/scoring/score.py <lecture-dir>")
     main(sys.argv[1])

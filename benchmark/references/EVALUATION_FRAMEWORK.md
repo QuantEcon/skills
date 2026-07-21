@@ -1,6 +1,6 @@
 # A Quantitative Evaluation System for JAX Rewrites of QuantEcon Lectures
 
-This document defines a **reusable, quantitative system** for deciding whether rewriting a QuantEcon lecture's code (e.g. converting NumPy → JAX) actually *improves the lecture*. It was designed against the first such change, `lectures/ge_arrow.md` (branch `update_ge_arrow` vs `main`), and is applied to it in [`ge_arrow_REPORT.md`](ge_arrow_REPORT.md).
+This document defines a **reusable, quantitative system** for deciding whether rewriting a QuantEcon lecture's code (e.g. converting NumPy → JAX) actually *improves the lecture*. It was designed against the first such change, `lectures/ge_arrow.md` (branch `update_ge_arrow` vs `main`), and is applied to it in [`ge_arrow_REPORT.md`](examples/ge_arrow/ge_arrow_REPORT.md).
 
 The guiding principle: **these are teaching lectures first and programs second.** A rewrite that makes the code faster or more "modern" but harder for a learner to read, or that silently changes the numbers, is not automatically an improvement. The system therefore weights pedagogy heavily and never treats "uses JAX" as a goal in itself — JAX must *earn* its place on each lecture.
 
@@ -35,7 +35,7 @@ weighted_total = Σ  weight_d × score_d        (range 1–5)
 | **2.5 – 2.9** | Mixed / wash — improvements offset by real regressions; revisit before merging. |
 | **< 2.5** | Net regression — do not merge as-is. |
 
-A score is only as good as its evidence. **Every dimension must cite at least one measured number or a concrete code excerpt** (see §3). The scripts in [`scripts/`](scripts/) produce the numbers automatically.
+A score is only as good as its evidence. **Every dimension must cite at least one measured number or a concrete code excerpt** (see §3). The scripts in [each example's `scripts/`](examples/) produce the numbers automatically.
 
 ---
 
@@ -49,11 +49,11 @@ For each dimension we give (a) the metric(s) that quantify it, (b) the 1–5 anc
 
 ### How a score is computed (no hand-typed numbers)
 
-The rubric is machine-encoded in [`scoring/rubric.py`](scoring/rubric.py) so that **a score is a deterministic function of evidence**, applied identically to every lecture. The workflow — and the contract an AI skill follows — is:
+The rubric is machine-encoded in [`scoring/rubric.py`](../scripts/scoring/rubric.py) so that **a score is a deterministic function of evidence**, applied identically to every lecture. The workflow — and the contract an AI skill follows — is:
 
 1. **Measure** (per lecture, objective): run `<lecture>/scripts/run_all.py` → `<lecture>/results/*.json`.
-2. **Record evidence** (per lecture): fill `<lecture>/evidence.json` (schema: [`scoring/EVIDENCE_TEMPLATE.json`](scoring/EVIDENCE_TEMPLATE.json)) — copy the measured numbers into the quantitative slots (noting the source file) and answer each structural checklist item true/false **with a citation to the diff**. This file, plus the measured results, is the *only* per-lecture input.
-3. **Score** (shared, mechanical): `python scoring/score.py <lecture>` applies `rubric.py` and writes `<lecture>/results/scorecard.json`, printing the derivation of every score. No score is ever written by hand; to change one you change a measured metric, a checklist answer, or the standard itself.
+2. **Record evidence** (per lecture): fill `<lecture>/evidence.json` (schema: [`scoring/EVIDENCE_TEMPLATE.json`](../scripts/scoring/EVIDENCE_TEMPLATE.json)) — copy the measured numbers into the quantitative slots (noting the source file) and answer each structural checklist item true/false **with a citation to the diff**. This file, plus the measured results, is the *only* per-lecture input.
+3. **Score** (shared, mechanical): `python scripts/scoring/score.py references/examples/<lecture>` applies `rubric.py` and writes `<lecture>/results/scorecard.json`, printing the derivation of every score. No score is ever written by hand; to change one you change a measured metric, a checklist answer, or the standard itself.
 
 **Quantitative dimensions (1, 2, 3, 6)** map a measured number to 1–5 via the threshold tables in the sections below (calibrated against two measured end points: the aiyagari Bellman pattern at 25× faster as-used, and the full `ge_arrow` lecture at 45× slower).
 
@@ -171,7 +171,7 @@ measured over the lecture's *actual* sequence of solver calls, at its *actual* p
 | 2 | **< 0.8×** | measurably slower as used; stated goal not met, but correct & fixable |
 | 1 | < 0.8× **and** worse (wrong/unstable, or no fix path) | slower with no redemption |
 
-> **HIGH (5) — MEASURED.** `aiyagari.md` is JAX on both branches (no NumPy baseline in-repo), so we benchmarked *its computational pattern* — the vectorised Bellman of `aiyagari.md:288-300` solved by value-function iteration on a `200×7` grid, then re-solved 20× as an equilibrium loop would. This is a **shared calibration of the efficiency threshold, not a per-lecture script** (`scoring/calibration/bellman_bench.py`, results in `scoring/calibration/bellman_bench.json`):
+> **HIGH (5) — MEASURED.** `aiyagari.md` is JAX on both branches (no NumPy baseline in-repo), so we benchmarked *its computational pattern* — the vectorised Bellman of `aiyagari.md:288-300` solved by value-function iteration on a `200×7` grid, then re-solved 20× as an equilibrium loop would. This is a **shared calibration of the efficiency threshold, not a per-lecture script** (`../scripts/calibration/bellman_bench.py`, results in `../scripts/calibration/bellman_bench.json`):
 >
 > | | NumPy | JAX | speedup |
 > |---|--:|--:|--:|
@@ -284,14 +284,14 @@ measured over the lecture's *actual* sequence of solver calls, at its *actual* p
 
 ```bash
 conda activate quantecon                      # jax 0.4.x, numpy 2.x, quantecon
-python <lecture>/scripts/run_all.py           # measure → <lecture>/results/*.json,
+python references/examples/<lecture>/scripts/run_all.py   # measure → <lecture>/results/*.json,
                                               # then apply the shared rubric
-python scoring/score.py <lecture>             # (re)compute the scorecard alone
+python scripts/scoring/score.py references/examples/<lecture>   # (re)compute the scorecard alone
 ```
 
-`run_all.py` runs the measurement scripts (e.g. `check_equivalence.py`, `static_metrics.py`, `benchmark.py`, `as_used_total.py`, and lecture-specific ones) and finishes by invoking `scoring/score.py`, which reads `<lecture>/evidence.json` and writes `<lecture>/results/scorecard.json`.
+`run_all.py` runs the measurement scripts (e.g. `check_equivalence.py`, `static_metrics.py`, `benchmark.py`, `as_used_total.py`, and lecture-specific ones) and finishes by invoking `scripts/scoring/score.py`, which reads `<lecture>/evidence.json` and writes `<lecture>/results/scorecard.json`.
 
-**To evaluate a *different* lecture** see the "Evaluate a new lecture" recipe in [`README.md`](README.md): scaffold `<lecture>/`, drop in `model_old.py` / `model_new.py`, adapt the measurement scripts, fill `evidence.json`, and run the two commands above. The framework, weights, thresholds, and checklists are lecture-independent; only the inputs change.
+**To evaluate a *different* lecture** see the "Evaluate a new lecture" recipe in [`README.md`](../scripts/README.md): scaffold `<lecture>/`, drop in `model_old.py` / `model_new.py`, adapt the measurement scripts, fill `evidence.json`, and run the two commands above. The framework, weights, thresholds, and checklists are lecture-independent; only the inputs change.
 
 ## 4. Limitations / honesty notes
 

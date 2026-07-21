@@ -14,8 +14,8 @@ import os
 import numpy as np
 import jax.numpy as jnp
 
-import ge_arrow.scripts.model_old as old
-import ge_arrow.scripts.model_new as new
+import model_old as old
+import model_new as new
 
 RESULTS = os.path.join(os.path.dirname(__file__), "..", "results")
 os.makedirs(RESULTS, exist_ok=True)

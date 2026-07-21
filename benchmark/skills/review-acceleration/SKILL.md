@@ -5,25 +5,30 @@ description: Review whether an accelerated implementation (JAX, Numba) of QuantE
 
 # review-acceleration
 
-> **Status: under construction.** This skill is being built collaboratively with @xuanguang-li from the evaluation system he published on [QuantEcon/lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717). The supporting scripts referenced below are being collected into this plugin's `scripts/` directory. Tracking: [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (workstream B).
+> **Status: evaluation system landed; skill wiring in progress.** The system was developed and validated by @xuanguang-li on [QuantEcon/lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717) and [#654](https://github.com/QuantEcon/lecture-python.myst/pull/654) and now lives in this plugin: the rubric in [`references/EVALUATION_FRAMEWORK.md`](../../references/EVALUATION_FRAMEWORK.md), the deterministic scoring engine in `scripts/scoring/`, and two complete worked evaluations in `references/examples/`. Remaining work is this skill's operational procedure: [QuantEcon/skills#4](https://github.com/QuantEcon/skills/issues/4). Tracking: [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (workstream B).
 
 ## Guiding principle
 
 QuantEcon lectures are teaching materials first and programs second. A rewrite that is faster or more modern but harder for a learner to read, or that silently changes published numbers, is not an improvement. "Uses JAX" is never a goal in itself — the accelerated implementation must earn its place on each lecture.
 
-## Procedure (v0 outline)
+## Procedure
 
-Given a baseline implementation (usually `main`) and a candidate (usually a PR branch) for one lecture:
+Given a baseline implementation (usually `main`) and a candidate (usually a PR branch) for one lecture, follow the three-step contract in [`scripts/README.md`](../../scripts/README.md) — **scores are never typed by hand**:
 
-1. **Equivalence check** (`scripts/check_equivalence.py`, pending): run both implementations over every example in the lecture; diff all published objects under the default dtype AND with `jax_enable_x64` enabled; report `max|Δ|` for each regime.
-2. **Static metrics** (`scripts/static_metrics.py`, pending): prerequisite-concept count, docstring coverage, code lines, number of definitions, closure-nesting depth — for both implementations.
-3. **As-used benchmark** (`scripts/as_used_total.py`, pending): replay the lecture's *actual* solver call sequence, at its *actual* problem sizes, in a fresh interpreter so JIT trace/compile time counts. Compute `as_used_speedup = baseline total wall time / candidate total wall time`. Record warm timings alongside (never alone), a crossover-n scaling curve, and a recompile audit (one recompile per distinct static-argument value or shape).
-4. **Score seven dimensions** (1–5 against the rubric anchors) and combine with weights: correctness & numerical fidelity 0.20, readability & pedagogical clarity 0.25, computational efficiency as-used 0.15, logic & design 0.15, coding style & idiom 0.10, API ergonomics 0.10, maintainability 0.05. Readability deliberately outranks efficiency.
-5. **Report** with per-dimension evidence and the weighted total: ≥ 4.0 merge; 3.0–3.9 merge after addressing fixable regressions; 2.5–2.9 revisit before merging; < 2.5 do not merge as-is. Include a concrete fix list mapping each recommendation to the dimension it lifts.
+1. **Scaffold** — create `references/examples/<lecture>/` from an existing example: extract `model_old.py` (baseline) and `model_new.py` (candidate) verbatim from the lecture's code cells, and adapt the measurement templates (`check_equivalence.py`, `static_metrics.py`, `benchmark.py`, `as_used_total.py`, plus lecture-specific ones) to the lecture's actual examples and call sequence. Adapting templates per lecture is this skill's job — there is deliberately no rigid harness.
+2. **Measure** — `run_all.py`: equivalence under the default dtype AND `jax_enable_x64` (report `max|Δ|` per regime); static metrics (prerequisite concepts, docstring coverage); the **as-used benchmark** — replay the lecture's *actual* solver call sequence at its *actual* sizes in a fresh interpreter so trace/compile time counts (`as_used_speedup = baseline total / candidate total`), with warm timings alongside (never alone), a crossover-n scaling curve, and a recompile audit. A provenance stamp (`results/env.json`) records the environment.
+3. **Record evidence** — fill `evidence.json` from the results: measured numbers into the quantitative slots with sources; each structural checklist item answered true/false **with a citation to the diff**. This file is the only place judgement is recorded.
+4. **Score** — `python scripts/scoring/score.py references/examples/<lecture>` computes all seven dimensions and the weighted total deterministically (weights: correctness 0.20, readability 0.25, efficiency-as-used 0.15, logic & design 0.15, style & idiom 0.10, API ergonomics 0.10, maintainability 0.05 — readability deliberately outranks efficiency). Verdict bands: ≥ 4.0 merge; 3.0–3.9 merge after addressing fixable regressions; 2.5–2.9 revisit; < 2.5 do not merge as-is.
+5. **Report** — write `<lecture>_REPORT.md` from the scorecard + evidence, following the worked examples' format: TL;DR with the weighted score and verdict, the dimension table with drivers, evidence per dimension, and a must-fix list mapping each recommendation to the dimension it lifts.
 
-The full rubric with numeric scoring anchors and worked HIGH/LOW examples lives in the [#717 thread](https://github.com/QuantEcon/lecture-python.myst/pull/717) and will move into this plugin's `references/` and the QuantEcon manual ([QuantEcon.manual#104](https://github.com/QuantEcon/QuantEcon.manual/issues/104)).
+Never present warm-only speedups as the headline — the ge_arrow case measured 1.4–4.8× faster warm and ~45× slower as-used.
 
-## Calibration cases
+## Calibration baseline (regression anchors)
 
-- **HIGH:** the `aiyagari.md` Bellman pattern — large fixed-shape arrays, many re-solves; measured ~25× faster as-used under JAX.
-- **LOW:** the `ge_arrow.md` conversion (lecture-python.myst#717) — 2×2/3×3 economies, fresh static args per call; measured ~45× slower as-used despite warm speedups.
+The two worked evaluations in `references/examples/` are the validation baseline — re-running their pipelines must reproduce these verdicts:
+
+- **`ge_arrow`** ([#717](https://github.com/QuantEcon/lecture-python.myst/pull/717)): **2.85/5 — mixed/wash.** Tiny 2×2/3×3 economies, fresh static args per call → ~45× slower as-used despite warm wins.
+- **`markov_asset`** ([#654](https://github.com/QuantEcon/lecture-python.myst/pull/654)): **2.25/5 — net regression.** Build-breaking `NameError` (stray `err.throw()`), float32 drift near a critical stability margin.
+- **HIGH anchor:** the aiyagari Bellman pattern (`scripts/calibration/bellman_bench.py`) — large fixed-shape arrays, many re-solves; ~25× faster as-used → the "score 5" calibration.
+
+The rubric will also be distilled into the QuantEcon manual as the companion to the JAX style page ([QuantEcon.manual#104](https://github.com/QuantEcon/QuantEcon.manual/issues/104)).

@@ -1,6 +1,6 @@
 # Evaluation Report — `markov_asset.md`: NumPy (`main`) → JAX (`update_markov_asset`)
 
-Applies the system in [`../EVALUATION_FRAMEWORK.md`](../EVALUATION_FRAMEWORK.md) to the NumPy→JAX conversion of `markov_asset.md`. All numbers are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3, quantecon) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
+Applies the system in [`../EVALUATION_FRAMEWORK.md`](../../EVALUATION_FRAMEWORK.md) to the NumPy→JAX conversion of `markov_asset.md`. All numbers are reproduced by `scripts/run_all.py` (CPU, jax 0.4.35, numpy 2.1.3, quantecon) into `results/`. Every dimension score is **computed from [`evidence.json`](evidence.json) by the shared rubric** (`../../../scripts/scoring/rubric.py`) — see `results/scorecard.json` for the derivation.
 
 ## TL;DR — weighted score **2.25 / 5** → *net regression as shipped: do not merge until fixed*
 
