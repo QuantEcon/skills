@@ -74,13 +74,14 @@ def main():
     old = analyze(os.path.join(HERE, "model_old.py"), "old")
     new = analyze(os.path.join(HERE, "model_new.py"), "new")
     # calls to obtain one priced asset (e.g. call option) + handle result
+    # (key name matches EVIDENCE_TEMPLATE.json / the ge_arrow template)
     #   OLD: build model, call function -> 2
     #   NEW: build model, call *_jit -> (err,val), err.throw() -> 3
-    old["statements_for_one_asset"] = 2
-    new["statements_for_one_asset"] = 3
+    old["statements_for_one_result"] = 2
+    new["statements_for_one_result"] = 3
     out = {"old": old, "new": new}
     keys = ["code_lines", "n_defs", "docstring_coverage", "max_nesting_depth",
-            "explicit_loops", "n_prerequisite_concepts", "statements_for_one_asset"]
+            "explicit_loops", "n_prerequisite_concepts", "statements_for_one_result"]
     print(f"{'metric':30s} {'OLD':>10s} {'NEW':>10s}")
     print("-" * 52)
     for k in keys:
