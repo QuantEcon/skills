@@ -14,6 +14,10 @@ Notes on fidelity
   is recorded as an evaluation finding (see EVALUATION_FRAMEWORK.md, "Logic").
 * The method name `value_functionss` (double 's') is preserved verbatim, because
   it is part of what we are evaluating (a typo in the public API).
+* Cosmetic-only: arithmetic spacing was normalised in a few places
+  (`T+1` → `T + 1`, `t-1` → `t - 1`). Found by diffing this file against a
+  fresh extraction from the lecture at base 8cfba4c (validation run
+  2026-07-22); semantics identical, disclosed per the v2 verbatim rule.
 """
 
 import numpy as np

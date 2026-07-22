@@ -1,6 +1,11 @@
 {
   "lecture": "ge_arrow",
   "branch": "update_ge_arrow",
+  "source_pr": "QuantEcon/lecture-python.myst#717",
+  "refs": {
+    "base": "8cfba4c90ebc08d3e51718ee65246ac249305ce0",
+    "head": "8c2d0d798d6ad7fb669351858f0e0d8e07659f6b"
+  },
   "_how": "Quantitative values are copied from results/*.json (source noted). Structural criteria are yes/no facts about the diff, each with a citation. Scores are computed by scoring/rubric.py — run: python scripts/scoring/score.py references/examples/<name> (from the plugin root).",
 
   "quantitative": {
