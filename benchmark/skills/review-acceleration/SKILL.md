@@ -52,7 +52,7 @@ Decision rule from the weights: efficiency (0.15) gains at most +0.30 weighted; 
 
 ## Calibration baseline (regression anchors)
 
-The two worked evaluations in `references/examples/` are the validation baseline — re-running their pipelines must reproduce these verdicts:
+The two worked evaluations in `references/examples/` are the validation baseline — re-running their pipelines must reproduce these verdicts. Confirmed end-to-end 2026-07-22: a fresh-checkout workspace run of ge_arrow (#717, base `8cfba4c`) on a different machine and jax **0.10.1** (reference: 0.4.35) reproduced 2.85 / no-conversion / fragile with the same deciding flips — every measured quantity moved only within its band. Evidence files record `source_pr` + base/head SHAs:
 
 - **`ge_arrow`** ([#717](https://github.com/QuantEcon/lecture-python.myst/pull/717)): **2.85/5 — no-conversion** (candidate band mixed/wash; sensitivity: fragile). Tiny 2×2/3×3 economies, fresh static args per call → ~45× slower as-used despite warm wins, on a 0.035 s baseline.
 - **`markov_asset`** ([#654](https://github.com/QuantEcon/lecture-python.myst/pull/654)): **2.25/5 — no-conversion + gated net regression** (sensitivity: robust). A stray `err.throw()` that crashes in any clean namespace and, in notebook order, silently disables the checkify stability validation (a masked failure — see the REPORT erratum); float32 drift near a critical stability margin.

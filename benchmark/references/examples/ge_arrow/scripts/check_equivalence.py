@@ -6,12 +6,15 @@ For every example economy that appears in the lecture we build both models and
 compare the equilibrium objects (Q, R, A, V, α, ψ, J). This answers the most
 basic evaluation question: *does the rewrite still compute the same economics?*
 
-Output: results/equivalence.json  and a human-readable summary on stdout.
+Output: results/equivalence.json (default dtype) or results/equivalence_x64.json
+(when run with JAX_ENABLE_X64=1), plus a human-readable summary on stdout — one
+file per precision regime, so the x64 run never clobbers the as-shipped run.
 """
 
 import json
 import os
 import numpy as np
+import jax
 import jax.numpy as jnp
 
 import model_old as old
@@ -110,8 +113,11 @@ def main():
                      if v["max_abs_err"] == v["max_abs_err"]), default=float("nan"))
         print(f"[{flag}] {name:22s}  max|Δ| = {worst:.2e}")
 
-    report["_summary"] = {"all_equivalent": all_ok, "atol": ATOL, "rtol": RTOL}
-    with open(os.path.join(RESULTS, "equivalence.json"), "w") as f:
+    x64 = bool(jax.config.jax_enable_x64)
+    report["_summary"] = {"all_equivalent": all_ok, "atol": ATOL, "rtol": RTOL,
+                          "jax_enable_x64": x64}
+    fname = "equivalence_x64.json" if x64 else "equivalence.json"
+    with open(os.path.join(RESULTS, fname), "w") as f:
         json.dump(report, f, indent=2)
     print("\nALL EQUIVALENT:", all_ok)
 
