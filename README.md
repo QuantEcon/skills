@@ -17,6 +17,7 @@ The `qe` plugin is the author-facing surface: one memorable prefix for the skill
 
 | Guide | For |
 |---|---|
+| [AGENTS.md](AGENTS.md) | AI agents and contributors: canonical repo instructions — the single-source-of-truth principle, doc map, working conventions |
 | [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
 | [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning, PR flow |
 | [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
