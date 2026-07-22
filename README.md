@@ -18,7 +18,8 @@ The `qe` plugin is the author-facing surface: one memorable prefix for the skill
 | Guide | For |
 |---|---|
 | [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
-| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, versioning, PR flow |
+| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning, PR flow |
+| [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
 | [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
 
 ## Installation

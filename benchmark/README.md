@@ -64,7 +64,7 @@ python references/examples/<lecture>/scripts/run_all.py      # measure + provena
 python scripts/scoring/score.py references/examples/<lecture>
 ```
 
-Sanity anchors: re-running either worked example must reproduce **2.85** / **2.25** (both now carrying the v2 **no-conversion** verdict; ge_arrow stamps *fragile*, markov_asset *robust*).
+Sanity anchors: re-running either worked example must reproduce **2.85** / **2.25** (both now carrying the v2 **no-conversion** verdict; ge_arrow stamps *fragile*, markov_asset *robust*). A step-by-step walkthrough of the whole procedure — with the ge_arrow reproduction as a checkable example — is [docs/tutorial-run-an-evaluation.md](https://github.com/QuantEcon/skills/blob/main/docs/tutorial-run-an-evaluation.md).
 
 ## Map
 
