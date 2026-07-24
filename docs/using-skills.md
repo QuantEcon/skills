@@ -41,5 +41,6 @@ Three ways, all equivalent:
 
 - **Update**: `/plugin` → marketplace → update, or reinstall; repos with the settings.json opt-in track the marketplace automatically.
 - **Skill not in the menu?** Check the plugin is installed and enabled (`/plugin`), and that you trusted the repo. In settings-managed repos, `enabledPlugins` must list it.
+- **`Unknown command: /benchmark:review-acceleration`?** The plugin-prefixed slash form needs a recent Claude Code (v2.1.216+; check with `claude --version`). On older versions the skill still registers under the bare `/review-acceleration`, and **natural-language invocation works on any version** — just describe the task ("is this JAX conversion worth merging?"). If it resolves under none of these, the install didn't complete — re-run `/plugin install benchmark@quantecon`.
 - **A skill reports "not yet operational"** — it's scaffolding; its issue link says what's pending.
 - **Version pinning**: plugin versions live in the marketplace catalogue; CI validates that every manifest is consistent, so a broken install is a bug — please open an issue.
