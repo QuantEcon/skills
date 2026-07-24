@@ -81,6 +81,45 @@ def check_skill(skill_dir, plugin_name):
         print(f"  !!  /{plugin_name}:{skill_dir.name} — see problems below")
 
 
+def resolve_source(entry, name):
+    """Locate a plugin's directory from its `source`, and reject sources that
+    would break install.
+
+    A plugin co-located with this marketplace must use a relative-path source
+    (`"./qe"`) so install uses the already-present marketplace copy. A remote
+    source pointing back at this repo forces an install-time re-clone — the SSH
+    failure reported in QuantEcon/skills#10 — so we flag it here rather than let
+    it reach users. Returns the resolved directory Path, or None if the source
+    is malformed.
+    """
+    source = entry.get("source")
+    if source is None:
+        error(f"marketplace.json: plugin `{name}` missing `source`")
+        return None
+    if isinstance(source, str):
+        if not source.startswith("./"):
+            error(
+                f"marketplace.json: plugin `{name}` source `{source}` must start "
+                f"with `./` (a path relative to the marketplace root)"
+            )
+            return None
+        return ROOT / source[2:]
+    if isinstance(source, dict):
+        target = str(source.get("repo") or source.get("url") or "")
+        if "QuantEcon/skills" in target:
+            error(
+                f"marketplace.json: plugin `{name}` uses a remote source pointing "
+                f"back at this repo, which forces an install-time re-clone (SSH "
+                f"failure in #10). Use a relative path: \"source\": \"./{name}\"."
+            )
+        return ROOT / source.get("path", name)
+    error(
+        f"marketplace.json: plugin `{name}` source must be a relative path string "
+        f"or an object, got {type(source).__name__}"
+    )
+    return None
+
+
 def check_plugin(entry):
     if not isinstance(entry, dict):
         error(f"marketplace.json: plugin entry must be an object, got {type(entry).__name__}")
@@ -89,10 +128,13 @@ def check_plugin(entry):
     if not name:
         error("marketplace.json: plugin entry missing `name`")
         return
-    path = entry.get("source", {}).get("path", name)
-    plugin_dir = ROOT / path
+
+    plugin_dir = resolve_source(entry, name)
+    if plugin_dir is None:
+        return
     if not plugin_dir.is_dir():
-        error(f"marketplace.json: plugin `{name}` points at missing directory `{path}`")
+        rel = plugin_dir.relative_to(ROOT) if ROOT in plugin_dir.parents else plugin_dir
+        error(f"marketplace.json: plugin `{name}` points at missing directory `{rel}`")
         return
 
     manifest = load_json(plugin_dir / ".claude-plugin" / "plugin.json")
@@ -128,6 +170,12 @@ def main():
     if marketplace is None:
         print("\n".join(errors), file=sys.stderr)
         return 1
+
+    # `owner` is a required top-level object in the marketplace schema; a manifest
+    # missing it is rejected by `/plugin marketplace add` (QuantEcon/skills#10).
+    owner = marketplace.get("owner")
+    if not isinstance(owner, dict) or not owner.get("name"):
+        error("marketplace.json: missing required `owner` object with a `name` field")
 
     plugins = marketplace.get("plugins", [])
     if not isinstance(plugins, list):
