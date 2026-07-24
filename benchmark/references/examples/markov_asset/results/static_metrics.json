@@ -1,0 +1,45 @@
+{
+  "old": {
+    "code_lines": 74,
+    "n_defs": 7,
+    "docstring_coverage": 0.86,
+    "max_nesting_depth": 2,
+    "explicit_loops": 2,
+    "n_prerequisite_concepts": 8,
+    "prerequisite_concepts": [
+      "Python class / OOP",
+      "__init__ constructor",
+      "instance state (self.)",
+      "NumPy arrays",
+      "matrix @ / solve",
+      "np.linalg eigvals/solve",
+      "Python while/for loops",
+      "raise/except for errors"
+    ],
+    "statements_for_one_result": 2
+  },
+  "new": {
+    "code_lines": 101,
+    "n_defs": 12,
+    "docstring_coverage": 0.75,
+    "max_nesting_depth": 1,
+    "explicit_loops": 0,
+    "n_prerequisite_concepts": 13,
+    "prerequisite_concepts": [
+      "NamedTuple (2 of them)",
+      "typing annotations",
+      "factory functions",
+      "jnp vs np",
+      "jax.jit & tracing",
+      "float32 default / x64 flag",
+      "jax.experimental.checkify",
+      "checkify.check contract",
+      "checkified call returns (err, val) tuple",
+      "err.throw()",
+      "jax.lax.while_loop (cond/body/carry)",
+      "jax.lax.fori_loop",
+      "functional array update .at[].set()"
+    ],
+    "statements_for_one_result": 3
+  }
+}

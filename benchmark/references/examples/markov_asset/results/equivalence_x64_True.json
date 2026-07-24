@@ -1,0 +1,65 @@
+{
+  "tree_price_default_sweep": {
+    "\u03b3=1.2": {
+      "match": true,
+      "max_abs_err": 3.552713678800501e-15
+    },
+    "\u03b3=1.4": {
+      "match": true,
+      "max_abs_err": 2.1316282072803006e-14
+    },
+    "\u03b3=1.6": {
+      "match": true,
+      "max_abs_err": 1.4210854715202004e-14
+    },
+    "\u03b3=1.8": {
+      "match": true,
+      "max_abs_err": 2.1316282072803006e-14
+    },
+    "\u03b3=2.0": {
+      "match": true,
+      "max_abs_err": 3.552713678800501e-15
+    }
+  },
+  "consol_price_beta0.9": {
+    "match": true,
+    "max_abs_err": 1.4210854715202004e-14
+  },
+  "call_option_beta0.9": {
+    "shipped": {
+      "runs": false,
+      "error": "NameError: name 'err' is not defined"
+    },
+    "patched_vs_numpy": {
+      "match": true,
+      "max_abs_err": 1.4210854715202004e-14
+    }
+  },
+  "exercise_model": {
+    "tree_price": {
+      "match": true,
+      "max_abs_err": 1.7763568394002505e-14
+    },
+    "consol_price": {
+      "match": true,
+      "max_abs_err": 9.777068044058979e-12
+    },
+    "finite_call_k5": {
+      "match": true,
+      "max_abs_err": 9.777068044058979e-12
+    },
+    "finite_call_k25": {
+      "match": true,
+      "max_abs_err": 9.777068044058979e-12
+    },
+    "call_option_patched": {
+      "match": true,
+      "max_abs_err": 9.777068044058979e-12
+    }
+  },
+  "_meta": {
+    "jax_enable_x64": true,
+    "atol": 1e-05,
+    "rtol": 0.0001
+  }
+}

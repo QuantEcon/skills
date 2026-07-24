@@ -1,0 +1,124 @@
+{
+  "lecture": "ge_arrow",
+  "branch": "update_ge_arrow",
+  "weighted_total_out_of_5": 2.85,
+  "verdict": "no-conversion — the baseline as-used total 0.035 s is under the 1 s materiality floor and the candidate is slower as-used (0.022×): this lecture should not be converted, whatever the candidate's polish. Candidate quality for the record: 2.85/5, mixed/wash",
+  "band_verdict": "mixed / wash — improvements offset by real regressions; revisit before merging",
+  "verdict_gate": null,
+  "no_conversion": true,
+  "sensitivity": {
+    "stamp": "fragile",
+    "perturbations_tested": 29,
+    "deciding_flips": [
+      {
+        "input": "quantitative.correctness.builds",
+        "from": true,
+        "to": false,
+        "total": 2.3,
+        "outcome": "no-conversion; net regression — do not merge as-is"
+      },
+      {
+        "input": "quantitative.correctness.matches_under_x64",
+        "from": true,
+        "to": false,
+        "total": 2.3,
+        "outcome": "no-conversion; net regression — do not merge as-is"
+      },
+      {
+        "input": "structural.logic_design.criteria.good_algorithmic_choices",
+        "from": false,
+        "to": true,
+        "total": 3.0,
+        "outcome": "no-conversion; net positive with fixable regressions — merge after addressing them"
+      }
+    ]
+  },
+  "dimensions": [
+    {
+      "dim": "correctness",
+      "title": "Correctness & numerical fidelity",
+      "kind": "quantitative",
+      "weight": 0.2,
+      "score": 3,
+      "weighted": 0.6,
+      "reason": "logic matches under x64 but ships float32 → drift 1.7e-04 (1e-8,1e-3] → 3",
+      "citations": "results/equivalence.json: float32 run worst=1.7e-4 (ex2); x64 run worst=1.4e-14"
+    },
+    {
+      "dim": "readability",
+      "title": "Readability & pedagogical clarity",
+      "kind": "quantitative",
+      "weight": 0.25,
+      "score": 2,
+      "weighted": 0.5,
+      "reason": "Δprereq=+6→2, docstrings=0.55→2; worse-of-two → 2",
+      "citations": "results/static_metrics.json: prereq 7->13 (+6), docstring_coverage 0.90->0.55"
+    },
+    {
+      "dim": "efficiency",
+      "title": "Computational efficiency (as used)",
+      "kind": "quantitative",
+      "weight": 0.15,
+      "score": 2,
+      "weighted": 0.3,
+      "reason": "as-used speedup 0.022× < 0.8 (slower) but correct/fixable → 2 [single-run measurement; the v2 standard is a median of ≥3 fresh-process runs — see as_used_runs in the evidence template]",
+      "citations": "as_used_total.py: numpy 0.035s / jax 1.56s = 0.022x; fixable by not making s0_idx/T static. Single-pass v1 measurement (v2 standard: median of >=3 fresh-process runs)"
+    },
+    {
+      "dim": "logic_design",
+      "title": "Logic & design",
+      "kind": "structural",
+      "weight": 0.15,
+      "score": 4,
+      "weighted": 0.6,
+      "reason": "3/4 criteria met [pure_no_order_dependence, no_global_state, fixes_prior_bugs] → 1+3=4",
+      "citations": {
+        "pure_no_order_dependence": "single pure compute_rc_model; original needed 3 ordered stateful methods",
+        "no_global_state": "removes original's reliance on module-level P,n,K",
+        "good_algorithmic_choices": "FALSE: pricing kernel is an O(n^2) nested fori_loop scatter (ge_arrow.md:938-959) instead of a vectorised outer product",
+        "fixes_prior_bugs": "fixes value_functionss typo and de-duplicates R=sum(Q)"
+      }
+    },
+    {
+      "dim": "style_idiom",
+      "title": "Coding style & idiom",
+      "kind": "structural",
+      "weight": 0.1,
+      "score": 2,
+      "weighted": 0.2,
+      "reason": "1/4 criteria met [clean_call_sites_and_naming] → 1+1=2",
+      "citations": {
+        "vectorised_where_natural": "FALSE: kernel written as scalar loops",
+        "correct_control_flow_primitive": "FALSE: fori_loop used where broadcasting fits",
+        "no_anti_idiomatic_constructs": "FALSE: jax.lax.cond(T==0,...) traces both branches though T is static",
+        "clean_call_sites_and_naming": "TRUE: NamedTuple result, m.Q/m.alpha/... read cleanly"
+      }
+    },
+    {
+      "dim": "ergonomics",
+      "title": "API ergonomics & reusability",
+      "kind": "quantitative",
+      "weight": 0.1,
+      "score": 5,
+      "weighted": 0.5,
+      "reason": "1 statement(s) to obtain one result → 5",
+      "citations": "results/static_metrics.json: compute_rc_model(...) returns one immutable NamedTuple"
+    },
+    {
+      "dim": "maintainability",
+      "title": "Maintainability & robustness",
+      "kind": "structural",
+      "weight": 0.05,
+      "score": 3,
+      "weighted": 0.15,
+      "reason": "2/4 criteria met [pure_unit_testable, no_footgun_for_editors] → 1+2=3",
+      "citations": {
+        "pure_unit_testable": "pure function, trivially testable",
+        "dtype_precision_safe": "FALSE: float32 default, no jax_enable_x64",
+        "no_footgun_for_editors": "TRUE: simple call/return, no error-protocol",
+        "robust_no_brittle_conditions": "FALSE: jit+static_argnames+3-deep closures hinder step-debugging"
+      }
+    }
+  ],
+  "_note": "Scores are computed by scripts/scoring/rubric.py from ge_arrow/evidence.json; do not edit by hand."
+}

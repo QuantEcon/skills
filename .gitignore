@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Generated per-run by each example's run_all.py — machine-local, not part of
+# the committed regression baseline (the committed provenance is evidence.json)
+benchmark/references/examples/*/results/as_used.json
+benchmark/references/examples/*/results/cold_start.json
+benchmark/references/examples/*/results/env.json

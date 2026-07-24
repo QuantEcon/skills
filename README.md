@@ -9,9 +9,19 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 | Plugin | Skills | Status | Tracking |
 |---|---|---|---|
 | `qe` | `/qe:check-style` (+ `check-writing`, `check-math`, `check-code`, `check-figures`, `check-jax`, `check-refs`) | scaffolding | [CATALOG.md](CATALOG.md), work plan in `project-style-guide` |
-| `benchmark` | `/benchmark:review-acceleration` | under construction | [meta#335](https://github.com/QuantEcon/meta/issues/335) |
+| `benchmark` | `/benchmark:review-acceleration` | evaluation system landed; skill wiring in progress | [skills#4](https://github.com/QuantEcon/skills/issues/4), [meta#335](https://github.com/QuantEcon/meta/issues/335) |
 
 The `qe` plugin is the author-facing surface: one memorable prefix for the skills authors use while editing lectures and preparing PRs. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`); the per-category sub-skills run the same shared rules individually. `benchmark` is a specialist family for maintainers evaluating accelerated implementations. See [CATALOG.md](CATALOG.md) for the plan and [FUTURE-IDEAS.md](FUTURE-IDEAS.md) for parked candidates.
+
+## Documentation
+
+| Guide | For |
+|---|---|
+| [AGENTS.md](AGENTS.md) | AI agents and contributors: canonical repo instructions — the single-source-of-truth principle, doc map, working conventions |
+| [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
+| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning, PR flow |
+| [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
+| [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
 
 ## Installation
 
