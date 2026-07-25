@@ -121,12 +121,26 @@ def _median(xs):
 
 # =====================  QUANTITATIVE SCORERS  ===============================
 def score_correctness(builds, max_delta_shipped, matches_under_x64):
-    """max|Δ| vs the original *as the lecture ships* (float32 unless x64 set)."""
+    """max|Δ| vs the original *as the lecture ships* (float32 unless x64 set).
+
+    `matches_under_x64` is the equivalence check re-run with JAX_ENABLE_X64=1:
+    TRUE means the logic agrees once precision is removed from the question
+    (residuals at x64 noise, ~1e-14 to ~1e-11, are recorded TRUE — see
+    references/examples/README.md). So FALSE asserts that the economics
+    genuinely differ, and it caps on its own. It deliberately does *not*
+    require the shipped drift to be large as well: a candidate whose logic
+    diverges but whose float32 output happens to agree closely is the exact
+    "wrong economics masked by low precision" case §1 names, and conditioning
+    the cap on a visible shipped delta made the guard weakest precisely where
+    the defect is hardest to see.
+    """
     if not builds:
         return 1, "does not build as shipped → 1 (overrides Δ bands)"
     d = max_delta_shipped
-    if not matches_under_x64 and d > 1e-8:
-        return 1, f"logic diverges under x64 (max|Δ|={d:.1e}) → wrong economics → 1"
+    if not matches_under_x64:
+        return 1, (f"logic diverges under x64 → wrong economics → 1 "
+                   f"(shipped max|Δ|={d:.1e}; agreement as shipped does not "
+                   f"redeem divergent logic)")
     if d <= 1e-10:
         return 5, f"max|Δ|={d:.1e} ≤ 1e-10 → 5"
     if d <= 1e-8:
@@ -349,8 +363,9 @@ def score_all(evidence):
     derived = None
     if not corr.get("builds", True):
         derived = "does not build as shipped"
-    elif (not corr.get("matches_under_x64", True)
-          and corr.get("max_delta_shipped", 0.0) > 1e-8):
+    elif not corr.get("matches_under_x64", True):
+        # Unconditional, matching score_correctness: divergent logic is a
+        # correctness bug whether or not the shipped float32 output hides it.
         derived = "logic diverges under x64"
     if derived and "logic_design" in merged \
             and not merged["logic_design"].get("introduces_correctness_bug"):
