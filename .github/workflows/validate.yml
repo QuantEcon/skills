@@ -15,3 +15,19 @@ jobs:
           python-version: "3.12"
       - name: Validate manifests and skill frontmatter
         run: python scripts/validate.py
+
+      # The benchmark plugin's claim is that no score is ever written by hand:
+      # every scorecard is a deterministic function of its evidence.json. That
+      # only stays true if it is checked. A non-empty diff here means either a
+      # scorecard was hand-edited, or a rubric change moved a published verdict
+      # without the baselines being regenerated — in the second case the fix is
+      # to re-run these two commands and commit, so the verdict move lands in
+      # the diff where a reviewer sees it. Stdlib only; no install step needed.
+      - name: Scorecards reproduce from evidence
+        working-directory: benchmark
+        run: |
+          python scripts/scoring/score.py references/examples/ge_arrow
+          python scripts/scoring/score.py references/examples/markov_asset
+          python scripts/scoring/score.py references/fixtures/rubric_v2
+          git diff --exit-code -- 'references/examples/*/results/scorecard.json' \
+                                  'references/fixtures/*/results/scorecard.json'
