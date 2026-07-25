@@ -1,7 +1,7 @@
 {
   "lecture": "<name>",
   "branch": "<update_branch>",
-  "_how": "Fill quantitative values from this lecture's results/*.json (note the source). Answer each structural criterion true/false with a citation to the diff. Then run: python scripts/scoring/score.py references/examples/<name> (from the plugin root). Never type a score — rubric.py computes it.",
+  "_how": "Fill quantitative values from this lecture's results/*.json (note the source). Answer each structural criterion true/false with a citation to the diff. Then run: python scripts/scoring/score.py references/examples/<name> (from the plugin root). Never type a score — rubric.py computes it. score.py validates this file before scoring and refuses to run until the placeholders below are replaced: baseline_as_used_seconds is null here on purpose (it gates the no-conversion verdict, so it must be measured, not defaulted), and every criterion you set true needs an entry in that dimension's citations.",
 
   "quantitative": {
     "correctness": {
@@ -20,7 +20,7 @@
       "as_used_runs": [],
       "baseline_as_used_seconds": null,
       "correct_or_fixable": true,
-      "source": "as_used_total.py via run_all.py — baseline_total / candidate_total over the lecture's real call sequence, median of >=3 fresh-process runs per side. as_used_runs: the per-run speedups (drives the contested-band annotation). baseline_as_used_seconds: median baseline total (drives the no-conversion floor)"
+      "source": "as_used_total.py via run_all.py — baseline_total / candidate_total over the lecture's real call sequence, median of >=3 fresh-process runs per side. as_used_runs: the per-run speedups (drives the contested-band annotation); leave it [] only to state deliberately that this evaluation scored a single run — omitting the key is rejected. baseline_as_used_seconds: median baseline total (drives the no-conversion floor); must be filled, null is rejected"
     },
     "ergonomics": {
       "statements_for_one_result": 1,

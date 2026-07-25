@@ -7,9 +7,11 @@
   "verdict_gate": null,
   "no_conversion": true,
   "sensitivity": {
-    "stamp": "robust",
+    "stamp": "robust-at-floor",
+    "stamp_note": "no perturbation changed the outcome, but the verdict is already in the bottom band, where no single input can make it worse — only upward moves were available to this search, so the stability is partly structural, not purely evidential",
     "perturbations_tested": 29,
-    "deciding_flips": []
+    "deciding_flips": [],
+    "perturbations_skipped": []
   },
   "dimensions": [
     {

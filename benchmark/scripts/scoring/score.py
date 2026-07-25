@@ -57,21 +57,44 @@ def sensitivity(evidence, base):
     """One-flip sensitivity stamp: is the *final* verdict (band after gating,
     plus the no-conversion flag) stable under single-input perturbations?"""
     outcome0 = (base["no_conversion"], base["band_verdict"])
-    tested, flips = 0, []
+    tested, skipped, flips = 0, [], []
     for label, old, new, mutated in _perturbations(evidence):
-        tested += 1
         try:
             r = rubric.score_all(mutated)
-        except Exception:
-            continue  # a perturbation that breaks scoring cannot be deciding
+        except Exception as exc:
+            # A perturbation that breaks scoring cannot be deciding — but it is
+            # also not evidence of stability, so it is reported rather than
+            # silently counted in the denominator the stamp is judged on.
+            skipped.append({"input": label, "error": f"{type(exc).__name__}: {exc}"})
+            continue
+        tested += 1
         if (r["no_conversion"], r["band_verdict"]) != outcome0:
             flips.append({
                 "input": label, "from": old, "to": new, "total": r["total"],
                 "outcome": (("no-conversion; " if r["no_conversion"] else "")
                             + r["band_verdict"]),
             })
-    return {"stamp": "fragile" if flips else "robust",
-            "perturbations_tested": tested, "deciding_flips": flips}
+    # A verdict already in the bottom band cannot be perturbed downward: no
+    # single input can make "net regression" worse. So "no deciding flips"
+    # there is partly the band's geometry rather than the evidence's strength —
+    # only upward moves were ever available to the search. Reporting that as
+    # plain "robust" asserts a support the run did not demonstrate, and
+    # SKILL.md carries the stamp verbatim into the report.
+    floored = base.get("band_index") == 0
+    if flips:
+        stamp, note = "fragile", ""
+    elif floored:
+        stamp = "robust-at-floor"
+        note = ("no perturbation changed the outcome, but the verdict is "
+                "already in the bottom band, where no single input can make it "
+                "worse — only upward moves were available to this search, so "
+                "the stability is partly structural, not purely evidential")
+    else:
+        stamp, note = "robust", ""
+
+    return {"stamp": stamp, "stamp_note": note,
+            "perturbations_tested": tested, "deciding_flips": flips,
+            "perturbations_skipped": skipped}
 
 
 def main(lecture_dir):
@@ -82,6 +105,14 @@ def main(lecture_dir):
         sys.exit(f"no evidence file at {ev_path}")
     with open(ev_path, encoding="utf-8") as f:
         evidence = json.load(f)
+
+    # The authoring contracts are enforced, not just documented: every scored
+    # input the verdict gates read must be present, and a structural criterion
+    # that moves a score up must say what it rests on.
+    problems = rubric.validate_evidence(evidence)
+    if problems:
+        sys.exit(f"evidence.json is not valid ({len(problems)} problem(s)):"
+                 "\n  - " + "\n  - ".join(problems))
 
     result = rubric.score_all(evidence)
     sens = sensitivity(evidence, result)
@@ -98,8 +129,13 @@ def main(lecture_dir):
     print("-" * 78)
     print(f"{'WEIGHTED TOTAL':34s} {'':11s} {'':>4s} {'':>3s} {result['total']:>5.2f}")
     print(f"VERDICT: {result['verdict']}")
+    skipped = sens["perturbations_skipped"]
     print(f"SENSITIVITY: {sens['stamp']} "
-          f"({sens['perturbations_tested']} single-input perturbations)")
+          f"({sens['perturbations_tested']} single-input perturbations scored"
+          + (f"; {len(skipped)} skipped — see scorecard.json" if skipped else "")
+          + ")")
+    if sens["stamp_note"]:
+        print(f"     └ {sens['stamp_note']}")
     for fl in sens["deciding_flips"]:
         print(f"     └ {fl['input']}: {fl['from']} → {fl['to']} "
               f"⇒ total {fl['total']:.2f}, {fl['outcome']}")

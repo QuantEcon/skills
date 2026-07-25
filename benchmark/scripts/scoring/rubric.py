@@ -105,9 +105,11 @@ def verdict(total):
 # baseline replay finishes in under this many seconds has no as-used time worth
 # buying, so a candidate that is *also slower* as-used earns the
 # "no-conversion" verdict regardless of its polish. Reconciles review mode
-# with triage — both blind-validated don't-convert baselines (ge_arrow
-# 0.028 s, markov_asset 0.087 s) sit far below this floor, the convert case
-# (aiyagari pattern, 54.3 s) far above it.
+# with triage — both blind-validated don't-convert baselines sit two orders of
+# magnitude below this floor, the convert case (aiyagari pattern, ~54 s) two
+# above it, so the exact placement inside that gap is not load-bearing. The
+# measured baselines are not restated here: each lecture's own
+# `baseline_as_used_seconds` in evidence.json is the value this gate reads.
 NO_CONVERSION_BASELINE_S = 1.0
 
 
@@ -187,6 +189,110 @@ def score_structural(dim, criteria, overrides=None):
     reason = (f"{len(met)}/4 criteria met [{', '.join(met) or 'none'}] "
               f"→ 1+{len(met)}={1+len(met)}{note}")
     return score, reason
+
+
+# Scored inputs that `score_all` reads with `.get()` and therefore tolerates
+# silently: omit one and a verdict weakens with nothing said. Every other
+# scored input is read with `ev[...]`, which already fails loudly. Listing them
+# here makes the tolerance a validation rule rather than an accident of which
+# accessor a line happened to use — the same failure class the derived
+# correctness-bug cap was written to close.
+_REQUIRED_INPUTS = {
+    "efficiency": [
+        ("baseline_as_used_seconds",
+         "drives the no-conversion materiality floor; without it that verdict "
+         "silently never fires"),
+        ("as_used_runs",
+         "the K-repeat as-used measurement; set it to [] to declare a "
+         "deliberate single-run score, but do not omit it"),
+    ],
+}
+
+
+def check_required_inputs(evidence):
+    """Return a list of scored inputs that are missing or null.
+
+    `as_used_runs: []` is accepted — an empty list is a visible statement that
+    this evaluation scored a single run, which is a choice a reader can weigh.
+    An absent key is not: it is indistinguishable from forgetting.
+    """
+    problems = []
+    merged = {}
+    merged.update(evidence.get("quantitative", {}))
+    merged.update(evidence.get("structural", {}))
+
+    for dim in WEIGHTS:
+        if not isinstance(merged.get(dim), dict):
+            problems.append(f"{dim}: dimension missing from evidence")
+
+    for dim, fields in _REQUIRED_INPUTS.items():
+        ev = merged.get(dim)
+        if not isinstance(ev, dict):
+            continue
+        for key, why in fields:
+            if key not in ev:
+                problems.append(f"{dim}.{key}: missing — {why}")
+            elif ev[key] is None:
+                problems.append(f"{dim}.{key}: null — {why}")
+
+    eff = merged.get("efficiency")
+    if isinstance(eff, dict) and not eff.get("as_used_runs") \
+            and eff.get("as_used_speedup") is None:
+        problems.append("efficiency.as_used_speedup: missing — required when "
+                        "as_used_runs is empty (the single-run fallback)")
+    return problems
+
+
+def validate_evidence(evidence):
+    """Every authoring contract this rubric depends on, checked in one pass.
+
+    Returns a list of problems (empty when the evidence is well-formed). Run
+    once on authored evidence before scoring — never inside a scorer, so
+    `score_all` stays a pure function of evidence.
+    """
+    return check_required_inputs(evidence) + check_citations(evidence)
+
+
+def check_citations(evidence):
+    """Enforce the cited-judgement contract on *authored* evidence.
+
+    A structural score is `1 + #criteria met`, so a criterion marked TRUE is
+    the thing that moves the score up: it must say what it is claiming on the
+    basis of. Returns a list of violations (empty when the contract holds).
+
+    Deliberately a separate pass over the authored evidence rather than a check
+    inside `score_structural`, for two reasons: `score_all` stays a pure
+    function of evidence — which is what makes the perturbation search in
+    score.py meaningful — and the sensitivity loop, which scores hundreds of
+    mutated copies, does not re-run authoring checks and silently drop the
+    perturbations that trip them.
+
+    Criteria marked FALSE are not required to carry one: a false "not met" can
+    only understate a score, which is the conservative direction. A manual
+    `introduces_correctness_bug` override *is* required to cite, because it
+    moves a verdict and is the hand-set flag the derived cap exists to distrust
+    (a cap derived inside `score_all` never appears in authored evidence).
+    """
+    problems = []
+    structural = evidence.get("structural", {})
+    for dim, keys in CHECKLISTS.items():
+        ev = structural.get(dim)
+        if not isinstance(ev, dict):
+            continue
+        criteria = ev.get("criteria", {})
+        citations = ev.get("citations", {})
+        if not isinstance(citations, dict):
+            problems.append(f"{dim}: `citations` must be an object mapping "
+                            f"criterion → evidence")
+            continue
+        for key in keys:
+            if criteria.get(key) and not str(citations.get(key, "")).strip():
+                problems.append(f"{dim}.{key}: marked met with no citation")
+        if ev.get("introduces_correctness_bug") and \
+                not str(citations.get("introduces_correctness_bug", "")).strip():
+            problems.append(f"{dim}.introduces_correctness_bug: override set "
+                            f"with no citation")
+    return problems
 
 
 # =====================  DRIVER  ============================================
@@ -302,4 +408,8 @@ def score_all(evidence):
              + (f" [{gate}]" if gate else ""))
     return {"rows": rows, "total": total, "verdict": v,
             "band_verdict": BANDS[final_idx], "verdict_gate": gate,
-            "no_conversion": no_conv}
+            "no_conversion": no_conv,
+            # Final band position (post-gate). At 0 the verdict is at the floor
+            # and no single input can make it worse — which the sensitivity
+            # stamp has to account for before calling the outcome stable.
+            "band_index": final_idx}

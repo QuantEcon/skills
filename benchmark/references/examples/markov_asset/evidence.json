@@ -22,6 +22,7 @@
     },
     "efficiency": {
       "as_used_speedup": 0.17,
+      "as_used_runs": [],
       "baseline_as_used_seconds": 0.18,
       "correct_or_fixable": true,
       "source": "as_used_total.py (bug-patched to run): numpy 0.18s / jax 1.05s = 0.17x; scaling.json: JAX only wins at n>=250, lecture uses n=5,25. Single-pass v1 measurement (v2 standard: median of >=3 fresh-process runs)"
