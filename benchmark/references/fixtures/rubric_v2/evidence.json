@@ -1,0 +1,77 @@
+{
+  "lecture": "rubric_v2",
+  "branch": "n/a — synthetic fixture, not a real lecture",
+  "_how": "SYNTHETIC. Every number here is chosen to drive a rubric v2 code path, not measured from a lecture. See README.md in this directory for what each value pins and why. Do not cite these values as evidence about any lecture, and do not 'correct' them toward realism — the specific values are the test.",
+
+  "quantitative": {
+    "correctness": {
+      "builds": true,
+      "max_delta_shipped": 1e-12,
+      "matches_under_x64": false,
+      "source": "SYNTHETIC: divergent logic whose shipped float32 output happens to agree to 1e-12 — the 'wrong economics masked by low precision' case. Pins that matches_under_x64 caps on its own, without needing a visible shipped delta."
+    },
+    "readability": {
+      "delta_prereq_concepts": 0,
+      "docstring_cov_new": 0.95,
+      "source": "SYNTHETIC: deliberately excellent, so the verdict is driven by the correctness gate rather than by a low total."
+    },
+    "efficiency": {
+      "as_used_speedup": 1.28,
+      "as_used_runs": [1.15, 1.28, 1.42],
+      "baseline_as_used_seconds": 12.0,
+      "correct_or_fixable": true,
+      "source": "SYNTHETIC: three fresh-process runs straddling the 1.3x band edge (1.15->3, 1.28->3, 1.42->4), so the median scores 3 and the CONTESTED BAND annotation fires. baseline 12.0s is deliberately above the 1s materiality floor so no-conversion does NOT mask the band/gate paths under test."
+    },
+    "ergonomics": {
+      "statements_for_one_result": 1,
+      "fragile_protocol": false,
+      "source": "SYNTHETIC: deliberately excellent, as for readability."
+    }
+  },
+
+  "structural": {
+    "logic_design": {
+      "criteria": {
+        "pure_no_order_dependence": true,
+        "no_global_state": true,
+        "good_algorithmic_choices": true,
+        "fixes_prior_bugs": true
+      },
+      "introduces_correctness_bug": false,
+      "citations": {
+        "pure_no_order_dependence": "SYNTHETIC: all four criteria met and the bug flag left FALSE on purpose — the derived cap must pull this dimension from 5 down to 3 using the correctness evidence alone.",
+        "no_global_state": "SYNTHETIC: see above.",
+        "good_algorithmic_choices": "SYNTHETIC: see above.",
+        "fixes_prior_bugs": "SYNTHETIC: see above."
+      }
+    },
+    "style_idiom": {
+      "criteria": {
+        "vectorised_where_natural": true,
+        "correct_control_flow_primitive": true,
+        "no_anti_idiomatic_constructs": true,
+        "clean_call_sites_and_naming": true
+      },
+      "citations": {
+        "vectorised_where_natural": "SYNTHETIC: deliberately perfect polish, so the verdict cannot be explained by weak structural scores.",
+        "correct_control_flow_primitive": "SYNTHETIC: see above.",
+        "no_anti_idiomatic_constructs": "SYNTHETIC: see above.",
+        "clean_call_sites_and_naming": "SYNTHETIC: see above."
+      }
+    },
+    "maintainability": {
+      "criteria": {
+        "pure_unit_testable": true,
+        "dtype_precision_safe": true,
+        "no_footgun_for_editors": true,
+        "robust_no_brittle_conditions": true
+      },
+      "citations": {
+        "pure_unit_testable": "SYNTHETIC: deliberately perfect polish, as for style_idiom.",
+        "dtype_precision_safe": "SYNTHETIC: see above.",
+        "no_footgun_for_editors": "SYNTHETIC: see above.",
+        "robust_no_brittle_conditions": "SYNTHETIC: see above."
+      }
+    }
+  }
+}
