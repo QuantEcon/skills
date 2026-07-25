@@ -45,11 +45,13 @@ Then the decision rule that falls out of the rubric weights: efficiency (0.15) c
 
 **Validation (2026-07-21):** triage applied blind (baseline-side data only) to the three known cases reproduces every known verdict:
 
-| Case | Baseline total | Pattern | Triage says | Full evaluation said |
+| Case | Baseline total (triage-time) | Pattern | Triage says | Full evaluation says |
 |---|---|---|---|---|
-| ge_arrow | 0.028 s | n=2/3, fresh static args | don't convert | 2.85 wash; 45× slower as-used |
-| markov_asset | 0.087 s | n=5/25, LAPACK-bound | don't convert | 2.25 net regression |
+| ge_arrow | 0.028 s | n=2/3, fresh static args | don't convert | no-conversion; candidate quality 2.85/5, mixed/wash |
+| markov_asset | 0.087 s | n=5/25, LAPACK-bound | don't convert | no-conversion; candidate quality 2.25/5, net regression |
 | aiyagari pattern | 54.3 s | 200×7 fixed, 20 re-solves | convert | 23.8× as-used win |
+
+The baseline totals above are the **triage-time** measurements taken on 2026-07-21, kept as a record of what that blind run saw. They are not the numbers the no-conversion gate reads: that value is each lecture's `baseline_as_used_seconds` in its own `evidence.json`, re-measured at evaluation time. Both are the same quantity, so expect them to differ by run rather than to agree.
 
 Scope limit, confirmed by the same test: triage predicts whether the prize is worth pursuing — it cannot predict conversion-quality outcomes (markov_asset's masked `err.throw()` defect was a property of the PR, invisible to triage). Note also that this validation is **in-sample** — the three cases are the ones the thresholds were calibrated on; out-of-sample validation accumulates as fresh lectures are triaged.
 
@@ -64,7 +66,7 @@ python references/examples/<lecture>/scripts/run_all.py      # measure + provena
 python scripts/scoring/score.py references/examples/<lecture>
 ```
 
-Sanity anchors: re-running either worked example must reproduce **2.85** / **2.25** (both now carrying the v2 **no-conversion** verdict; ge_arrow stamps *fragile*, markov_asset *robust*). A step-by-step walkthrough of the whole procedure — with the ge_arrow reproduction as a checkable example — is [docs/tutorial-run-an-evaluation.md](https://github.com/QuantEcon/skills/blob/main/docs/tutorial-run-an-evaluation.md).
+Sanity anchors: re-running either worked example must reproduce **2.85** / **2.25** (both now carrying the v2 **no-conversion** verdict; ge_arrow stamps *fragile*, markov_asset *robust-at-floor* — its verdict is already bottom-band, so nothing could move it downward). The synthetic fixtures in [`references/fixtures/`](references/fixtures/) reproduce alongside them; CI regenerates all three and fails on any diff. A step-by-step walkthrough of the whole procedure — with the ge_arrow reproduction as a checkable example — is [docs/tutorial-run-an-evaluation.md](https://github.com/QuantEcon/skills/blob/main/docs/tutorial-run-an-evaluation.md).
 
 ## Map
 
