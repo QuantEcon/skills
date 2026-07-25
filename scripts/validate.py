@@ -132,9 +132,11 @@ def check_plugin(entry):
     plugin_dir = resolve_source(entry, name)
     if plugin_dir is None:
         return
+    # Repo-relative label for diagnostics; every error below reports the plugin
+    # location, so it is computed once here rather than per-branch.
+    path = plugin_dir.relative_to(ROOT) if ROOT in plugin_dir.parents else plugin_dir
     if not plugin_dir.is_dir():
-        rel = plugin_dir.relative_to(ROOT) if ROOT in plugin_dir.parents else plugin_dir
-        error(f"marketplace.json: plugin `{name}` points at missing directory `{rel}`")
+        error(f"marketplace.json: plugin `{name}` points at missing directory `{path}`")
         return
 
     manifest = load_json(plugin_dir / ".claude-plugin" / "plugin.json")
