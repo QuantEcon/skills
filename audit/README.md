@@ -54,4 +54,8 @@ Headless runs work the same way:
 
 ## A note on naming
 
-The repo's convention is verb-first skill names, and these are nouns. The verb is the plugin: `/audit:issues` and `/audit:translations` read as commands at the point of use, which is where the convention's purpose lies, and `audit-issues` inside an `audit` plugin would stutter at every invocation. The subject-noun names also keep the four skills parallel, which matters more here than in `qe` — the family is defined by a shared method applied to different subjects.
+Skill names here are objects, because the plugin is the verb: `/audit:issues`, `/audit:translations`. The repo's rule is that an invocation reads as a command, and where the plugin name is a namespace or a domain (`qe`, `benchmark`) the verb has nowhere to live but the skill — hence `check-style`, `review-acceleration`. Where the plugin name is itself the verb, the skill is the object; `/audit:audit-issues` would stutter at every invocation.
+
+Keep the form consistent across the family. The failure mode is not the noun names but mixing them — an `/audit:compare-translations` beside `/audit:issues` breaks the parallelism that makes the four memorable.
+
+`audit` was chosen over `review` for the same reason the family excludes single-item work: `review` is already the per-item word here (`/benchmark:review-acceleration`, and PR review generally), so a `/review:prs` that sweeps every open PR would sit one keystroke from reviewing one. `audit` also matches QEP-3's `audit-` repo prefix and already connotes observe-and-report, which is the boundary this plugin enforces.
