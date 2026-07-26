@@ -201,6 +201,10 @@ def main():
         "--limit", str(args.limit), "--json", ",".join(ISSUE_FIELDS),
     ])
     require_thread_objects(issues, "issue", "comments", gh_version)
+    # Order by number rather than inheriting `gh`'s default sort, which is
+    # undocumented and free to change. The snapshot is the audit's evidence, so
+    # two runs over an unchanged tracker should differ only where it did.
+    issues.sort(key=lambda i: i["number"])
     print(f"  {len(issues)} issues")
 
     print(f"fetching pull requests from {args.repo} …")
@@ -210,6 +214,7 @@ def main():
     ])
     require_thread_objects(prs, "pull request", "comments", gh_version)
     require_thread_objects(prs, "pull request", "reviews", gh_version)
+    prs.sort(key=lambda p: p["number"])
     print(f"  {len(prs)} pull requests")
 
     coverage = reconcile(issues, prs, args.limit)
