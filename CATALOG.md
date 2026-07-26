@@ -33,3 +33,15 @@ This delivers the planned `qestyle-linter` + `qestyle` pair as Claude Code skill
 ## 2. `/benchmark:review-acceleration` — finish
 
 Blocked on the eight evaluation scripts (@xuanguang-li agreed 2026-07-07 to package and send). **Unblocked now:** the full rubric (7 weighted dimensions, verdict bands, HIGH/LOW calibration cases) is specified in the lecture-python.myst#717 thread and can move into `references/rubric.md` ahead of the scripts. Validation cases: lecture-python.myst#717 and #654.
+
+## 3. `audit` — the bulk-audit family
+
+Portfolio-wide, read-only sweeps of one repository, each delivering a report bundle. Four skills: **`/audit:issues`** (every issue, open and closed — landed), then **`/audit:prs`** (every open PR: does it solve a real issue, is it mergeable, what should the review say), **`/audit:tech-debt`** (a codebase's debt plus a filing-ready issue catalog), **`/audit:translations`** (parity between a source series and its translation).
+
+**Evidence:** unlike the style family, the case here is not per-repo frequency — a tracker audit is a once-or-twice-a-year event for any one repo. It is *breadth*: the org has ~245 non-archived repos, and three of the four procedures have already been executed by hand — the issue triage this plugin ships, the `quantecon-py` technical-debt report, and the zh-cn translation work. Each hand run cost hours of re-derivation because the method lived in a pasted prompt.
+
+**Structure (proposed 2026-07-26):** four sibling skills, no umbrella — unlike `qe`'s categories, these are distinct procedures over distinct inputs, so the `qe` pattern to reuse is plugin-level sharing, not the umbrella. The method is authored once in `audit/references/` (`doctrine.md`, `quantecon-context.md`, `deliverables.md`) and each `SKILL.md` carries only its own subject matter. Membership test: bulk **and** read-only **and** report-bundle output — which keeps single-item review (`/benchmark:review-acceleration`) outside the family and stops the plugin becoming a general runbook dump.
+
+**Why read-only is structural, not cautious:** the boundary mirrors the org's own automation split, where the family line *is* the permission line. It makes the family safe to point at any repo and safe to run headlessly, and it keeps a report honest — an audit that half-applied its findings would describe a repo that no longer exists. Acting on a bundle (filing the catalog, posting drafted comments, `qe gh labels sync`) is a separate human-invoked step.
+
+**Long-run machinery:** every skill runs the same five phases (snapshot → verify → relate → write → self-audit), each checkpointed to disk so a lost session resumes rather than restarts, and all reading one frozen snapshot so the report describes a single point in time. Phase 1 is deterministic (`audit/scripts/fetch_tracker.py`), which also makes the coverage self-audit mechanical rather than narrated.
