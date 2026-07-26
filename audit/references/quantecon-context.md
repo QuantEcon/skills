@@ -51,3 +51,5 @@ If none exists, say so and tier against the repo's milestones instead. Proposing
 ## Access
 
 Authenticated `gh` is assumed. Several QuantEcon repos are private (`project-*`, `style-guide`, `cli`, `jupyteach`, `atlas.quantecon.org`), so the unauthenticated fallbacks that work for public repos — the anonymous REST endpoint, `codeload` tarballs, `raw.githubusercontent.com`, scraping embedded JSON out of issue HTML — return nothing there. The snapshot script fails on missing auth for exactly this reason. On a public repo without `gh`, the fallbacks are viable but share a 60 requests/hour per-IP budget: fetch metadata first, comment threads second, and expect to lose the tail.
+
+A thread reconstructed that way carries a caveat the `gh` path does not: it can begin mid-conversation, so attribute comments cautiously and treat "the thread says" claims as `[stated]` at best. An audit that took this route must say so in its coverage statement — the snapshot script's guarantees do not apply to it.

@@ -60,7 +60,7 @@ Sibling-repo checks belong here too: for QuantEcon, "resolved in a sibling" and 
 
 ## Phase 3 — relate
 
-Parse every `#N` in all issue **and** PR bodies, both directions. Two parsing caveats: a range reference (`#169–#176`) matches its endpoints only, so check milestone membership before declaring the middle numbers orphaned; and a comment thread reconstructed from HTML can start mid-thread, so attribute cautiously.
+Parse every `#N` in all issue **and** PR bodies, both directions. One parsing caveat: a range reference (`#169–#176`) matches its endpoints only, so check milestone membership before declaring the middle numbers orphaned.
 
 Produce the cluster map, the table of missing links worth adding (duplicate pairs, origin↔carrier, complementary checks, family orphans), true orphans and over-dense hubs, and the external cross-link registry.
 
