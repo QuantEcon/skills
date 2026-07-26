@@ -64,10 +64,18 @@ def run_gh(args):
 
 
 def preflight(repo):
-    """Fail in the first minute, not the third hour."""
+    """Fail in the first minute, not the third hour.
+
+    Returns True. It only ever returns — every failure path exits — so the
+    caller can record authentication in the snapshot's provenance without
+    re-deriving it from `gh`'s human-readable output, which is free to change
+    wording or be localized.
+    """
     if shutil.which("gh") is None:
-        die("the GitHub CLI (`gh`) is not on PATH — install it, or fall back to "
-            "the unauthenticated route documented in the skill")
+        die("the GitHub CLI (`gh`) is not on PATH. Install it, or take the "
+            "unauthenticated route in references/quantecon-context.md — which "
+            "this script does not implement, works only for public repos, and "
+            "shares a 60 requests/hour per-IP budget.")
     auth = subprocess.run(
         ["gh", "auth", "status"], capture_output=True, text=True,
     )
@@ -79,7 +87,29 @@ def preflight(repo):
         die(f"expected OWNER/REPO, got {repo!r}")
     # Confirms the repo exists and is visible to these credentials.
     run_gh(["repo", "view", repo, "--json", "name"])
-    return auth.stdout + auth.stderr
+    return True
+
+
+def require_thread_objects(items, kind, field, gh_version):
+    """Assert that `gh` returned full thread objects, not counts.
+
+    Everything downstream — the thread-complete claim the doctrine rests on,
+    and the comment tallies in coverage.json — assumes these fields hold lists
+    of objects. A `gh` build that returned a count would crash later with a
+    bare TypeError, and a differently-shaped payload would silently under-report
+    threads, leaving the snapshot claiming coverage it does not have. Checking
+    here turns both into one explicit failure at the point of capture.
+    """
+    for item in items:
+        value = item.get(field)
+        if not value:  # absent, null, or legitimately empty
+            continue
+        if not isinstance(value, list) or not isinstance(value[0], dict):
+            die(f"{gh_version} returned {kind} `{field}` as "
+                f"{type(value).__name__}, not a list of objects (first seen on "
+                f"#{item.get('number')}). This snapshot would not be "
+                f"thread-complete — check the field against your gh version "
+                f"before trusting any audit built on it.")
 
 
 def reconcile(issues, prs, limit):
@@ -141,15 +171,20 @@ def main():
     )
     args = parser.parse_args()
 
-    auth_note = preflight(args.repo)
+    authenticated = preflight(args.repo)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+
+    gh_version = subprocess.run(
+        ["gh", "--version"], capture_output=True, text=True,
+    ).stdout.splitlines()[0]
 
     print(f"fetching issues from {args.repo} …")
     issues = run_gh([
         "issue", "list", "-R", args.repo, "--state", "all",
         "--limit", str(args.limit), "--json", ",".join(ISSUE_FIELDS),
     ])
+    require_thread_objects(issues, "issue", "comments", gh_version)
     print(f"  {len(issues)} issues")
 
     print(f"fetching pull requests from {args.repo} …")
@@ -157,18 +192,16 @@ def main():
         "pr", "list", "-R", args.repo, "--state", "all",
         "--limit", str(args.limit), "--json", ",".join(PR_FIELDS),
     ])
+    require_thread_objects(prs, "pull request", "comments", gh_version)
+    require_thread_objects(prs, "pull request", "reviews", gh_version)
     print(f"  {len(prs)} pull requests")
-
-    gh_version = subprocess.run(
-        ["gh", "--version"], capture_output=True, text=True,
-    ).stdout.splitlines()[0]
 
     coverage = reconcile(issues, prs, args.limit)
     meta = {
         "repo": args.repo,
         "snapshot_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "gh_version": gh_version,
-        "authenticated": "Logged in" in auth_note,
+        "authenticated": authenticated,
         "limit": args.limit,
         "issue_fields": ISSUE_FIELDS,
         "pr_fields": PR_FIELDS,

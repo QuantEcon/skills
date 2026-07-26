@@ -21,7 +21,7 @@ Three properties the audit depends on:
 
 - **Thread-complete on the closed side.** Comment threads come down inside the list call, so reading closed threads — doctrine rule 3, and the gap the first execution of this runbook found — costs nothing extra.
 - **Frozen in time.** Every later phase reads this snapshot, so the report describes one instant and "events after the snapshot" is a stated property rather than a silent gap.
-- **Honest about its own limits.** `unaccounted_numbers` lists gaps in the number sequence for the audit to explain, and `truncation_risk` flags a stream that returned exactly at `--limit`, which is indistinguishable from truncation. Neither is swallowed.
+- **Honest about its own limits.** `unaccounted_numbers` lists gaps in the number sequence for the audit to explain, and `truncation_risk` flags a stream that returned exactly at `--limit`, which is indistinguishable from truncation. Neither is swallowed. The thread fields are shape-asserted at capture, so a `gh` build returning comment *counts* rather than objects fails immediately and by name, instead of crashing three phases later or quietly under-reporting the threads the doctrine claims were read.
 
 Preflight refuses to start without `gh` and authentication, because the anonymous API is 60 requests/hour per IP and returns nothing at all for the org's private repos.
 
