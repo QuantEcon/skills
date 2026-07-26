@@ -80,7 +80,7 @@ Priority labels only for genuine outliers, a handful either way, and only if the
 
 ## Phase 5 — self-audit
 
-Run [doctrine §5](../../references/doctrine.md#5-coverage-self-audit) against `coverage.json`: reconcile the counts, explain every unaccounted number, confirm threads were read on both the open and closed sides, and state the residue — PR review threads, GraphQL-only data, anything after the snapshot timestamp. Fold any change back into the documents rather than appending a correction.
+Run [doctrine §5](../../references/doctrine.md#5-coverage-self-audit) against `coverage.json`: reconcile the counts, explain every unaccounted number, confirm threads were read on both the open and closed sides, and state the residue — inline review comments, GraphQL-only data, anything after the snapshot timestamp. Fold any change back into the documents rather than appending a correction.
 
 ## What this skill does not do
 

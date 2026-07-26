@@ -49,12 +49,12 @@ Phase 1 is deterministic and belongs in [`../scripts/`](../scripts/), not in mod
 
 ## 5. Coverage self-audit
 
-Before delivering, reconcile — and **close any gap found rather than merely disclosing it**. `coverage.json` from phase 1 does the mechanical half: items captured against the number sequence `1..max`, threads captured against items with comments, and a truncation flag when a stream returns exactly at the fetch limit.
+Before delivering, reconcile — and **close any gap found rather than merely disclosing it**. `coverage.json` from phase 1 does the mechanical half: items captured against the number sequence `1..max`, discussion captured per field it can live in — comments for issues, comments *and* reviews for PRs, split open and closed on both sides — and a truncation flag when a stream returns exactly at the fetch limit.
 
 The judgement half is the skill's:
 
 - Explain every unaccounted number. Gaps are usually deleted or transferred items, or numbers burned by branches that never opened a PR — but an unexplained gap looks identical to a silent truncation.
-- State the residue explicitly: what was *not* inspected. PR review threads? Native sub-issue and Projects membership, both invisible to REST? Anything after the snapshot time?
+- State the residue explicitly: what was *not* inspected. Inline review comments, which the snapshot's review bodies do not include? Native sub-issue and Projects membership, both invisible to REST? Anything after the snapshot time?
 - If the self-audit changes a finding, fold the change back into the documents. Never append a correction section — a report whose conclusions and body disagree is worse than one that is simply late.
 
 **No silent caps.** If the audit bounded its own coverage anywhere — sampled, capped at top-N, skipped a class of item — say so in the coverage statement. Silent truncation reads as complete coverage, which is the one failure an auditor cannot recover from.
