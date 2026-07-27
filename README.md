@@ -4,6 +4,8 @@ A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-market
 
 Each plugin bundles one area of work — a skill (the instructions Claude follows) plus the deterministic scripts it drives — so the same versioned toolkit works locally for authors and RAs, and headlessly in CI.
 
+📖 **[quantecon.github.io/skills](https://quantecon.github.io/skills)** — the documentation, rendered and navigable. It is built from the files in this repository, so reading either one gets you the same content.
+
 ## Plugins
 
 | Plugin | For | Covers |

@@ -1,0 +1,47 @@
+# MyST site configuration — renders the repo's existing Markdown as a
+# navigable site at https://quantecon.github.io/skills.
+#
+# Content is never moved here. Every entry below points at the file where it
+# already lives, so the repo view and the published site render from one
+# source (AGENTS.md, "Single source of truth") and an installed plugin keeps
+# shipping its own documentation inside its own directory.
+version: 1
+
+project:
+  id: quantecon-skills
+  title: QuantEcon Skills
+  description: >-
+    QuantEcon's shared Claude Code skills and the deterministic scripts they
+    drive — style checks for authors, acceleration evaluation, and bulk
+    repository audits.
+  github: https://github.com/QuantEcon/skills
+  toc:
+    - file: README.md
+    - title: Guides
+      children:
+        - file: docs/using-skills.md
+        - file: docs/developing-skills.md
+        - file: docs/tutorial-run-an-evaluation.md
+    - title: Plugins
+      children:
+        - file: benchmark/README.md
+          title: Benchmark plugin
+          children:
+            - file: benchmark/references/EVALUATION_FRAMEWORK.md
+        - file: audit/README.md
+          title: Audit plugin
+          children:
+            - file: audit/references/doctrine.md
+            - file: audit/references/quantecon-context.md
+            - file: audit/references/deliverables.md
+    - title: Project
+      children:
+        - file: CATALOG.md
+        - file: FUTURE-IDEAS.md
+
+site:
+  template: book-theme
+  title: QuantEcon Skills
+  options:
+    logo_text: QuantEcon Skills
+    hide_outline: false

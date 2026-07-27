@@ -1,0 +1,91 @@
+name: docs
+
+# Builds the MyST site on every PR and publishes it to GitHub Pages on main.
+# A PR gets build + link check and never deploys, so a broken docs change is
+# caught before it can replace the live site.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# One deploy at a time, but never cancel a running main deploy — a cancelled
+# deployment can leave Pages serving a half-published site.
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Pinned: an unpinned docs toolchain turns an upstream release into a
+      # surprise failure on an unrelated PR.
+      - name: Install MyST
+        run: npm install -g mystmd@1.10.1
+
+      # The site is served from a subpath (quantecon.github.io/skills), so the
+      # built asset URLs have to carry it. PR builds use the root: their
+      # artifact is never deployed, so the subpath would only make local
+      # inspection of it harder.
+      - name: Build
+        run: myst build --html
+        env:
+          BASE_URL: ${{ github.event_name == 'push' && '/skills' || '' }}
+
+      # Deliberately not gated to `push`: if the upload only ran on main, its
+      # first real exercise would be the merge commit, which is the worst
+      # place to discover it is broken. PRs upload and simply never deploy.
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _build/html
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Checked against the Markdown sources rather than the built site: the
+      # theme renders as a single-page app, so its HTML holds no crawlable
+      # link graph, and the sources are what has to stay correct in both
+      # contexts anyway — the GitHub repo view and the published site.
+      #
+      # Offline only. Several links point at private QuantEcon repos, which
+      # answer 404 to an unauthenticated checker; failing CI on those would
+      # teach everyone to ignore this job.
+      - name: Check relative links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --offline
+            --no-progress
+            --exclude-path node_modules
+            --exclude-path _build
+            "**/*.md"
+          fail: true
+
+  deploy:
+    # Only main deploys, and only after both gates pass.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, links]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

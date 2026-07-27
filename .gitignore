@@ -7,3 +7,7 @@ __pycache__/
 benchmark/references/examples/*/results/as_used.json
 benchmark/references/examples/*/results/cold_start.json
 benchmark/references/examples/*/results/env.json
+
+# MyST docs site build output
+_build/
+node_modules/
