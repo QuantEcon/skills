@@ -1,0 +1,46 @@
+{
+  "old": {
+    "code_lines": 119,
+    "n_defs": 10,
+    "docstring_coverage": 0.9,
+    "max_nesting_depth": 3,
+    "explicit_loops": 6,
+    "concept_token_hits": 105,
+    "n_prerequisite_concepts": 7,
+    "prerequisite_concepts": [
+      "Python class / OOP",
+      "__init__ constructor",
+      "instance state (self.)",
+      "NumPy arrays & slicing",
+      "matrix @ / .dot",
+      "np.linalg.inv",
+      "Python for-loops"
+    ],
+    "statements_for_one_result": 4
+  },
+  "new": {
+    "code_lines": 161,
+    "n_defs": 22,
+    "docstring_coverage": 0.55,
+    "max_nesting_depth": 3,
+    "explicit_loops": 0,
+    "concept_token_hits": 65,
+    "n_prerequisite_concepts": 13,
+    "prerequisite_concepts": [
+      "Python class / OOP (NamedTuple)",
+      "immutable NamedTuple",
+      "typing annotations",
+      "functools.partial",
+      "jax.jit & tracing",
+      "static_argnames & recompilation",
+      "functional purity (no in-place)",
+      "jnp vs np",
+      "jax.lax.fori_loop (carry)",
+      "jax.lax.cond",
+      "functional array update .at[].set()",
+      "nested closures as sub-fns",
+      "float32 default / x64 flag"
+    ],
+    "statements_for_one_result": 1
+  }
+}

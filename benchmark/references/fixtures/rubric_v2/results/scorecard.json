@@ -1,0 +1,112 @@
+{
+  "lecture": "rubric_v2",
+  "branch": "n/a — synthetic fixture, not a real lecture",
+  "weighted_total_out_of_5": 3.6,
+  "verdict": "net regression — do not merge as-is [gated: correctness 1 caps the verdict at net regression; the ungated total 3.60 would band as net positive]",
+  "band_verdict": "net regression — do not merge as-is",
+  "verdict_gate": "correctness 1 caps the verdict at net regression",
+  "no_conversion": false,
+  "sensitivity": {
+    "stamp": "fragile",
+    "stamp_note": "",
+    "perturbations_tested": 29,
+    "deciding_flips": [
+      {
+        "input": "quantitative.correctness.matches_under_x64",
+        "from": false,
+        "to": true,
+        "total": 4.7,
+        "outcome": "clear improvement — merge"
+      }
+    ],
+    "perturbations_skipped": []
+  },
+  "dimensions": [
+    {
+      "dim": "correctness",
+      "title": "Correctness & numerical fidelity",
+      "kind": "quantitative",
+      "weight": 0.2,
+      "score": 1,
+      "weighted": 0.2,
+      "reason": "logic diverges under x64 → wrong economics → 1 (shipped max|Δ|=1.0e-12; agreement as shipped does not redeem divergent logic)",
+      "citations": "SYNTHETIC: divergent logic whose shipped float32 output happens to agree to 1e-12 — the 'wrong economics masked by low precision' case. Pins that matches_under_x64 caps on its own, without needing a visible shipped delta."
+    },
+    {
+      "dim": "readability",
+      "title": "Readability & pedagogical clarity",
+      "kind": "quantitative",
+      "weight": 0.25,
+      "score": 5,
+      "weighted": 1.25,
+      "reason": "Δprereq=+0→5, docstrings=0.95→5; worse-of-two → 5",
+      "citations": "SYNTHETIC: deliberately excellent, so the verdict is driven by the correctness gate rather than by a low total."
+    },
+    {
+      "dim": "efficiency",
+      "title": "Computational efficiency (as used)",
+      "kind": "quantitative",
+      "weight": 0.15,
+      "score": 3,
+      "weighted": 0.45,
+      "reason": "as-used speedup 1.28× ∈ [0.8,1.3) → 3 (wash) [median of 3 fresh-process runs, spread 1.15–1.42×; CONTESTED BAND: runs alone would score [3, 4]]",
+      "citations": "SYNTHETIC: three fresh-process runs straddling the 1.3x band edge (1.15->3, 1.28->3, 1.42->4), so the median scores 3 and the CONTESTED BAND annotation fires. baseline 12.0s is deliberately above the 1s materiality floor so no-conversion does NOT mask the band/gate paths under test."
+    },
+    {
+      "dim": "logic_design",
+      "title": "Logic & design",
+      "kind": "structural",
+      "weight": 0.15,
+      "score": 3,
+      "weighted": 0.45,
+      "reason": "4/4 criteria met [pure_no_order_dependence, no_global_state, good_algorithmic_choices, fixes_prior_bugs] → 1+4=5 (capped at 3: correctness-bug cap derived from correctness evidence: logic diverges under x64)",
+      "citations": {
+        "pure_no_order_dependence": "SYNTHETIC: all four criteria met and the bug flag left FALSE on purpose — the derived cap must pull this dimension from 5 down to 3 using the correctness evidence alone.",
+        "no_global_state": "SYNTHETIC: see above.",
+        "good_algorithmic_choices": "SYNTHETIC: see above.",
+        "fixes_prior_bugs": "SYNTHETIC: see above."
+      }
+    },
+    {
+      "dim": "style_idiom",
+      "title": "Coding style & idiom",
+      "kind": "structural",
+      "weight": 0.1,
+      "score": 5,
+      "weighted": 0.5,
+      "reason": "4/4 criteria met [vectorised_where_natural, correct_control_flow_primitive, no_anti_idiomatic_constructs, clean_call_sites_and_naming] → 1+4=5",
+      "citations": {
+        "vectorised_where_natural": "SYNTHETIC: deliberately perfect polish, so the verdict cannot be explained by weak structural scores.",
+        "correct_control_flow_primitive": "SYNTHETIC: see above.",
+        "no_anti_idiomatic_constructs": "SYNTHETIC: see above.",
+        "clean_call_sites_and_naming": "SYNTHETIC: see above."
+      }
+    },
+    {
+      "dim": "ergonomics",
+      "title": "API ergonomics & reusability",
+      "kind": "quantitative",
+      "weight": 0.1,
+      "score": 5,
+      "weighted": 0.5,
+      "reason": "1 statement(s) to obtain one result → 5",
+      "citations": "SYNTHETIC: deliberately excellent, as for readability."
+    },
+    {
+      "dim": "maintainability",
+      "title": "Maintainability & robustness",
+      "kind": "structural",
+      "weight": 0.05,
+      "score": 5,
+      "weighted": 0.25,
+      "reason": "4/4 criteria met [pure_unit_testable, dtype_precision_safe, no_footgun_for_editors, robust_no_brittle_conditions] → 1+4=5",
+      "citations": {
+        "pure_unit_testable": "SYNTHETIC: deliberately perfect polish, as for style_idiom.",
+        "dtype_precision_safe": "SYNTHETIC: see above.",
+        "no_footgun_for_editors": "SYNTHETIC: see above.",
+        "robust_no_brittle_conditions": "SYNTHETIC: see above."
+      }
+    }
+  ],
+  "_note": "Scores are computed by scripts/scoring/rubric.py from rubric_v2/evidence.json; do not edit by hand."
+}

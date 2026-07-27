@@ -1,6 +1,6 @@
 # Future skill ideas
 
-Documented so they aren't lost; deliberately **not** in the active plan. Current focus: the style skill family (see [CATALOG.md](CATALOG.md)). Each idea below is evidence-backed by the 2026-07 PR-history analysis (~630 merged PRs across lecture-python.myst, lecture-python-intro, lecture-python-advanced.myst, lecture-dp).
+Documented so they aren't lost; deliberately **not** committed to. What has actually shipped is in [CATALOG.md](CATALOG.md), and work in flight is in the per-plugin tracking issues. Each idea below is evidence-backed by the 2026-07 PR-history analysis (~630 merged PRs across lecture-python.myst, lecture-python-intro, lecture-python-advanced.myst, lecture-dp).
 
 ## Parked candidates
 
@@ -27,6 +27,10 @@ meta#338 / data-lectures#15 playbook: data PR first, byte-compare sha256 gate, r
 ### Editorial-round implementation
 
 Parse a review issue's checklist into a diff against one lecture — lecture-python-intro's dominant RA workflow (~30 PRs). Largely absorbed by the style skill's fix mode; revisit only if a gap remains after it ships.
+
+### A naming convention, once there is something to generalise from
+
+Two shapes are in use — the verb in the skill (`/qe:check-style`) and the verb in the plugin (`/audit:issues`) — and [developing-skills.md](docs/developing-skills.md) deliberately declines to rank them. Worth revisiting once enough plugins exist to show which reads better in practice, and specifically whether mixing both shapes inside one plugin actually causes trouble or only looks untidy. Writing the rule now would mean generalising from three plugins and no usage.
 
 ## How skills could serve the benchmarking programme (note for meta#335)
 

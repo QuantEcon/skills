@@ -6,13 +6,26 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 ## Plugins
 
-| Plugin | Skills | Status | Tracking |
-|---|---|---|---|
-| `qe` | `/qe:check-style` (+ `check-writing`, `check-math`, `check-code`, `check-figures`, `check-jax`, `check-refs`) | scaffolding | [CATALOG.md](CATALOG.md), work plan in `project-style-guide` |
-| `benchmark` | `/benchmark:review-acceleration` | under construction | [meta#335](https://github.com/QuantEcon/meta/issues/335) |
-| `audit` | `/audit:issues` (+ planned `prs`, `tech-debt`, `translations`) | first runbook landed | [CATALOG.md](CATALOG.md) §3 |
+| Plugin | For | Covers |
+|---|---|---|
+| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide, while editing and before opening a PR |
+| `benchmark` | Maintainers reviewing accelerated implementations | Measured, rubric-scored evaluation of a conversion |
+| `audit` | Maintainers sweeping a whole repository | Bulk, read-only audits — every issue, every PR, a codebase, a translated series — each producing a written report |
 
-The `qe` plugin is the author-facing surface: one memorable prefix for the skills authors use while editing lectures and preparing PRs. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`); the per-category sub-skills run the same shared rules individually. `benchmark` is a specialist family for maintainers evaluating accelerated implementations. `audit` is the maintainer-facing family for bulk, read-only sweeps of a whole repository — every issue, every PR, a whole codebase, a whole translated series — each delivering a report bundle rather than a chat answer. See [CATALOG.md](CATALOG.md) for the plan and [FUTURE-IDEAS.md](FUTURE-IDEAS.md) for parked candidates.
+`qe` is the author-facing surface — one memorable prefix for everyday work. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`) and the per-category sub-skills run the same shared rules individually. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
+
+**Which skills exist right now, and what state each is in, is in [CATALOG.md](CATALOG.md)** — that list is kept current with what has merged, so this page does not repeat it. Ideas nobody has committed to are in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
+
+## Documentation
+
+| Guide | For |
+|---|---|
+| [AGENTS.md](AGENTS.md) | AI agents and contributors: canonical repo instructions — the single-source-of-truth principle, doc map, working conventions |
+| [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
+| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning, PR flow |
+| [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
+| [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
+| [audit/README.md](audit/README.md) | The audit family: what belongs in it, the shared method, running one |
 
 ## Installation
 
@@ -75,7 +88,7 @@ benchmark/                        # specialist plugin
 audit/                            # maintainer-facing bulk-audit plugin
   .claude-plugin/plugin.json
   skills/issues/SKILL.md          # one skill per audit subject
-  references/                     # shared doctrine, org context, bundle contract
+  references/                     # shared doctrine, org context, reporting guidance
   scripts/                        # deterministic snapshot + coverage machinery
 ```
 

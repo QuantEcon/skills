@@ -1,35 +1,26 @@
 {
   "name": "quantecon",
+  "owner": {
+    "name": "QuantEcon"
+  },
   "description": "QuantEcon's shared Claude Code skills and tools",
   "version": "0.2.0",
   "plugins": [
     {
       "name": "qe",
-      "source": {
-        "source": "github",
-        "repo": "QuantEcon/skills",
-        "path": "qe"
-      },
+      "source": "./qe",
       "version": "0.1.0",
       "description": "QuantEcon's author-facing base skills — style checking and lecture editing support"
     },
     {
       "name": "benchmark",
-      "source": {
-        "source": "github",
-        "repo": "QuantEcon/skills",
-        "path": "benchmark"
-      },
-      "version": "0.1.0",
+      "source": "./benchmark",
+      "version": "0.3.0",
       "description": "Benchmarking and acceleration-evaluation tools for QuantEcon lecture code"
     },
     {
       "name": "audit",
-      "source": {
-        "source": "github",
-        "repo": "QuantEcon/skills",
-        "path": "audit"
-      },
+      "source": "./audit",
       "version": "0.1.0",
       "description": "Bulk, read-only audits of a QuantEcon repository — issue triage, PR review, technical debt, translation parity — each producing an evidence-cited report bundle"
     }

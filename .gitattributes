@@ -1,0 +1,9 @@
+# Normalise line endings in the repository so an editor's default on one
+# platform cannot turn the next edit of a file into a whole-file diff that
+# buries the real change. Text is stored LF in git and checked out LF.
+* text=auto eol=lf
+
+# Binary-ish assets git should never touch.
+*.png binary
+*.jpg binary
+*.pdf binary
