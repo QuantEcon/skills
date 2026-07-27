@@ -34,15 +34,18 @@ jobs:
         run: npm install -g mystmd@1.10.1
 
       # The site is served from a subpath (quantecon.github.io/skills), so the
-      # built asset URLs have to carry it. PR builds use the root, since they
-      # are only ever checked for whether they build.
+      # built asset URLs have to carry it. PR builds use the root: their
+      # artifact is never deployed, so the subpath would only make local
+      # inspection of it harder.
       - name: Build
         run: myst build --html
         env:
           BASE_URL: ${{ github.event_name == 'push' && '/skills' || '' }}
 
+      # Deliberately not gated to `push`: if the upload only ran on main, its
+      # first real exercise would be the merge commit, which is the worst
+      # place to discover it is broken. PRs upload and simply never deploy.
       - name: Upload Pages artifact
-        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _build/html

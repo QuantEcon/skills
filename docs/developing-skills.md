@@ -82,8 +82,8 @@ Confirm with `/plugin marketplace list` (the source should read `QuantEcon/skill
 These guides, the plugin guides, and the shared reference material are published to [quantecon.github.io/skills](https://quantecon.github.io/skills) by [`.github/workflows/docs.yml`](../.github/workflows/docs.yml) on every push to `main`. Preview it before you push:
 
 ```bash
-npm install -g mystmd
-myst start          # live-reloading preview
+npm install -g mystmd@1.10.1   # same version CI pins in docs.yml
+myst start                     # live-reloading preview
 ```
 
 Two things follow from how it is wired. **Pages are rendered from the files where they already live** — [`myst.yml`](../myst.yml) points at `benchmark/README.md` and `audit/references/*.md` in place, never a copy — so editing a plugin's docs updates the site, and no plugin loses documentation it needs to ship with it. And **the sources have to stay readable on GitHub**, since the repo view is the other half of the audience: prefer plain Markdown, and keep relative links relative, because CI checks that every one of them resolves.
