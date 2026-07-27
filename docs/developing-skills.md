@@ -20,7 +20,7 @@ The two live plugins show the two shapes: `qe` (umbrella skill + thin per-catego
 
 ## Conventions
 
-- **Verb-first skill names** (`check-style`, `review-acceleration`) — they read as commands.
+- **Invocations read as commands** — the whole `/plugin:skill` string, not the skill name alone. `/qe:check-style` puts the verb in the skill because `qe` names a domain; `/audit:issues` puts it in the plugin and leaves the skill as the object. Both read as imperatives, which is the only part that matters. There is no rule yet about which to prefer — three plugins is too few to know, so pick what reads best and let a convention emerge from use.
 - **Description quality matters**: the SKILL.md frontmatter `description` is what natural-language invocation matches against. State what the skill does, what it measures, and when to use it. `validate.py` rejects descriptions too short to trigger reliably.
 - **Report first, fix on request** — skills never silently edit; anything `build_risk` or output-changing (RNG streams) is presented, never auto-applied.
 - **Deterministic before LLM**: put everything mechanical in `scripts/` (checkable, testable, zero-false-positive bar); reserve the skill's judgement for what genuinely needs it. The discipline scales with what the skill outputs:

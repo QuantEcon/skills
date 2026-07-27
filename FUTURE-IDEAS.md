@@ -28,6 +28,10 @@ meta#338 / data-lectures#15 playbook: data PR first, byte-compare sha256 gate, r
 
 Parse a review issue's checklist into a diff against one lecture — lecture-python-intro's dominant RA workflow (~30 PRs). Largely absorbed by the style skill's fix mode; revisit only if a gap remains after it ships.
 
+### A naming convention, once there is something to generalise from
+
+Two shapes are in use — the verb in the skill (`/qe:check-style`) and the verb in the plugin (`/audit:issues`) — and [developing-skills.md](docs/developing-skills.md) deliberately declines to rank them. Worth revisiting once enough plugins exist to show which reads better in practice, and specifically whether mixing both shapes inside one plugin actually causes trouble or only looks untidy. Writing the rule now would mean generalising from three plugins and no usage.
+
 ## How skills could serve the benchmarking programme (note for meta#335)
 
 Benchmark *data capture* stays in the programme repos (`QuantEcon/benchmarks` — workstream A; `QuantEcon/tool-lecture-benchmark` — workstream C). Skills are natural *consumers and interfaces* of that data:
