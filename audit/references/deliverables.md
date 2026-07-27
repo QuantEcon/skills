@@ -1,6 +1,8 @@
-# The report bundle
+# Reporting
 
-Every audit in this plugin delivers the same four-document bundle. A shared shape means a reader who has read one audit can read any of them, and a later audit can diff against an earlier one mechanically (doctrine rule 7).
+What an audit hands back. The four-document bundle below is what `/audit:issues` produces; it is a worked example, not a contract every skill in this plugin has to satisfy. A skill should produce what its subject actually needs — a debt audit's output is a filing-ready catalog, a parity audit's is a divergence list, and a small audit may reasonably be a single document. Reach for the bundle where it fits, and don't manufacture a section to fill a slot.
+
+What every audit owes its reader is much smaller, and is in the last section.
 
 ## Where it goes
 
@@ -10,9 +12,11 @@ Every audit in this plugin delivers the same four-document bundle. A shared shap
 2. The paired `project-*` repo, when the audit serves a program rather than a repo (`project-translation/reports/` for a translation audit).
 3. A dedicated `audit-*` repo, per [QEP-3](https://github.com/QuantEcon/qeps/pull/7), once an audit is recurring and its findings are worth publishing.
 
-Confirm the destination before phase 4 and name it in the report. Private inputs stay in private destinations: a `project-*` repo's contents must not be summarised into a public one.
+Confirm the destination before writing, and name it in the report. Private inputs stay in private destinations: a `project-*` repo's contents must not be summarised into a public one.
 
-## The four documents
+## The `/audit:issues` bundle
+
+Four documents, which suit a whole-tracker review because it has an argument to make, a long enumeration to carry, and a graph worth drawing separately. Another audit may need two of these, or none.
 
 **`01-<subject>-report.md`** — the argument. Method and evidence base; the snapshot timestamp; portfolio statistics; the findings that change a status, each with its evidence tag; the tiering, tied to the repo's existing plan; policy alignment; and a time-boxed execution order for whoever acts on it.
 
@@ -25,13 +29,18 @@ Confirm the destination before phase 4 and name it in the report. Private inputs
 
 Close with the verification of the closed set (explicitly thread-complete), and write up anything agreed-but-never-filed as a proposed new item, in a form that could be filed as-is.
 
-**`03-<subject>-links.md`** — the graph. Clusters and their anchor items; a concrete table of missing links worth adding; true orphans and over-dense hubs; and the external cross-link registry (sibling repos, program and meta issues, evidence PRs).
+**`03-<subject>-links.md`** — the graph. Clusters and their anchor items; a concrete table of missing links worth adding; true orphans and over-dense hubs; and the external cross-link registry (sibling repos, program and meta issues, evidence PRs). This one is the most tracker-specific of the four — an audit whose subject has no interesting link structure should simply not produce it.
 
-**`README.md`** — the index. Headline numbers, what each document is for, and **the coverage statement**: exactly what was and was not inspected, per [doctrine §5](doctrine.md#5-coverage-self-audit). This is the first thing a reader should be able to check and the last thing the audit should write.
+**`README.md`** — the index. Headline numbers, what each document is for, and the coverage statement.
 
-## Rules that apply to all four
+Where a later audit does reuse this shape, keeping the names and the entry format identical is worth something: a reader who has read one bundle can read the next, and two audits of the same subject diff mechanically ([doctrine rule 7](doctrine.md#1-what-makes-a-bulk-audit-trustworthy)). That is a reason to converge where the shape fits, not a reason to force it.
 
-- **Tag every claim** with its evidence class ([doctrine §2](doctrine.md#2-evidence-classes)). An untagged status claim is a defect.
-- **Recommendations are proposals.** Write them in the imperative for whoever executes ("close, citing PR #204"), but the audit does not execute them.
-- **Suggested comment text is a draft, in a fenced block, clearly marked as unsent** — and subject to the closing-keyword hazard in [quantecon-context.md](quantecon-context.md#the-cross-repo-graph-is-the-point).
-- **Date the bundle and name the snapshot.** Two audits of the same repo must be distinguishable at a glance, and every number in a bundle refers to one point in time.
+## What any audit owes its reader
+
+Short list, and this part is not advisory — each item is what keeps a long report checkable by someone who will not re-run it.
+
+- **A coverage statement.** Exactly what was and was not inspected, per [doctrine §5](doctrine.md#5-coverage-self-audit). In a bundle it belongs in the index; in a single document it is a section. It is the first thing a reader should be able to check and the last thing the audit should write.
+- **An evidence tag on every claim** ([doctrine §2](doctrine.md#2-evidence-classes)). An untagged status claim is a defect.
+- **Recommendations marked as proposals.** Write them in the imperative for whoever executes ("close, citing PR #204"), but the audit does not execute them.
+- **Drafted comment text marked as unsent**, in a fenced block — and subject to the closing-keyword hazard in [quantecon-context.md](quantecon-context.md#the-cross-repo-graph-is-the-point).
+- **A date and a named snapshot.** Two audits of the same subject must be distinguishable at a glance, and every number in a report refers to one point in time.

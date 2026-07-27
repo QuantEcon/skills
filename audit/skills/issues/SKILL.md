@@ -7,7 +7,7 @@ description: Audit every issue in a GitHub repository, open and closed — verif
 
 Whole-tracker review of one repository. Long-running by design — a hundred-issue repo is a multi-hour run — so it works from a frozen snapshot and checkpoints every phase to disk.
 
-> **Status: first runbook of the `audit` family.** The procedure below is the QuantEcon-adapted form of a runbook that has been executed once end to end; the gap that execution found (closed threads unread) is now doctrine rule 3 and is closed by the snapshot. Plan and family design: [CATALOG.md §3](https://github.com/QuantEcon/skills/blob/main/CATALOG.md).
+> **Status: first runbook of the `audit` family.** The procedure below is the QuantEcon-adapted form of a runbook that has been executed once end to end; the gap that execution found (closed threads unread) is now doctrine rule 3 and is closed by the snapshot. Plan and open questions: [issue #12](https://github.com/QuantEcon/skills/issues/12).
 
 ## Invocation
 
@@ -30,7 +30,7 @@ Ask only when discovery is ambiguous — two plausible plan anchors, say — not
 
 - [doctrine.md](../../references/doctrine.md) — trust rules, evidence classes, the read-only boundary, phases, coverage self-audit
 - [quantecon-context.md](../../references/quantecon-context.md) — repo types, label ownership, the cross-repo graph, the closing-keyword hazard
-- [deliverables.md](../../references/deliverables.md) — the bundle contract
+- [deliverables.md](../../references/deliverables.md) — what a report owes its reader, where it may land, and this skill's four-document shape
 
 Then, in the audited repo: the notes system, `CHANGELOG.md`, the latest release notes, and `AGENTS.md`/`CLAUDE.md`.
 

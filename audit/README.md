@@ -7,21 +7,22 @@ Bulk audits of a QuantEcon repository. Where `qe` serves an author working on on
 | Skill | Audits | Status |
 |---|---|---|
 | [`/audit:issues`](skills/issues/SKILL.md) | Every issue, open and closed: status verified against the code, tiered into the repo's plan | runbook landed |
-| `/audit:prs` | Every open PR: does it solve a real issue, is it mergeable, what should the review say | planned |
-| `/audit:tech-debt` | A codebase's accumulated debt, with a filing-ready issue catalog | planned |
-| `/audit:translations` | Parity between a source series and a translation (`lecture-python.myst` ↔ `lecture-python.zh-cn`) | planned |
+| `/audit:prs` | Every open PR: does it solve a real issue, is it mergeable, what should the review say | candidate |
+| `/audit:tech-debt` | A codebase's accumulated debt, with a filing-ready issue catalog | candidate |
+| `/audit:translations` | Parity between a source series and a translation (`lecture-python.myst` ↔ `lecture-python.zh-cn`) | candidate |
 
-Planned skills are tracked in [CATALOG.md](https://github.com/QuantEcon/skills/blob/main/CATALOG.md); this plugin ships with the first one so the shared doctrine is proven against a real procedure before three more are written on top of it.
+Only the first is written. The rest are candidates, tracked in [issue #12](https://github.com/QuantEcon/skills/issues/12) — each still needs the evidence a skill here normally carries before anyone writes it. Shipping one first is the point: the shared method gets proven against a real procedure before more are built on top of it.
 
 ## What belongs here
 
-Three tests, all of which must pass:
+Two tests:
 
 1. **Bulk** — it sweeps a portfolio, not an item. Reviewing one PR's technical quality is not an audit; reviewing all of them is.
 2. **Read-only** — it observes and reports. No skill here mutates a tracker, a branch, or a file in the audited repo ([doctrine §3](references/doctrine.md#3-read-only-boundary)).
-3. **Report bundle** — the output is the four-document bundle in [deliverables.md](references/deliverables.md), not a chat answer.
 
-The read/write line is deliberate and mirrors the org's own automation split, where the family boundary *is* the permission boundary. Anything that acts on findings — filing the catalog as issues, posting the drafted comments, applying labels — is a separate human-invoked step, which is what makes this family safe to point at any repo and safe to run headlessly.
+The read/write line is the one that matters, and it is deliberate: it mirrors the org's own automation split, where the family boundary *is* the permission boundary. Anything that acts on findings — filing the catalog as issues, posting the drafted comments, applying labels — is a separate human-invoked step, which is what makes this family safe to point at any repo and safe to run headlessly.
+
+An audit also produces a written report rather than a chat answer, since the point is something a reader can check later. That says nothing about how long it is or how many files it takes — see [deliverables.md](references/deliverables.md), which describes what `/audit:issues` produces without requiring the next skill to match it.
 
 ## Shared references
 
@@ -29,10 +30,10 @@ Skills are thin; the method lives once at plugin level.
 
 | Document | Owns |
 |---|---|
-| [references/doctrine.md](references/doctrine.md) | Trust rules, evidence classes, read-only boundary, phases, coverage self-audit |
+| [references/doctrine.md](references/doctrine.md) | Trust rules, evidence classes, read-only boundary, checkpointing, coverage self-audit |
 | [references/quantecon-context.md](references/quantecon-context.md) | Repo types, label ownership, the cross-repo graph, notes-system discovery, access |
-| [references/deliverables.md](references/deliverables.md) | The report bundle contract and where bundles are allowed to land |
-| [scripts/](scripts/) | Deterministic phase-1 machinery |
+| [references/deliverables.md](references/deliverables.md) | What an audit owes its reader, where reports may land, and the `/audit:issues` bundle as a worked example |
+| [scripts/](scripts/) | Deterministic fetch machinery |
 
 ## Running one
 
@@ -54,8 +55,6 @@ Headless runs work the same way:
 
 ## A note on naming
 
-Skill names here are objects, because the plugin is the verb: `/audit:issues`, `/audit:translations`. The repo's rule is that an invocation reads as a command, and where the plugin name is a namespace or a domain (`qe`, `benchmark`) the verb has nowhere to live but the skill — hence `check-style`, `review-acceleration`. Where the plugin name is itself the verb, the skill is the object; `/audit:audit-issues` would stutter at every invocation.
-
-Keep the form consistent across the family. The failure mode is not the noun names but mixing them — an `/audit:compare-translations` beside `/audit:issues` breaks the parallelism that makes the four memorable.
+Skill names here are objects because the plugin is the verb: `/audit:issues`, `/audit:translations`. Both read as commands, which is the part that matters, and `/audit:audit-issues` would stutter at every invocation.
 
 `audit` was chosen over `review` for the same reason the family excludes single-item work: `review` is already the per-item word here (`/benchmark:review-acceleration`, and PR review generally), so a `/review:prs` that sweeps every open PR would sit one keystroke from reviewing one. `audit` also matches QEP-3's `audit-` repo prefix and already connotes observe-and-report, which is the boundary this plugin enforces.

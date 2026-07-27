@@ -1,6 +1,6 @@
 # Deterministic audit machinery
 
-Phase 1 of every audit is mechanical, so it belongs here rather than in model judgement ([doctrine §4](../references/doctrine.md#4-phases-and-surviving-a-long-run)). Stdlib only, driving `gh`; no install step.
+Fetching is mechanical, so it belongs here rather than in model judgement ([doctrine §4](../references/doctrine.md#4-surviving-a-long-run)). Stdlib only, driving `gh`; no install step.
 
 ## `fetch_tracker.py`
 
