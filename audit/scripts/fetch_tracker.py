@@ -15,7 +15,7 @@ thread-complete for both open *and* closed items in two API round trips.
 
 Writes into `--out`:
 
-    meta.json      repo, snapshot time (UTC), gh version, auth state, counts
+    meta.json      repo, snapshot time (UTC), gh version, fetching account
     issues.json    every issue, any state, with its full comment thread
     prs.json       every PR, any state, with comments, reviews, and closing refs
     coverage.json  the mechanical half of the coverage self-audit
@@ -64,13 +64,7 @@ def run_gh(args):
 
 
 def preflight(repo):
-    """Fail in the first minute, not the third hour.
-
-    Returns True. It only ever returns — every failure path exits — so the
-    caller can record authentication in the snapshot's provenance without
-    re-deriving it from `gh`'s human-readable output, which is free to change
-    wording or be localized.
-    """
+    """Fail in the first minute, not the third hour."""
     if shutil.which("gh") is None:
         die("the GitHub CLI (`gh`) is not on PATH. Install it, or take the "
             "unauthenticated route in references/quantecon-context.md — which "
@@ -87,7 +81,23 @@ def preflight(repo):
         die(f"expected OWNER/REPO, got {repo!r}")
     # Confirms the repo exists and is visible to these credentials.
     run_gh(["repo", "view", repo, "--json", "name"])
-    return True
+
+
+def fetched_by():
+    """The account the snapshot was taken as.
+
+    Provenance that carries information, unlike a boolean "authenticated":
+    preflight exits on unauthenticated, so a flag could only ever record True.
+    The account matters because visibility is per-account — two snapshots of a
+    private repo taken by different people can legitimately differ, and the
+    only way to tell that from a truncation is to know who fetched. Non-fatal:
+    a failure here means `gh`'s user endpoint was unavailable, not that the
+    snapshot is unauthenticated, so it records null rather than exiting.
+    """
+    proc = subprocess.run(
+        ["gh", "api", "user", "--jq", ".login"], capture_output=True, text=True,
+    )
+    return proc.stdout.strip() if proc.returncode == 0 else None
 
 
 def require_thread_objects(items, kind, field, gh_version):
@@ -187,7 +197,7 @@ def main():
     )
     args = parser.parse_args()
 
-    authenticated = preflight(args.repo)
+    preflight(args.repo)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -222,7 +232,7 @@ def main():
         "repo": args.repo,
         "snapshot_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "gh_version": gh_version,
-        "authenticated": authenticated,
+        "fetched_by": fetched_by(),
         "limit": args.limit,
         "issue_fields": ISSUE_FIELDS,
         "pr_fields": PR_FIELDS,
