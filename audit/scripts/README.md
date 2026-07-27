@@ -12,7 +12,7 @@ python ${CLAUDE_PLUGIN_ROOT}/scripts/fetch_tracker.py OWNER/REPO --out <dir>/sna
 
 | Output | Contents |
 |---|---|
-| `meta.json` | Repo, snapshot time (UTC), `gh` version, auth state, the fields requested |
+| `meta.json` | Repo, snapshot time (UTC), `gh` version, the fetching account, the fields requested |
 | `issues.json` | Every issue, any state, each with its comment thread |
 | `prs.json` | Every PR, with comments, reviews, and `closingIssuesReferences` |
 | `coverage.json` | Items against `1..max`, discussion counts by open/closed — comments for issues, comments and reviews for PRs — truncation flag |

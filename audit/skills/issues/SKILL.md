@@ -34,6 +34,19 @@ Ask only when discovery is ambiguous — two plausible plan anchors, say — not
 
 Then, in the audited repo: the notes system, `CHANGELOG.md`, the latest release notes, and `AGENTS.md`/`CLAUDE.md`.
 
+## Working directory
+
+Everything the run produces goes under `--out`, defaulting to `.audit/<repo>-<YYYY-MM-DD>/`:
+
+| Path | Written by | Holds |
+|---|---|---|
+| `snapshot/` | phase 1 | `meta.json`, `issues.json`, `prs.json`, `coverage.json` |
+| `findings.md` | phase 2 | one entry per item, appended as each is verified |
+| `links.md` | phase 3 | the cross-link graph |
+| `01-…` `02-…` `03-…` `README.md` | phase 4 | the delivered bundle |
+
+**Append to the checkpoint as you go, not when the phase ends** ([doctrine §4](../../references/doctrine.md#4-surviving-a-long-run)). Phase 2 is the long one — a hundred items of item-by-item judgement — so it is the phase a run dies inside rather than between. On restart, read `findings.md` and resume at the lowest number in `issues.json` that has no entry there; re-verify the last entry rather than trusting a possibly truncated write.
+
 ## Phase 1 — snapshot
 
 ```bash
@@ -58,11 +71,13 @@ Per [doctrine §1](../../references/doctrine.md#1-what-makes-a-bulk-audit-trustw
 
 Sibling-repo checks belong here too: for QuantEcon, "resolved in a sibling" and "one step of a rollout" are the two most common wrong conclusions a single-repo audit reaches.
 
+Write each item's finding to `findings.md` as it is verified, in the catalog entry format from [deliverables.md](../../references/deliverables.md#the-auditissues-bundle) — so phase 4 assembles the catalog rather than re-deriving it, and an interrupted run loses one item rather than the phase.
+
 ## Phase 3 — relate
 
 Parse every `#N` in all issue **and** PR bodies, both directions. One parsing caveat: a range reference (`#169–#176`) matches its endpoints only, so check milestone membership before declaring the middle numbers orphaned.
 
-Produce the cluster map, the table of missing links worth adding (duplicate pairs, origin↔carrier, complementary checks, family orphans), true orphans and over-dense hubs, and the external cross-link registry.
+Produce, into `links.md`: the cluster map, the table of missing links worth adding (duplicate pairs, origin↔carrier, complementary checks, family orphans), true orphans and over-dense hubs, and the external cross-link registry.
 
 ## Phase 4 — tier and write
 
@@ -77,6 +92,8 @@ Slot into the repo's existing plan; never invent a parallel one. Tier by repo ty
 | **T3** | Decision-gated, external-dependency, deliberately deferred, parking lots. |
 
 Priority labels only for genuine outliers, a handful either way, and only if the policy provides them. Then write the bundle per [deliverables.md](../../references/deliverables.md), as `01-issue-triage-report.md`, `02-issue-catalog.md`, `03-issue-links.md`, `README.md`.
+
+**Scale the bundle to the tracker.** Four documents suit a tracker big enough that the argument, the enumeration and the graph get in each other's way. Below roughly 30 open issues they do not: fold the catalog and the link graph into the report, keep the `README.md` index, and say in the coverage statement which shape was used. Padding a small audit into four files makes it *less* checkable, which is the one thing the shape exists to protect.
 
 ## Phase 5 — self-audit
 

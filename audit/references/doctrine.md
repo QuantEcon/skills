@@ -37,6 +37,8 @@ Corollary: an audit never writes into the plugin directory, and its outputs neve
 
 Bulk audits outlive sessions. Context runs out, rate limits bite, machines sleep. One rule follows from that, and it is about checkpointing rather than about structure: **write each phase's output to the working directory before starting the next**, so a lost session resumes where it stopped instead of restarting. How a skill divides itself into phases is its own business — the division below is one that worked, not a template to fill.
 
+Two properties separate a checkpoint from a claim about one, and a skill that promises resumability owes both. The artifact needs a **name the next session can find without guessing** — an unnamed intermediate is only resumable if two sessions independently invent the same file. And a phase that iterates over many items must **append as it works, not write when it finishes**, because the phase long enough to be worth checkpointing is the phase a run dies *inside*. Output that exists only on completion is no checkpoint at all, exactly where one was needed.
+
 Two things are worth doing whatever the division. **Fetch once, and fetch first**, deterministically, in [`../scripts/`](../scripts/) rather than in model judgement. That also **freezes the audit's point in time**: every later claim refers to the snapshot, so "events after the snapshot" becomes a stated property of the report rather than an unnoticed gap. Record the snapshot timestamp; never silently mix fresh API reads into a later phase.
 
 `/audit:issues` uses five phases, which suit an audit that must capture a whole tracker, check it item by item, and then write at length:
@@ -44,7 +46,7 @@ Two things are worth doing whatever the division. **Fetch once, and fetch first*
 | Phase | Produces | Resumable from |
 |---|---|---|
 | 1. Snapshot | `meta.json`, `issues.json`, `prs.json`, `coverage.json` | — |
-| 2. Verify | per-item findings with evidence tags | the snapshot |
+| 2. Verify | per-item findings with evidence tags | the snapshot, plus its own partial output |
 | 3. Relate | the cross-link / parity graph | phase 2 |
 | 4. Write | the report | phases 2–3 |
 | 5. Self-audit | the coverage statement, folded back in | all of the above |
