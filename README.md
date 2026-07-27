@@ -25,6 +25,7 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 | [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning, PR flow |
 | [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
 | [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
+| [audit/README.md](audit/README.md) | The audit family: what belongs in it, the shared method, running one |
 
 ## Installation
 
@@ -87,7 +88,7 @@ benchmark/                        # specialist plugin
 audit/                            # maintainer-facing bulk-audit plugin
   .claude-plugin/plugin.json
   skills/issues/SKILL.md          # one skill per audit subject
-  references/                     # shared doctrine, org context, bundle contract
+  references/                     # shared doctrine, org context, reporting guidance
   scripts/                        # deterministic snapshot + coverage machinery
 ```
 
