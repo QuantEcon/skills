@@ -1,6 +1,6 @@
 # Future skill ideas
 
-Documented so they aren't lost; deliberately **not** in the active plan. Current focus: the style skill family (see [CATALOG.md](CATALOG.md)). Each idea below is evidence-backed by the 2026-07 PR-history analysis (~630 merged PRs across lecture-python.myst, lecture-python-intro, lecture-python-advanced.myst, lecture-dp).
+Documented so they aren't lost; deliberately **not** committed to. What has actually shipped is in [CATALOG.md](CATALOG.md), and work in flight is in the per-plugin tracking issues. Each idea below is evidence-backed by the 2026-07 PR-history analysis (~630 merged PRs across lecture-python.myst, lecture-python-intro, lecture-python-advanced.myst, lecture-dp).
 
 ## Parked candidates
 

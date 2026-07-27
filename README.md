@@ -6,13 +6,15 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 ## Plugins
 
-| Plugin | Skills | Status | Tracking |
-|---|---|---|---|
-| `qe` | `/qe:check-style` (+ `check-writing`, `check-math`, `check-code`, `check-figures`, `check-jax`, `check-refs`) | scaffolding | [CATALOG.md](CATALOG.md), work plan in `project-style-guide` |
-| `benchmark` | `/benchmark:review-acceleration` | evaluation system landed; skill wiring in progress | [skills#4](https://github.com/QuantEcon/skills/issues/4), [meta#335](https://github.com/QuantEcon/meta/issues/335) |
-| `audit` | `/audit:issues` (+ planned `prs`, `tech-debt`, `translations`) | first runbook landed | [CATALOG.md](CATALOG.md) §3 |
+| Plugin | For | Covers |
+|---|---|---|
+| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide, while editing and before opening a PR |
+| `benchmark` | Maintainers reviewing accelerated implementations | Measured, rubric-scored evaluation of a conversion |
+| `audit` | Maintainers sweeping a whole repository | Bulk, read-only audits — every issue, every PR, a codebase, a translated series — each producing a written report |
 
-The `qe` plugin is the author-facing surface: one memorable prefix for the skills authors use while editing lectures and preparing PRs. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`); the per-category sub-skills run the same shared rules individually. `benchmark` is a specialist family for maintainers evaluating accelerated implementations. `audit` is the maintainer-facing family for bulk, read-only sweeps of a whole repository — every issue, every PR, a whole codebase, a whole translated series — each delivering a report bundle rather than a chat answer. See [CATALOG.md](CATALOG.md) for the plan and [FUTURE-IDEAS.md](FUTURE-IDEAS.md) for parked candidates.
+`qe` is the author-facing surface — one memorable prefix for everyday work. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`) and the per-category sub-skills run the same shared rules individually. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
+
+**Which skills exist right now, and what state each is in, is in [CATALOG.md](CATALOG.md)** — that list is kept current with what has merged, so this page does not repeat it. Ideas nobody has committed to are in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
 
 ## Documentation
 

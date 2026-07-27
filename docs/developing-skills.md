@@ -16,19 +16,23 @@ docs/                             # these guides
   references/                     # rule/rubric content the skills read
 ```
 
-The two live plugins show the two shapes: `qe` (umbrella skill + thin per-category sub-skills sharing plugin-level rules and scripts) and `benchmark` (one skill driving a deterministic engine with worked examples as its regression baseline).
+**Only `SKILL.md` is required.** A skill that is purely a procedure — nothing deterministic to run, no long reference material to point at — is one file in one directory, and should stay that way. `scripts/` appears when there is something mechanical worth doing in code; `references/` when the skill needs more context than belongs in its body. Adding either before you need it just makes the skill harder to read.
+
+The three live plugins show some of the range: `qe` (umbrella skill plus thin per-category sub-skills, sharing plugin-level rules and scripts), `benchmark` (one skill driving a deterministic engine, with worked examples as its regression baseline), and `audit` (sibling procedures sharing a method document). None of these is the house style — they are what three problems happened to need.
 
 ## Conventions
 
+Guidance rather than gates. The repo is early, and most of what follows generalises from one or two worked examples; where something is genuinely load-bearing it says so and gives the reason. Departing from the rest is fine when you have a reason — and worth mentioning in the PR, since a second example is how any of this eventually becomes a real convention ([CATALOG.md § Principles](../CATALOG.md#principles)).
+
 - **Invocations read as commands** — the whole `/plugin:skill` string, not the skill name alone. `/qe:check-style` puts the verb in the skill because `qe` names a domain; `/audit:issues` puts it in the plugin and leaves the skill as the object. Both read as imperatives, which is the only part that matters. There is no rule yet about which to prefer — three plugins is too few to know, so pick what reads best and let a convention emerge from use.
 - **Description quality matters**: the SKILL.md frontmatter `description` is what natural-language invocation matches against. State what the skill does, what it measures, and when to use it. `validate.py` rejects descriptions too short to trigger reliably.
-- **Report first, fix on request** — skills never silently edit; anything `build_risk` or output-changing (RNG streams) is presented, never auto-applied.
-- **Deterministic before LLM**: put everything mechanical in `scripts/` (checkable, testable, zero-false-positive bar); reserve the skill's judgement for what genuinely needs it. The discipline scales with what the skill outputs:
+- **Report first, fix on request** (load-bearing) — skills never silently edit; anything `build_risk` or output-changing (RNG streams) is presented, never auto-applied.
+- **Deterministic before LLM** (load-bearing, and the reason is that a reader has to be able to check a skill's output without re-running it): put what is mechanical in `scripts/` (checkable, testable, zero-false-positive bar); reserve the skill's judgement for what genuinely needs it. The discipline scales with what the skill outputs:
   1. *Every skill*: claims carry citations — rule ID + `file:line`, or a number + its source. A findings list needs nothing more; don't add ceremony to simple skills.
   2. *Skills that judge*: record judgement as discrete answers (true/false per criterion, each cited), not free prose — so it's checkable.
   3. *Skills that score*: when multiple judgements aggregate into a verdict with stakes, use the benchmark plugin's evidence-file pattern — judgement lives only in an evidence file, a deterministic engine computes every score, and no score is ever typed by hand. Aggregation is where hand-waving hides; the engine eliminates it.
 - **Don't duplicate content across docs** — one canonical location, pointers elsewhere. Rule text, weights, and thresholds especially: restated copies drift.
-- **Self-contained plugins**: an installed plugin ships only its own directory. No relative links or paths that escape the plugin root; use absolute GitHub URLs for repo-level files, and anchor runtime paths for the installed context (issue #4 tracks the `${CLAUDE_PLUGIN_ROOT}` pattern).
+- **Self-contained plugins** (load-bearing — this one is a hard constraint of how plugins install, not a preference): an installed plugin ships only its own directory. No relative links or paths that escape the plugin root; use absolute GitHub URLs for repo-level files, and anchor runtime paths for the installed context (issue #4 tracks the `${CLAUDE_PLUGIN_ROOT}` pattern).
 
 ## Development loop
 
@@ -81,4 +85,4 @@ Bump the version in **both** `plugin.json` and the plugin's `marketplace.json` e
 
 - Branch, PR, CI must be green. This repo **squash-merges** — stacked branches need `git rebase --onto origin/main <old-base>` after the base PR merges (already-upstream commits drop automatically).
 - External contributions land with the contributor as git author (`--author`, GitHub noreply address unless they prefer otherwise) and integration fixes as separate commits — see PR #5 for the pattern.
-- Plans live in [CATALOG.md](../CATALOG.md) (active) and [FUTURE-IDEAS.md](../FUTURE-IDEAS.md) (parked); per-plugin work items live in issues ([#3](https://github.com/QuantEcon/skills/issues/3) style, [#4](https://github.com/QuantEcon/skills/issues/4) benchmark). The style-guide rule content is authored in `QuantEcon/style-guide`, never here — this repo's `qe` plugin consumes a rendered snapshot ([project-style-guide#6](https://github.com/QuantEcon/project-style-guide/issues/6)).
+- [CATALOG.md](../CATALOG.md) lists what has merged and nothing else, so a PR that adds a skill updates it and a PR that plans one does not. Work in flight belongs in the plugin's tracking issue ([#3](https://github.com/QuantEcon/skills/issues/3) `qe`, [#4](https://github.com/QuantEcon/skills/issues/4) `benchmark`, [#12](https://github.com/QuantEcon/skills/issues/12) `audit`); ideas nobody has committed to belong in [FUTURE-IDEAS.md](../FUTURE-IDEAS.md). The style-guide rule content is authored in `QuantEcon/style-guide`, never here — this repo's `qe` plugin consumes a rendered snapshot ([project-style-guide#6](https://github.com/QuantEcon/project-style-guide/issues/6)).

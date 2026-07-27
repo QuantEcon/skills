@@ -4,7 +4,9 @@ Guidance for AI coding agents and human contributors working in `QuantEcon/skill
 
 ## What this repository is
 
-A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) holding QuantEcon's shared agent skills and the deterministic scripts they drive. Two plugins today: `qe` (author-facing style checks) and `benchmark` (evaluating accelerated lecture implementations). Orientation is in [README.md](README.md); the active plan is [CATALOG.md](CATALOG.md).
+A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) holding QuantEcon's shared agent skills and the deterministic scripts they drive. The goal is to share institutional knowledge — the checks, rubrics and procedures experienced maintainers already apply by hand — so the same work produces consistent results wherever it runs. Orientation is in [README.md](README.md); what has actually shipped is in [CATALOG.md](CATALOG.md); work in flight is in the per-plugin tracking issues.
+
+**The repo is early, and its conventions are deliberately loose.** Where a doc describes a report shape, a phase division, a naming form or a directory layout, read it as what an existing skill does rather than as a contract a new one must satisfy — see [CATALOG.md § Principles](CATALOG.md#principles). The few things that genuinely must hold are stated plainly, with their reasons, and they are all about keeping a skill's output checkable by someone who will not re-run it.
 
 ## Single source of truth
 
@@ -36,15 +38,16 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 | The benchmark skill: modes, report format, manual pipeline | [benchmark/README.md](benchmark/README.md) |
 | Rubric: dimensions, weights, anchors, verdict bands | [benchmark/references/EVALUATION_FRAMEWORK.md](benchmark/references/EVALUATION_FRAMEWORK.md) |
 | Style rule text and schema | `QuantEcon/style-guide` (upstream — never authored in this repo) |
-| Active plan and design decisions | [CATALOG.md](CATALOG.md) |
-| Parked ideas | [FUTURE-IDEAS.md](FUTURE-IDEAS.md) |
-| Per-plugin work items | issues [#3](https://github.com/QuantEcon/skills/issues/3) (`qe`), [#4](https://github.com/QuantEcon/skills/issues/4) (`benchmark`) |
+| What has shipped, and the principles behind it | [CATALOG.md](CATALOG.md) |
+| Parked ideas, not committed to | [FUTURE-IDEAS.md](FUTURE-IDEAS.md) |
+| Work in flight, per plugin | issues [#3](https://github.com/QuantEcon/skills/issues/3) (`qe`), [#4](https://github.com/QuantEcon/skills/issues/4) (`benchmark`), [#12](https://github.com/QuantEcon/skills/issues/12) (`audit`) |
 
 ## Working in this repo
 
 - **Validate before committing**: `python scripts/validate.py`. A malformed manifest breaks installation silently in every consuming repo, so CI runs the same check.
 - **Test from a real consuming project**, not from inside this repo — path-resolution bugs only surface when a plugin runs from an install location. Both tiers are in [developing-skills § Testing locally](docs/developing-skills.md#testing-locally).
-- **The product principles** — report first, fix on request; deterministic before LLM; cited claims and computed scores — are stated once in [CATALOG.md § Principles](CATALOG.md#principles) and elaborated in [developing-skills § Conventions](docs/developing-skills.md#conventions). Follow them; don't restate them in new files.
+- **The product principles** — report first, fix on request; deterministic before LLM; cited claims and computed scores; scaffolding as advice rather than instruction — are stated once in [CATALOG.md § Principles](CATALOG.md#principles) and elaborated in [developing-skills § Conventions](docs/developing-skills.md#conventions). Follow them; don't restate them in new files.
+- **A new skill starts as an issue, not a doc entry.** CATALOG.md lists what has merged, so it stays true; the plan for something unbuilt belongs in its plugin's tracking issue, where it can change without anyone mistaking it for a description of the repo.
 - **Commit subjects** name the area, then the change: `Docs: hands-on evaluation tutorial…`, `Rubric v2: enforced couplings…`. The repo squash-merges, so stacked branches need `git rebase --onto origin/main <old-base>` once the base PR lands.
 - **`NEXT-SESSION.md` is scratch**: deliberately uncommitted working notes. Don't commit it and don't cite it as documentation.
 
