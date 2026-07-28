@@ -12,6 +12,7 @@ For lecture authors, reviewers, and maintainers who want to *use* the skills. (B
 /plugin marketplace add QuantEcon/skills
 /plugin install qe@quantecon           # author-facing base skills
 /plugin install benchmark@quantecon    # lecture-evaluation tooling
+/plugin install audit@quantecon        # maintainer-facing bulk audits
 ```
 
 **In CI** — `anthropics/claude-code-action@v1` accepts `plugin_marketplaces` and `plugins` inputs directly; see the repo README for the workflow snippet.
@@ -36,6 +37,7 @@ Three ways, all equivalent:
 |---|---|---|---|
 | `qe` | `/qe:check-style` + `check-{writing,math,code,figures,jax,refs}` | Style-guide compliance for lecture source, by rule ID | scaffolding — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
 | `benchmark` | `/benchmark:review-acceleration` | Score a NumPy→JAX/Numba conversion (review mode) or assess whether a lecture is worth converting (triage mode) | system landed — [guide](../benchmark/README.md), [skills#4](https://github.com/QuantEcon/skills/issues/4) |
+| `audit` | `/audit:issues` | Sweep a whole tracker: verify each issue's status against the code rather than the thread, tier the open set into the repo's plan, deliver a report bundle. Read-only — it recommends, never applies | runbook landed, method not yet validated — [tutorial](tutorial-run-an-audit.md), [guide](../audit/README.md), [skills#16](https://github.com/QuantEcon/skills/issues/16) |
 
 ## Updating and troubleshooting
 

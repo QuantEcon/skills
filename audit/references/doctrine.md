@@ -27,9 +27,11 @@ An unqualified claim is a defect. `[inferred]` is legitimate and often the most 
 
 ## 3. Read-only boundary
 
-**These skills observe and report. They never mutate the tracker** — no closing, labelling, milestoning, commenting, or editing, and no branch or file changes in the audited repo.
+**These skills observe and report. They never mutate what they audit** — no closing, labelling, milestoning, commenting or editing on the tracker, and in the audited repo no commits, no pushes, no branches, and no changes to tracked files.
 
 That boundary is what makes the family safe to run headlessly and safe to point at any repo in the org. Every action an audit recommends lands as a proposal in the report, executed later by a human or by a separate, deliberately-invoked step. An audit that half-applied its own findings would also be an audit whose report no longer describes the repo it was run against.
+
+**A run may write its own working directory**, including inside the audited checkout. An audit that produces a report necessarily produces files, and what this boundary protects is the repo's *content and history*, not its untracked filesystem. So: the working directory stays untracked, nothing is added to `.gitignore` — that would itself be an edit to a tracked file — and committing or publishing the bundle is a human step taken after reading it. Prefer a location the repo already ignores where one exists; a skill's own working-directory rule says where. This resolves a contradiction with [deliverables.md](deliverables.md), which delivers the bundle *into* the audited repo's notes system: the rule is about mutation, not about writing.
 
 Corollary: an audit never writes into the plugin directory, and its outputs never live in `QuantEcon/skills`. See [deliverables.md](deliverables.md) for where they go.
 

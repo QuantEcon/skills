@@ -21,7 +21,7 @@
     {
       "name": "audit",
       "source": "./audit",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Bulk, read-only audits of a QuantEcon repository — issue triage, PR review, technical debt, translation parity — each producing an evidence-cited report bundle"
     }
   ]
