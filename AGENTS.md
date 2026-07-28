@@ -35,6 +35,7 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 | Using the skills: setup, invocation, what to expect | [docs/using-skills.md](docs/using-skills.md) |
 | Contributing: layout, conventions, dev loop, local testing, versioning, PR flow | [docs/developing-skills.md](docs/developing-skills.md) |
 | Running an evaluation by hand, end to end | [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) |
+| Running a whole-tracker audit, and reviewing what it produces | [docs/tutorial-run-an-audit.md](docs/tutorial-run-an-audit.md) |
 | The benchmark skill: modes, report format, manual pipeline | [benchmark/README.md](benchmark/README.md) |
 | Rubric: dimensions, weights, anchors, verdict bands | [benchmark/references/EVALUATION_FRAMEWORK.md](benchmark/references/EVALUATION_FRAMEWORK.md) |
 | Style rule text and schema | `QuantEcon/style-guide` (upstream — never authored in this repo) |

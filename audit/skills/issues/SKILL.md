@@ -36,7 +36,13 @@ Then, in the audited repo: the notes system, `CHANGELOG.md`, the latest release 
 
 ## Working directory
 
-Everything the run produces goes under `--out`, defaulting to `.audit/<repo>-<YYYY-MM-DD>/`:
+Runs happen in a checkout of the audited repo, because phase 2 verifies claims against its default branch. **Put the working directory somewhere the repo already ignores**, so a run leaves `git status` clean and no `.gitignore` edit is needed ([doctrine §3](../../references/doctrine.md#3-read-only-boundary)) — in that order:
+
+1. An ignored scratch location in the notes system — `.dev/scratch/audit-<YYYY-MM-DD>/` in QuantEcon repos that have one, where `.dev/scratch/*` is already gitignored.
+2. `.audit/<repo>-<YYYY-MM-DD>/` at the checkout root, left untracked and uncommitted.
+3. Outside the checkout entirely, if the repo would show either as dirty.
+
+State which was used in the report's method section. Everything the run produces goes under it:
 
 | Path | Written by | Holds |
 |---|---|---|

@@ -22,6 +22,7 @@ project:
         - file: docs/using-skills.md
         - file: docs/developing-skills.md
         - file: docs/tutorial-run-an-evaluation.md
+        - file: docs/tutorial-run-an-audit.md
     - title: Plugins
       children:
         - file: benchmark/README.md

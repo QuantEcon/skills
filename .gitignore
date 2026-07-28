@@ -11,3 +11,9 @@ benchmark/references/examples/*/results/env.json
 # MyST docs site build output
 _build/
 node_modules/
+
+# Deliberately uncommitted working notes (AGENTS.md, "Working in this repo").
+# Ignored rather than merely discouraged: it sits in the repo root, so a
+# `git add -A` sweeps it into a commit, and it routinely holds unsent drafts,
+# correspondence and other people's names.
+NEXT-SESSION.md

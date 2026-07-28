@@ -12,7 +12,7 @@ What every audit owes its reader is much smaller, and is in the last section.
 2. The paired `project-*` repo, when the audit serves a program rather than a repo (`project-translation/reports/` for a translation audit).
 3. A dedicated `audit-*` repo, per [QEP-3](https://github.com/QuantEcon/qeps/pull/7), once an audit is recurring and its findings are worth publishing.
 
-Confirm the destination before writing, and name it in the report. Private inputs stay in private destinations: a `project-*` repo's contents must not be summarised into a public one.
+Confirm the destination before writing, and name it in the report. Writing the bundle there is the audit's job; **committing or publishing it is not** — that is a human step, taken after reading it ([doctrine §3](doctrine.md#3-read-only-boundary)). Private inputs stay in private destinations: a `project-*` repo's contents must not be summarised into a public one.
 
 ## The `/audit:issues` bundle
 
