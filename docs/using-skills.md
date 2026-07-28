@@ -15,6 +15,15 @@ For lecture authors, reviewers, and maintainers who want to *use* the skills. (B
 /plugin install audit@quantecon        # maintainer-facing bulk audits
 ```
 
+**`/plugin` is a terminal-CLI built-in**, so the VS Code extension and the web app answer `/plugin isn't available in this environment`. The `claude plugin` CLI does the same job from any shell and works everywhere:
+
+```bash
+claude plugin marketplace add QuantEcon/skills
+claude plugin install audit@quantecon      # and/or qe@quantecon, benchmark@quantecon
+```
+
+Either route, **restart the session afterwards** — plugins register at startup, so a newly installed skill is absent until you reopen. `claude plugin list` shows what is installed and at which version.
+
 **In CI** — `anthropics/claude-code-action@v1` accepts `plugin_marketplaces` and `plugins` inputs directly; see the repo README for the workflow snippet.
 
 ## Invoking a skill

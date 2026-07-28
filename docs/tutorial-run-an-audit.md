@@ -15,20 +15,27 @@ Canonical references (this tutorial points, never restates): the procedure in [S
 
 ## Step 0 — install the plugin
 
-```
-/plugin marketplace add QuantEcon/skills
-/plugin install audit@quantecon
+```bash
+claude plugin marketplace add QuantEcon/skills
+claude plugin install audit@quantecon
 ```
 
-Confirm with `/plugin list`; the version should read **0.1.2**. If `/audit:issues` does not appear in the slash menu, see [using-skills § troubleshooting](using-skills.md#updating-and-troubleshooting) — natural-language invocation ("audit every issue in this repo") works on any version.
+**Then restart your session** — plugins register at startup, so the skill does not appear until you reopen.
+
+The `/plugin marketplace add …` slash form does the same job, but it is a *terminal-CLI built-in*: the VS Code extension and the web app answer `/plugin isn't available in this environment`, while the `claude plugin` CLI above works from any shell. Confirm with `claude plugin list` — the version should read **0.1.2**.
+
+If `/audit:issues` is still unrecognised after restarting, the plugin-prefixed slash form needs Claude Code 2.1.216+; the bare `/issues` works on older builds, and natural-language invocation ("audit every issue in this repo, output to …") works on any version ([using-skills § troubleshooting](using-skills.md#updating-and-troubleshooting)).
 
 ## Step 1 — put the working directory where the repo already ignores it
 
 ```bash
 cd ~/work/quantecon/action-translation
-git status --short          # must be clean before you start — it is the read-only baseline
-git check-ignore -v .dev/scratch/x    # → .gitignore:… .dev/scratch/*
+git checkout main && git pull --ff-only   # phase 2 verifies against the DEFAULT branch
+git status --short                        # must be empty — the read-only baseline
+git check-ignore -v .dev/scratch/x        # → .gitignore:… .dev/scratch/*
 ```
+
+**Be on the default branch, not merely clean.** Phase 2's core question is whether an issue still reproduces on `main`; run from a feature branch and every answer is measured against your unmerged work instead. A clean tree on the wrong branch passes the `git status` check and silently invalidates the phase the whole run exists to test — so check the branch, not just the status.
 
 `action-translation` has a `.dev/` notes system whose `.dev/scratch/*` is already gitignored, which makes it the first-choice working directory: the run leaves `git status` completely clean, and no `.gitignore` edit is needed — that would itself be a change to a tracked file. Repos without one fall back to an untracked `.audit/` at the root ([SKILL.md § Working directory](../audit/skills/issues/SKILL.md)).
 
