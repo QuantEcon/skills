@@ -11,7 +11,7 @@ Canonical references (this tutorial points, never restates): the procedure in [S
 - The `audit` plugin installed (Step 0). It is deliberately not in the lecture-repo auto-install block — it is maintainer tooling.
 - `gh` authenticated. Preflight refuses to start without it, because the anonymous API returns nothing for the org's private repos and is capped at 60 requests/hour.
 - A checkout of the audited repo. Phase 2 verifies claims against its default branch, so a tracker-only run cannot do the job.
-- **Hours, not minutes**, and a session you can afford to interrupt — interrupting it is one of the tests.
+- **Tens of minutes**, and a session you can afford to interrupt — interrupting it is one of the tests. Run 1 took 22 minutes for 230 items; budget by *open* issues, at roughly 10 seconds each.
 
 ## Step 0 — install the plugin
 
@@ -108,7 +108,7 @@ Then confirm the boundary held: `git status --short` shows nothing but your igno
 Findings belong in this repo; the bundle does not. Write `reviews/audit-run-action-translation-2026-07-28.md`, following the [ge_arrow validation run](../reviews/validation-run-ge_arrow-2026-07-22.md):
 
 - **Setup** — repo, snapshot timestamp, `fetched_by`, item counts, unaccounted numbers, plugin version.
-- **Cost** — wall clock and rough token spend per phase, so "expect hours" stops being a guess.
+- **Cost** — wall clock and rough token spend per phase. Run 1's figures are in [its record](../reviews/audit-run-action-translation-2026-07-28.md); a second data point at a different repo type is what turns one measurement into an estimate.
 - **The ten checks** from Step 6, each held or broken, with the evidence.
 - **Interruption log** — where you killed it, what resuming actually did.
 - **What the doctrine did and did not transfer** — the payload. A rule that was cited and load-bearing, a rule that never came up, and a rule the run had to work around are three different verdicts, and only the third is a bug.

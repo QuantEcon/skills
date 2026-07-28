@@ -5,7 +5,7 @@ description: "Audit every issue in a GitHub repository, open and closed — veri
 
 # audit:issues
 
-Whole-tracker review of one repository. Long-running by design — a hundred-issue repo is a multi-hour run — so it works from a frozen snapshot and checkpoints every phase to disk.
+Whole-tracker review of one repository. It works from a frozen snapshot and checkpoints as it goes: the measured cost is roughly **10 seconds per open issue** — a 230-item tracker with 56 open took 22 minutes — and phase 2 is nearly all of the judgement, which is what makes it expensive to re-derive rather than long to sit through.
 
 > **Status: first runbook of the `audit` family.** The procedure below is the QuantEcon-adapted form of a runbook that has been executed once end to end; the gap that execution found (closed threads unread) is now doctrine rule 3 and is closed by the snapshot. Plan and open questions: [issue #12](https://github.com/QuantEcon/skills/issues/12).
 
@@ -51,7 +51,7 @@ State which was used in the report's method section. Everything the run produces
 | `links.md` | phase 3 | the cross-link graph |
 | `01-…` `02-…` `03-…` `README.md` | phase 4 | the delivered bundle |
 
-**Append to the checkpoint as you go, not when the phase ends** ([doctrine §4](../../references/doctrine.md#4-surviving-a-long-run)). Phase 2 is the long one — a hundred items of item-by-item judgement — so it is the phase a run dies inside rather than between. On restart, read `findings.md` and resume at the lowest number in `issues.json` that has no entry there; re-verify the last entry rather than trusting a possibly truncated write.
+**Append to the checkpoint as you go, not when the phase ends** ([doctrine §4](../../references/doctrine.md#4-checkpointing)). Phase 2 carries nearly all the judgement, so it is both the phase an interruption lands inside rather than between, and the phase whose log the catalog is later assembled from. On restart, read `findings.md` and resume at the lowest number in `issues.json` that has no entry there; re-verify the last entry rather than trusting a possibly truncated write.
 
 ## Phase 1 — snapshot
 

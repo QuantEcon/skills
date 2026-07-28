@@ -35,9 +35,17 @@ That boundary is what makes the family safe to run headlessly and safe to point 
 
 Corollary: an audit never writes into the plugin directory, and its outputs never live in `QuantEcon/skills`. See [deliverables.md](deliverables.md) for where they go.
 
-## 4. Surviving a long run
+## 4. Checkpointing
 
-Bulk audits outlive sessions. Context runs out, rate limits bite, machines sleep. One rule follows from that, and it is about checkpointing rather than about structure: **write each phase's output to the working directory before starting the next**, so a lost session resumes where it stopped instead of restarting. How a skill divides itself into phases is its own business — the division below is one that worked, not a template to fill.
+An audit's intermediate work is worth writing down — but not for the reason this section used to give. It claimed bulk audits outlive sessions: context running out, rate limits biting, machines sleeping. The first measured run refuted all three at once — 230 items in 22 minutes, with none of those mechanisms in play ([run record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md)). The rule survived the measurement; its justification did not, and a doctrine that demands evidence for every claim owes one here.
+
+**Write each phase's output to the working directory before starting the next**, for three reasons that hold at any duration:
+
+1. **The checkpoint is evidence, not insurance.** A per-item verification log is what the final enumeration is assembled *from*, and what a reviewer counts against the coverage numbers — run 1's 56-of-56 reconciliation was done against the log, not the report. This is the strongest of the three, and unlike the claim it replaces it can be checked.
+2. **Interruption does not care how long the run is.** A cancelled session, a tool error, a rate limit. Twenty-two minutes of item-by-item judgement is still expensive to re-derive.
+3. **The cost is asymmetric.** A line per item is nearly free; the phase is not.
+
+How a skill divides itself into phases is its own business — the division below is one that worked, not a template to fill. Note what reason 1 implies, though: a checkpoint written and then superseded minutes later without ever being read earns nothing. Name artifacts where they carry evidence, not at every phase boundary out of symmetry.
 
 Two properties separate a checkpoint from a claim about one, and a skill that promises resumability owes both. The artifact needs a **name the next session can find without guessing** — an unnamed intermediate is only resumable if two sessions independently invent the same file. And a phase that iterates over many items must **append as it works, not write when it finishes**, because the phase long enough to be worth checkpointing is the phase a run dies *inside*. Output that exists only on completion is no checkpoint at all, exactly where one was needed.
 
