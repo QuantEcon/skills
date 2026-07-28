@@ -6,7 +6,7 @@ What this marketplace installs today. A skill appears here once it is merged —
 |---|---|---|---|
 | **`qe`** — author-facing style checks | `/qe:check-style`, plus six per-category siblings: `check-writing`, `check-math`, `check-code`, `check-figures`, `check-jax`, `check-refs` | Scaffolding. The rendered rule snapshot and the deterministic preflight have not landed, and the skills report that they are not yet operational when run. | [#3](https://github.com/QuantEcon/skills/issues/3) |
 | **`benchmark`** — evaluating accelerated lecture implementations | `/benchmark:review-acceleration` | Operational for workspace runs: rubric v2, a deterministic scoring engine, and two complete worked evaluations as regression baselines. | [#4](https://github.com/QuantEcon/skills/issues/4) |
-| **`audit`** — bulk, read-only repository audits | `/audit:issues` | Runbook landed, executed once end to end against a real repo. | [#12](https://github.com/QuantEcon/skills/issues/12) |
+| **`audit`** — bulk, read-only repository audits | `/audit:issues` | Runbook landed, and executed once end to end against a real repo — **by hand, never yet as a skill**. Treat its method as unvalidated until the first run under [#16](https://github.com/QuantEcon/skills/issues/16) reports. | [#12](https://github.com/QuantEcon/skills/issues/12), [#16](https://github.com/QuantEcon/skills/issues/16) |
 
 Installation and setup are in [README.md](README.md); what it is like to run one is in [docs/using-skills.md](docs/using-skills.md).
 
