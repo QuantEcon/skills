@@ -60,7 +60,7 @@ Lecture repositories opt in by checking the following into their `.claude/settin
 /plugin install audit@quantecon
 ```
 
-Those are slash commands in a Claude Code session. `/plugin` is a terminal-CLI built-in, so in the VS Code extension or the web app use the equivalent `claude plugin …` CLI commands instead — see [using-skills § Setup](docs/using-skills.md#setup).
+Those are slash commands in a Claude Code session; **restart the session afterwards**, since plugins register at startup. `/plugin` is a terminal-CLI built-in, so in the VS Code extension or the web app use the equivalent `claude plugin …` CLI commands instead — see [using-skills § Setup](docs/using-skills.md#setup).
 
 ### CI (GitHub Actions)
 
