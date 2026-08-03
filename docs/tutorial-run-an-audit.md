@@ -2,7 +2,7 @@
 
 This walks `/audit:issues` end to end against **[QuantEcon/action-translation](https://github.com/QuantEcon/action-translation)** — 228 items, the repo the runbook was first executed against by hand.
 
-It differs from the [evaluation tutorial](tutorial-run-an-evaluation.md) in one important way. That one reproduces a committed reference, so every number you produce can be checked. Here there is no reference: `/audit:issues` has **never been run as a skill**, only by hand as a runbook, so its method is generalised from a single execution. This run *is* the experiment ([skills#16](https://github.com/QuantEcon/skills/issues/16)), and the part no automation can supply is your judgement of the output. Step 6 is therefore not optional garnish — it is the result.
+It differs from the [evaluation tutorial](tutorial-run-an-evaluation.md) in one important way. That one reproduces a committed reference, so every number you produce can be checked. Here there is no reference: `/audit:issues` has been run as a skill exactly **once** — run 1, against this same repo on 2026-07-28, which found seven plugin defects and is recorded [here](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md). A method generalised from one execution is still a hypothesis, so your run is the next data point in the validation program ([skills#16](https://github.com/QuantEcon/skills/issues/16)), and the part no automation can supply is your judgement of the output. Step 6 is therefore not optional garnish — it is the result.
 
 Canonical references (this tutorial points, never restates): the procedure in [SKILL.md](../audit/skills/issues/SKILL.md), the method in [doctrine.md](../audit/references/doctrine.md), the org conventions in [quantecon-context.md](../audit/references/quantecon-context.md), the output contract in [deliverables.md](../audit/references/deliverables.md).
 
@@ -11,7 +11,7 @@ Canonical references (this tutorial points, never restates): the procedure in [S
 - The `audit` plugin installed (Step 0). It is deliberately not in the lecture-repo auto-install block — it is maintainer tooling.
 - `gh` authenticated. Preflight refuses to start without it, because the anonymous API returns nothing for the org's private repos and is capped at 60 requests/hour.
 - A checkout of the audited repo. Phase 2 verifies claims against its default branch, so a tracker-only run cannot do the job.
-- **Hours, not minutes**, and a session you can afford to interrupt — interrupting it is one of the tests.
+- **Tens of minutes**, and a session you can afford to interrupt — interrupting it is one of the tests. Run 1 took 22 minutes end to end for 230 items, of which phase 2 was about 9 — roughly 10 seconds for each of its 56 open issues. Budget the total, and scale it by the *open* count rather than the item count.
 
 ## Step 0 — install the plugin
 
@@ -22,7 +22,7 @@ claude plugin install audit@quantecon
 
 **Then restart your session** — plugins register at startup, so the skill does not appear until you reopen.
 
-The `/plugin marketplace add …` slash form does the same job, but it is a *terminal-CLI built-in*: the VS Code extension and the web app answer `/plugin isn't available in this environment`, while the `claude plugin` CLI above works from any shell. Confirm with `claude plugin list` — the version should read **0.1.2**.
+The `/plugin marketplace add …` slash form does the same job, but it is a *terminal-CLI built-in*: the VS Code extension and the web app answer `/plugin isn't available in this environment`, while the `claude plugin` CLI above works from any shell. Confirm with `claude plugin list` — the version it reports should match the `audit` entry in [`marketplace.json`](../.claude-plugin/marketplace.json). (Naming a number here would go stale on the next release; if the two disagree, the install did not pick up the latest — `claude plugin update audit@quantecon`.)
 
 If `/audit:issues` is still unrecognised after restarting, the plugin-prefixed slash form needs Claude Code 2.1.216+; the bare `/issues` works on older builds, and natural-language invocation ("audit every issue in this repo, output to …") works on any version ([using-skills § troubleshooting](using-skills.md#updating-and-troubleshooting)).
 
@@ -108,7 +108,7 @@ Then confirm the boundary held: `git status --short` shows nothing but your igno
 Findings belong in this repo; the bundle does not. Write `reviews/audit-run-action-translation-2026-07-28.md`, following the [ge_arrow validation run](../reviews/validation-run-ge_arrow-2026-07-22.md):
 
 - **Setup** — repo, snapshot timestamp, `fetched_by`, item counts, unaccounted numbers, plugin version.
-- **Cost** — wall clock and rough token spend per phase, so "expect hours" stops being a guess.
+- **Cost** — wall clock and rough token spend per phase. Run 1's figures are in [its record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md); a second data point at a different repo type is what turns one measurement into an estimate.
 - **The ten checks** from Step 6, each held or broken, with the evidence.
 - **Interruption log** — where you killed it, what resuming actually did.
 - **What the doctrine did and did not transfer** — the payload. A rule that was cited and load-bearing, a rule that never came up, and a rule the run had to work around are three different verdicts, and only the third is a bug.
