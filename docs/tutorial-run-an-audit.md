@@ -105,7 +105,7 @@ Then confirm the boundary held: `git status --short` shows nothing but your igno
 
 ## Step 7 — record the run
 
-Findings belong in this repo; the bundle does not. Write `reviews/audit-run-action-translation-2026-07-28.md`, following the [ge_arrow validation run](../reviews/validation-run-ge_arrow-2026-07-22.md):
+Findings belong in this repo; the bundle does not. Write `reviews/audit-run-<repo>-<date>.md` — run 1's is [audit-run-action-translation-2026-07-28.md](../reviews/audit-run-action-translation-2026-07-28.md) — following the shape of the [ge_arrow validation run](../reviews/validation-run-ge_arrow-2026-07-22.md):
 
 - **Setup** — repo, snapshot timestamp, `fetched_by`, item counts, unaccounted numbers, plugin version.
 - **Cost** — wall clock and rough token spend per phase. Run 1's figures are in [its record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md); a second data point at a different repo type is what turns one measurement into an estimate.

@@ -26,6 +26,7 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 | [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
 | [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning and releases, PR flow |
 | [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
+| [docs/tutorial-run-an-audit.md](docs/tutorial-run-an-audit.md) | Tutorial: a whole-tracker audit end to end, and how to review what it produces |
 | [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
 | [audit/README.md](audit/README.md) | The audit family: what belongs in it, the shared method, running one |
 
@@ -78,9 +79,10 @@ The official action accepts the marketplace and plugin directly:
 
 ```
 .claude-plugin/marketplace.json   # the marketplace catalogue
-scripts/validate.py               # manifest + frontmatter validation (run in CI)
+scripts/                          # manifest + frontmatter validation, version-bump guard (run in CI)
 qe/                               # author-facing plugin
   .claude-plugin/plugin.json
+  CHANGELOG.md                    # what shipped in each version
   skills/check-style/SKILL.md     # umbrella skill
   skills/check-<category>/        # thin per-category sub-skills
   skills/copilot-review/SKILL.md  # PR review-feedback workflow
@@ -88,10 +90,12 @@ qe/                               # author-facing plugin
   scripts/                        # deterministic preflight checkers + fetch-copilot.sh
 benchmark/                        # specialist plugin
   .claude-plugin/plugin.json
+  CHANGELOG.md
   skills/review-acceleration/SKILL.md
   scripts/                        # supporting Python scripts the skill drives
 audit/                            # maintainer-facing bulk-audit plugin
   .claude-plugin/plugin.json
+  CHANGELOG.md
   skills/issues/SKILL.md          # one skill per audit subject
   references/                     # shared doctrine, org context, reporting guidance
   scripts/                        # deterministic snapshot + coverage machinery
