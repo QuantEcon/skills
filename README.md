@@ -24,7 +24,7 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 |---|---|
 | [AGENTS.md](AGENTS.md) | AI agents and contributors: canonical repo instructions — the single-source-of-truth principle, doc map, working conventions |
 | [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
-| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning, PR flow |
+| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning and releases, PR flow |
 | [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
 | [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
 | [audit/README.md](audit/README.md) | The audit family: what belongs in it, the shared method, running one |
@@ -102,5 +102,7 @@ audit/                            # maintainer-facing bulk-audit plugin
 Open a PR adding or modifying a plugin directory and registering it in `.claude-plugin/marketplace.json`. Test locally with `claude --plugin-dir ./<plugin>` before submitting.
 
 Run `python scripts/validate.py` before pushing — it checks that every plugin resolves, that `plugin.json` agrees with `marketplace.json` on name, version, and description, and that each `SKILL.md` has frontmatter whose `name` matches its directory. CI runs the same script on every PR; a malformed manifest otherwise breaks installation silently in every consuming lecture repository.
+
+CI also fails a PR that changes files under a plugin directory without bumping that plugin's version and adding its changelog entry — the install cache is keyed by version string, so an unbumped change reaches nobody ([developing-skills § Versioning and releases](docs/developing-skills.md#versioning-and-releases)).
 
 Broader context for this repository: [QuantEcon/meta#304](https://github.com/QuantEcon/meta/issues/304) (toolkit proposal) and [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (benchmarking programme).

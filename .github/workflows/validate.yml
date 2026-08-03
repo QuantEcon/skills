@@ -10,11 +10,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The version-bump guard diffs the PR against its merge base and reads
+          # plugin.json as of that commit and as of the base tip. The default
+          # depth-1, single-ref checkout has neither the base ref nor shared
+          # history, and the guard exits 2 rather than passing blind — so full
+          # history is load-bearing for that step. It applies to the whole job
+          # rather than just the step that needs it; harmless for the others,
+          # since neither reads git history.
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Validate manifests and skill frontmatter
         run: python scripts/validate.py
+
+      # A plugin's install cache is keyed by version string, and
+      # `claude plugin update` compares version strings only — so shipping an
+      # edited SKILL.md under an unchanged version publishes nothing: every
+      # consuming repo is told "already at the latest version" and keeps the old
+      # files. The bump is the delivery mechanism, which makes a missing one a
+      # build failure rather than a review nit. Three of this repo's first eleven
+      # merges would have been caught by it.
+      #
+      # Only a PR into the default branch publishes anything, so only those are
+      # checked: a stacked PR targeting another feature branch would otherwise be
+      # told to mint a second version for content that ships once. It gets
+      # checked the moment it is retargeted to main.
+      - name: Plugin changes carry a version bump
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.base_ref == github.event.repository.default_branch
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: python scripts/check-version-bump.py --base "origin/$BASE_REF"
 
       # The benchmark plugin's claim is that no score is ever written by hand:
       # every scorecard is a deterministic function of its evidence.json. That
@@ -31,3 +60,44 @@ jobs:
           python scripts/scoring/score.py references/fixtures/rubric_v2
           git diff --exit-code -- 'references/examples/*/results/scorecard.json' \
                                   'references/fixtures/*/results/scorecard.json'
+
+  # A separate job on purpose: this one installs an ~85 MB npm toolchain, and
+  # running it beside `validate` rather than inside it keeps that job four fast
+  # stdlib steps. The two also report independently, so a CLI-install failure
+  # cannot mask a manifest error.
+  #
+  # It earns its place by parsing what scripts/validate.py only pattern-matches.
+  # The repo's validator reads frontmatter with a regex, so it cannot see invalid
+  # YAML: `description: Audit every issue … Read-only: it recommends …` is a
+  # parse error — a `: ` inside an unquoted plain scalar — that shipped in
+  # audit/skills/issues/SKILL.md and passed CI until this PR. `--strict` also
+  # flags unknown plugin.json keys with a did-you-mean, so a typo'd `versoin` is
+  # caught rather than silently ignored.
+  #
+  # The CLI is pinned. Under --strict a new upstream warning becomes an error, so
+  # an unpinned install would let an upstream release redden an unrelated PR.
+  strict-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code@2.1.220
+
+      # Needs no credentials — a local manifest and frontmatter check that runs
+      # with no API key, no login and no network. Four targets because the scopes
+      # differ: only a plugin directory walks skills/, and only the marketplace
+      # root can compare an entry's version against the plugin.json it points at.
+      - name: Validate against the runtime's own parser
+        env:
+          DISABLE_AUTOUPDATER: "1"
+        run: |
+          rc=0
+          for target in qe benchmark audit .; do
+            echo "::group::claude plugin validate --strict $target"
+            claude plugin validate --strict "$target" || rc=1
+            echo "::endgroup::"
+          done
+          exit $rc
