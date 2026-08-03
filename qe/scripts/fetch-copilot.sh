@@ -14,8 +14,8 @@
 #   fetch-copilot.sh https://github.com/owner/repo/pull/42
 #   GH_REPO=owner/repo fetch-copilot.sh 42
 #
-# Requires gh (authenticated). With a repo argument, or GH_REPO, no working tree
-# is needed at all.
+# Requires gh (authenticated). The working tree is only what an omitted repo or
+# PR number is inferred from — give both and it runs from anywhere.
 #
 # Everything quoted from GitHub is prefixed with "| " so that no comment body can
 # forge a "== ID" record header — see SKILL.md, "Reading the output".

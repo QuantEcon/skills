@@ -9,7 +9,7 @@ Automates the loop **review Copilot's PR feedback → advise → (fix) → reply
 
 > **Status: promoted from a working personal skill, not yet validated as a plugin.** The procedure below has been in daily use, but only from `~/.claude/skills/`, in one person's repos. It has never run from an installed plugin, so `${CLAUDE_PLUGIN_ROOT}` resolution and the cross-repo mode are unexercised in that context. Plan and open questions: [issue #3](https://github.com/QuantEcon/skills/issues/3).
 
-Requires `gh`, authenticated. Run from inside the repo's working tree, or name the repo explicitly.
+Requires `gh`, authenticated. The working tree is only what an omitted repo or PR number is inferred from — name both and it runs from anywhere.
 
 ## Invocation
 
