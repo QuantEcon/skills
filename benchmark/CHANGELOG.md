@@ -14,7 +14,7 @@ Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every comm
 
 **Fixed**
 
-- The plugin README's status line named `v0.2.0` — a version that was never released (see the note at the foot of this file). It now names the version it ships in, so the plugin's own guide agrees with the manifest sitting next to it.
+- The plugin README's status line named `v0.2.0` — a version that was never released (see the note at the foot of this file). It now names `v0.3.0`, the release in which the evaluation system actually became runnable. That is a historical fact rather than a restatement of the current version, so it will not go stale again on the next bump.
 
 ## 0.3.0 — 2026-07-27
 

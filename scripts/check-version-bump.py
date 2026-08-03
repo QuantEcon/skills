@@ -515,8 +515,21 @@ def main(argv=None):
                   f"plugin.json says {head_version!r}; using plugin.json "
                   f"(scripts/validate.py reports the mismatch)")
 
-        highest = (max(published, key=lambda v: version_key(v) or ())
+        # `published` is a set, and every unorderable version shares the key ().
+        # max() over tied keys returns whichever element iteration reached first,
+        # and set order for strings varies with hash randomisation — so two
+        # pre-release versions would make `highest` differ between runs. Sorting
+        # first makes the tie-break the version string itself: still arbitrary,
+        # but the same arbitrary answer every time. A guard that reports
+        # different things on different runs cannot be trusted with either.
+        highest = (max(sorted(published), key=lambda v: version_key(v) or ())
                    if published else None)
+        unorderable = sorted(v for v in published if version_key(v) is None)
+        if unorderable:
+            print(f"  note {name} — {', '.join(repr(v) for v in unorderable)} "
+                  f"{'is' if len(unorderable) == 1 else 'are'} not X.Y.Z, so the "
+                  f"downgrade check is skipped for this plugin; the version must "
+                  f"still differ from every published one")
         record = {"name": name, "prefix": head_prefix, "paths": paths,
                   "base": highest, "head": head_version}
 
