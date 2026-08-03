@@ -9,13 +9,13 @@
     {
       "name": "qe",
       "source": "./qe",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "description": "QuantEcon's author-facing base skills — style checking, lecture editing support, and working through a PR's review feedback"
     },
     {
       "name": "benchmark",
       "source": "./benchmark",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "description": "Benchmarking and acceleration-evaluation tools for QuantEcon lecture code"
     },
     {

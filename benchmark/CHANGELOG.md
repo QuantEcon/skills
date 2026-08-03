@@ -6,6 +6,12 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/benchmark)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.3.2 — 2026-08-03
+
+**Fixed**
+
+- The plugin README's status line said skill wiring was "tracked in skills#4". The wiring shipped in 0.3.0 — it is in that release's entry below — so the line pointed at an open issue for work that had already landed. 0.3.1 corrected the version number in that same sentence and left the stale clause standing, which is how a half-fixed line survives a review. It now describes the plugin as operational for workspace runs since 0.3.0 and points at this changelog for what shipped when.
+
 ## 0.3.1 — 2026-08-03
 
 **Added**

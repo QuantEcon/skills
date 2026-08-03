@@ -9,7 +9,7 @@ One skill, two modes:
 | **Review** | Did this conversion PR improve the lecture? | baseline + candidate implementations | A scored report with a merge recommendation |
 | **Triage** | Is this lecture worth converting at all? | the existing lecture only | A predicted verdict band with the binding constraint named |
 
-Status: evaluation system landed (v0.3.0); skill wiring tracked in [skills#4](https://github.com/QuantEcon/skills/issues/4). The system was developed and validated by [@xuanguang-li](https://github.com/xuanguang-li) on [lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717) and [#654](https://github.com/QuantEcon/lecture-python.myst/pull/654).
+Status: operational for workspace runs since v0.3.0, which wired the skill to the scoring engine — what shipped in which release is in [CHANGELOG.md](CHANGELOG.md), and remaining plan items are in [skills#4](https://github.com/QuantEcon/skills/issues/4). The system was developed and validated by [@xuanguang-li](https://github.com/xuanguang-li) on [lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717) and [#654](https://github.com/QuantEcon/lecture-python.myst/pull/654).
 
 ## Using the skill
 

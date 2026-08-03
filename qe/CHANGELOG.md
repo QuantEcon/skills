@@ -6,6 +6,13 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.2.2 — 2026-08-03
+
+**Fixed**
+
+- `/qe:check-math`'s description showed `\\top`, `\\tag` and `\\mathbb` where it meant `\top`, `\tag` and `\mathbb`. YAML plain scalars do no escape processing, so the doubled backslashes were literal — the description is what natural-language invocation matches against, so this was wrong in the one string that most needs to be right. (It stays unquoted deliberately: `\t` and `\m` are not valid double-quoted YAML escapes, so quoting it would break the file outright.)
+- `/qe:copilot-review`'s status banner sent readers to [issue #3](https://github.com/QuantEcon/skills/issues/3) for "plan and open questions". That issue tracks the style-check surface and says nothing about this skill. The banner now credits the PR the skill shipped in and scopes #3 to the work it actually covers.
+
 ## 0.2.1 — 2026-08-03
 
 **Fixed**
