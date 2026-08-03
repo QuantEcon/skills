@@ -6,6 +6,16 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/audit)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.1.4 — 2026-08-03
+
+Doctrine §4's rule survived the first measured run; its justification did not. The section is re-derived from what that run actually produced, and the cost figures the skill quotes are replaced with measured ones.
+
+**Changed**
+
+- Doctrine §4 is renamed from "Surviving a long run" to "Checkpointing", and rests on three reasons that hold at any duration rather than on the claim that audits outlive sessions. The first measured run refuted that claim outright — 230 items in 22 minutes, with no context exhaustion, rate limit or sleeping machine in play. The strongest replacement reason is checkable: the per-item log is what the final enumeration is assembled *from*, and what a reviewer counts the coverage numbers against.
+- `/audit:issues` no longer describes itself as "long-running by design — a hundred-issue repo is a multi-hour run". It now quotes the measured cost: roughly **10 seconds per open issue**, with a 230-item tracker carrying 56 open issues taking 22 minutes. Cost tracks open issues needing verification rather than total items, so a large tracker with a small open set is cheaper than a small one with a large set.
+- Checkpoint artifacts are named where they carry evidence rather than at every phase boundary out of symmetry — a checkpoint written and superseded minutes later without ever being read earns nothing.
+
 ## 0.1.3 — 2026-08-03
 
 **Added**
