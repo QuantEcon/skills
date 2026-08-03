@@ -87,15 +87,33 @@ jobs:
         run: npm install -g @anthropic-ai/claude-code@2.1.220
 
       # Needs no credentials — a local manifest and frontmatter check that runs
-      # with no API key, no login and no network. Four targets because the scopes
-      # differ: only a plugin directory walks skills/, and only the marketplace
-      # root can compare an entry's version against the plugin.json it points at.
+      # with no API key, no login and no network.
+      #
+      # One target per plugin, taken from the manifest, plus the marketplace root.
+      # The scopes differ: only a plugin directory walks skills/, and only the
+      # root compares an entry's version against the plugin.json it points at.
+      #
+      # The plugin list is derived rather than written here. A hand-copied roster
+      # is a second source of truth for which plugins exist, with nothing
+      # coupling the two — add a plugin, forget the workflow, and it is silently
+      # never validated, which is the failure this job exists to prevent.
       - name: Validate against the runtime's own parser
         env:
           DISABLE_AUTOUPDATER: "1"
         run: |
+          # Fail the job rather than validating an empty list: a malformed
+          # manifest must not read as "nothing to check".
+          if ! sources=$(python3 scripts/validate.py --print-sources); then
+            echo "::error::could not read the plugin list from the marketplace manifest" >&2
+            exit 1
+          fi
           rc=0
-          for target in qe benchmark audit .; do
+          targets=()
+          while IFS= read -r line; do
+            [ -n "$line" ] && targets+=("$line")
+          done <<< "$sources"
+          targets+=(".")
+          for target in "${targets[@]}"; do
             echo "::group::claude plugin validate --strict $target"
             claude plugin validate --strict "$target" || rc=1
             echo "::endgroup::"

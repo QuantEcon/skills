@@ -167,7 +167,54 @@ def check_plugin(entry):
         check_skill(skill_dir, name)
 
 
+def print_sources():
+    """Print each plugin's directory, one per line, relative to the repo root.
+
+    So that CI iterates the plugin list the marketplace actually declares rather
+    than a roster hand-copied into a workflow. A hard-coded list is a second
+    source of truth for which plugins exist, and nothing would couple the two:
+    adding a plugin and forgetting the workflow leaves it silently unvalidated,
+    which is the failure mode the strict-validate job exists to prevent.
+
+    Resolution goes through resolve_source(), so the `./name` string form and the
+    object form behave here exactly as they do in validation.
+    """
+    marketplace = load_json(MARKETPLACE)
+    if marketplace is None:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    # The same top-level checks main() makes, so the two modes cannot disagree
+    # about whether a manifest is valid — one exiting 0 on something the other
+    # rejects is how a broken manifest reaches users through the quieter path.
+    owner = marketplace.get("owner")
+    if not isinstance(owner, dict) or not owner.get("name"):
+        error("marketplace.json: missing required `owner` object with a `name` field")
+    plugins = marketplace.get("plugins", [])
+    if not isinstance(plugins, list):
+        error(f"marketplace.json: `plugins` must be a list, got {type(plugins).__name__}")
+        plugins = []
+    elif not plugins:
+        error("marketplace.json: no plugins registered")
+    resolved = []
+    for entry in plugins:
+        if not isinstance(entry, dict) or not entry.get("name"):
+            error("marketplace.json: plugin entry missing `name`")
+            continue
+        plugin_dir = resolve_source(entry, entry["name"])
+        if plugin_dir is not None:
+            resolved.append(plugin_dir)
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    for plugin_dir in resolved:
+        print(plugin_dir.relative_to(ROOT))
+    return 0
+
+
 def main():
+    if "--print-sources" in sys.argv[1:]:
+        return print_sources()
+
     marketplace = load_json(MARKETPLACE)
     if marketplace is None:
         print("\n".join(errors), file=sys.stderr)
