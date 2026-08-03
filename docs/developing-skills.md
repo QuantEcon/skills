@@ -6,17 +6,18 @@ For contributors adding or modifying plugins in this repo. (Using them: [using-s
 
 ```
 .claude-plugin/marketplace.json   # the catalogue — every plugin registers here
-scripts/validate.py               # manifest + frontmatter validation (CI runs this)
+scripts/                          # manifest + frontmatter validation, version-bump guard (CI runs these)
 docs/                             # these guides
 <plugin>/                         # one directory per plugin
   .claude-plugin/plugin.json      # name, description, version
+  CHANGELOG.md                    # required: one entry per released version
   README.md                       # the plugin's user guide
   skills/<skill-name>/SKILL.md    # one directory per skill
   scripts/                        # deterministic scripts the skills drive
   references/                     # rule/rubric content the skills read
 ```
 
-**Only `SKILL.md` is required.** A skill that is purely a procedure — nothing deterministic to run, no long reference material to point at — is one file in one directory, and should stay that way. `scripts/` appears when there is something mechanical worth doing in code; `references/` when the skill needs more context than belongs in its body. Adding either before you need it just makes the skill harder to read.
+**A plugin needs its manifest and its changelog; a skill needs only `SKILL.md`.** A skill that is purely a procedure — nothing deterministic to run, no long reference material to point at — is one file in one directory, and should stay that way. `scripts/` appears when there is something mechanical worth doing in code; `references/` when the skill needs more context than belongs in its body. Adding either before you need it just makes the skill harder to read.
 
 The three live plugins show some of the range: `qe` (an umbrella skill plus thin per-category sub-skills sharing plugin-level rules and scripts, alongside an unrelated standalone procedure with one script of its own), `benchmark` (one skill driving a deterministic engine, with worked examples as its regression baseline), and `audit` (sibling procedures sharing a method document). None of these is the house style — they are what three problems happened to need.
 
@@ -32,7 +33,7 @@ Guidance rather than gates. The repo is early, and most of what follows generali
   2. *Skills that judge*: record judgement as discrete answers (true/false per criterion, each cited), not free prose — so it's checkable.
   3. *Skills that score*: when multiple judgements aggregate into a verdict with stakes, use the benchmark plugin's evidence-file pattern — judgement lives only in an evidence file, a deterministic engine computes every score, and no score is ever typed by hand. Aggregation is where hand-waving hides; the engine eliminates it.
 - **Don't duplicate content across docs** — one canonical location, pointers elsewhere. Rule text, weights, and thresholds especially: restated copies drift.
-- **Self-contained plugins** (load-bearing — this one is a hard constraint of how plugins install, not a preference): an installed plugin ships only its own directory. No relative links or paths that escape the plugin root; use absolute GitHub URLs for repo-level files, and anchor runtime paths for the installed context (issue #4 tracks the `${CLAUDE_PLUGIN_ROOT}` pattern).
+- **Self-contained plugins** (load-bearing — this one is a hard constraint of how plugins install, not a preference): an installed plugin ships only its own directory. No relative links or paths that escape the plugin root; use absolute GitHub URLs for repo-level files, and anchor runtime paths for the installed context with `${CLAUDE_PLUGIN_ROOT}` — `benchmark/skills/review-acceleration/SKILL.md` is the worked example.
 
 ## Development loop
 
@@ -95,7 +96,7 @@ The plugin is the released artifact and its version string is how a release is d
 - **A version bump is the delivery mechanism** (load-bearing — this is how the install cache works, not a convention we chose). An installed plugin lives at `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`, and `claude plugin update` compares version strings only: if the content changed and the version did not, it reports "already at the latest version" and refreshes nothing. Merged content with an unchanged version reaches nobody who has the plugin installed, and nothing warns you. This has already happened here three times — most recently [#27](https://github.com/QuantEcon/skills/pull/27), which edited a shipped `SKILL.md` under `qe/` without bumping `qe`.
 - **Therefore any change to any file under `<plugin>/` bumps that plugin's version.** Every file in the directory ships; there is no non-shipping edit inside it, and an exception list is where a rule like this rots. A file *moved out* of a plugin counts too — what it ships changed either way. Repo-level files — `docs/`, `README.md`, `CATALOG.md`, CI, the marketplace manifest — ship to nobody and bump nothing.
 - **Choose the number for what a user of the plugin experiences.** A new skill, or a procedure that now does something materially different: minor (benchmark's scaffolding → working evaluation system was 0.1.0 → 0.3.0 — there was never a published 0.2.0). A correction that leaves the procedure as it was: patch. Nothing below 1.0.0 promises stability.
-- **The catalogue's own top-level `version` in `marketplace.json`** moves only when a plugin is added or removed, which is the existing precedent. It is not a cache key and delivers nothing, so it gets no changelog entry.
+- **The catalogue's own top-level `version` in `marketplace.json`** moves only when a plugin is added or removed. (Past practice is mixed — adding `qe` did not move it, adding `audit` did — so the rule is stated here rather than inferred.) It is not a cache key and delivers nothing, so it gets no changelog entry.
 
 ### The changelog
 
@@ -119,7 +120,15 @@ A second job runs `claude plugin validate --strict` against each plugin and the 
 
 ### Tags
 
-The repo has no git tags today, so nothing outside each `CHANGELOG.md` maps content to a version number. `claude plugin tag ./<plugin>` creates `{name}--v{version}` from `plugin.json`, refuses unless the marketplace entry agrees, and refuses on a dirty working tree so the tag points at the version you meant to release. Add `--push` to publish it. Adopting it is a separate decision; nothing installs from a tag — the marketplace serves `main` — so the merge is still the release.
+Each release is tagged `{name}--v{version}`, so three independently-versioned plugins share one tag namespace. Tag from a clean checkout of `main` after the release merges:
+
+```bash
+claude plugin tag ./<plugin> --push -m "<plugin> %s"
+```
+
+It takes the version from `plugin.json`, refuses unless the marketplace entry agrees, refuses if the plugin fails validation, and refuses on a dirty working tree — so a tag cannot point at a version you did not mean to release. `--dry-run` prints what it would do.
+
+**Nothing installs from a tag.** The marketplace serves `main`, so the merge is still the release and the tag is a bookmark for human archaeology — which is also why only current versions were tagged when the scheme was adopted, rather than backfilling history. Several historical versions could not have been tagged honestly: some name two different published trees, because content shipped twice under one version before the guard existed, and others sit at commits that fail today's validation. Each `CHANGELOG.md` records that ambiguity in prose, with PR numbers, which is more than a tag can carry.
 
 ## PR flow
 
