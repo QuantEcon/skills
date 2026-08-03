@@ -1,6 +1,6 @@
 # Skill catalog
 
-What this marketplace installs today **and what actually does something when you run it**. A skill appears here once it is merged *and* operational — anything not listed does not exist yet as a usable skill, however firmly it has been discussed and whether or not its files are on `main`. Work in flight lives in the tracking issue for its plugin; ideas nobody has committed to live in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
+What this marketplace installs today, filtered to what is **operational**: a skill appears here once it is merged *and* runs to its stated purpose, not merely once its files are on `main`. Listing is not a claim about how far a skill has been validated — the State column answers that for each one, and says so plainly when the answer is "not much". Anything not listed does not exist yet as a usable skill, however firmly it has been discussed. Work in flight lives in the tracking issue for its plugin; ideas nobody has committed to live in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
 
 Merged-but-not-yet-working scaffolding is deliberately absent. It registers in the slash menu once its plugin is installed, so [docs/using-skills.md](docs/using-skills.md) lists it and says it reports "not yet operational" — but a catalog that advertises skills which do nothing is worth less than one that stays true.
 
