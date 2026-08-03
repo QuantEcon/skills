@@ -32,6 +32,8 @@ Parse a review issue's checklist into a diff against one lecture — lecture-pyt
 
 Two shapes are in use — the verb in the skill (`/qe:check-style`) and the verb in the plugin (`/audit:issues`) — and [developing-skills.md](docs/developing-skills.md) deliberately declines to rank them. Worth revisiting once enough plugins exist to show which reads better in practice, and specifically whether mixing both shapes inside one plugin actually causes trouble or only looks untidy. Writing the rule now would mean generalising from three plugins and no usage.
 
+There is now one instance to watch: `qe` holds both `/qe:check-style` (verb first) and `/qe:copilot-review`, which is a noun phrase — the object is *the Copilot review*, and the verb is only implied. It was named for what a user would type when they mean "deal with the Copilot review", not to fit either shape. Whether the mismatch costs anything in the slash menu is the observation to collect.
+
 ## How skills could serve the benchmarking programme (note for meta#335)
 
 Benchmark *data capture* stays in the programme repos (`QuantEcon/benchmarks` — workstream A; `QuantEcon/tool-lecture-benchmark` — workstream C). Skills are natural *consumers and interfaces* of that data:

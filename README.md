@@ -10,11 +10,11 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 | Plugin | For | Covers |
 |---|---|---|
-| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide, while editing and before opening a PR |
+| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide, and working through the review feedback on a PR once it is open |
 | `benchmark` | Maintainers reviewing accelerated implementations | Measured, rubric-scored evaluation of a conversion |
 | `audit` | Maintainers sweeping a whole repository | Bulk, read-only audits — every issue, every PR, a codebase, a translated series — each producing a written report |
 
-`qe` is the author-facing surface — one memorable prefix for everyday work. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`) and the per-category sub-skills run the same shared rules individually. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
+`qe` is the author-facing surface — one memorable prefix for everyday work, spanning a lecture's life from drafting to merge. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`) and the per-category sub-skills run the same shared rules individually; `/qe:copilot-review` picks the same lecture up after the PR is open, working through Copilot's review comment by comment. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
 
 **Which skills exist right now, and what state each is in, is in [CATALOG.md](CATALOG.md)** — that list is kept current with what has merged, so this page does not repeat it. Ideas nobody has committed to are in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
 
@@ -83,8 +83,9 @@ qe/                               # author-facing plugin
   .claude-plugin/plugin.json
   skills/check-style/SKILL.md     # umbrella skill
   skills/check-<category>/        # thin per-category sub-skills
+  skills/copilot-review/SKILL.md  # PR review-feedback workflow
   references/rules/               # shared rule files (style-guide schema)
-  scripts/                        # shared deterministic preflight checkers
+  scripts/                        # deterministic preflight checkers + fetch-copilot.sh
 benchmark/                        # specialist plugin
   .claude-plugin/plugin.json
   skills/review-acceleration/SKILL.md
