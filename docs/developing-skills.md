@@ -90,7 +90,36 @@ Two things follow from how it is wired. **Pages are rendered from the files wher
 
 ## Versioning and releases
 
-Bump the version in **both** `plugin.json` and the plugin's `marketplace.json` entry — the validator enforces they match. Scaffolding → first usable content is a minor bump (the benchmark plugin's evaluation-system landing was 0.1.0 → 0.2.0).
+The plugin is the released artifact and its version string is how a release is delivered, so a bump is a shipping decision rather than bookkeeping. Bump it in **both** `<plugin>/.claude-plugin/plugin.json` and the plugin's `marketplace.json` entry — `validate.py` enforces that the two agree, and `plugin.json` is the one that wins at install time.
+
+- **A version bump is the delivery mechanism** (load-bearing — this is how the install cache works, not a convention we chose). An installed plugin lives at `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`, and `claude plugin update` compares version strings only: if the content changed and the version did not, it reports "already at the latest version" and refreshes nothing. Merged content with an unchanged version reaches nobody who has the plugin installed, and nothing warns you. This has already happened here three times — most recently [#27](https://github.com/QuantEcon/skills/pull/27), which edited a shipped `SKILL.md` under `qe/` without bumping `qe`.
+- **Therefore any change to any file under `<plugin>/` bumps that plugin's version.** Every file in the directory ships; there is no non-shipping edit inside it, and an exception list is where a rule like this rots. A file *moved out* of a plugin counts too — what it ships changed either way. Repo-level files — `docs/`, `README.md`, `CATALOG.md`, CI, the marketplace manifest — ship to nobody and bump nothing.
+- **Choose the number for what a user of the plugin experiences.** A new skill, or a procedure that now does something materially different: minor (benchmark's scaffolding → working evaluation system was 0.1.0 → 0.3.0 — there was never a published 0.2.0). A correction that leaves the procedure as it was: patch. Nothing below 1.0.0 promises stability.
+- **The catalogue's own top-level `version` in `marketplace.json`** moves only when a plugin is added or removed, which is the existing precedent. It is not a cache key and delivers nothing, so it gets no changelog entry.
+
+### The changelog
+
+Every plugin keeps its own `<plugin>/CHANGELOG.md`, and the version bump and its entry land in the same PR. [`qe/CHANGELOG.md`](../qe/CHANGELOG.md) is the worked example; the format and its reasons are stated in the file itself.
+
+Why the file exists is worth stating honestly, because inside this repo it adds little: squash-merge already makes `git log --oneline -- qe/` one clean line per PR, and the commit-subject convention already reads as a changelog. It earns its place on two grounds. **The installed user has no git log** — the cache is an extracted directory with no `.git`, no remote to query, and for someone in the VS Code extension no practical path to one — so a file shipped inside the plugin directory is the only way to tell them what changed between the version they have and the one they would get. That is also why it is per-plugin rather than at the repo root: [self-contained plugins](#conventions) means an installed plugin ships only its own directory, so a root changelog is unreachable from the thing it describes, and a plugin's changelog links out with absolute GitHub URLs only. And **the entry is what makes the bump happen**: a reviewer looking at a diff that touches `qe/skills/…` and carries no new version heading can see the omission, which is what #27 walked into.
+
+Keep entries short and user-facing — what someone can now do, or what behaves differently. An entry that only restates the PR title is the right length for a small change; an entry that recapitulates the diff is not useful to anyone. Where the changelog and a PR title are word for word identical, that is fine: a changelog entry is frozen at release, so the two copies cannot drift, and they are aimed at different readers.
+
+There is no `Unreleased` section. It would park the description of a change away from the bump that delivers it, which is the one coupling that has to hold, and squash-merge leaves nothing for it to hold anyway: one PR is one commit, one version, one entry. Dates are the date you open the PR — you cannot know the merge date while writing, and a day's drift does not matter. Two PRs against the same plugin will conflict at the top of the file; **that conflict is the mechanism**, not a cost, since it is what stops both branches claiming the same version. Resolve it the ordinary way: rebase onto `main` and take the next version, in `plugin.json`, the `marketplace.json` entry, and the heading.
+
+### The CI guard
+
+`validate.yml` runs [`scripts/check-version-bump.py`](../scripts/check-version-bump.py) on every pull request into `main`. If any file under `<plugin>/` differs from the merge base, that plugin's `plugin.json` version must differ too — and must not be one already published on `main` — and `<plugin>/CHANGELOG.md` must carry a heading naming it. Any Markdown heading containing the version satisfies the last check; the file's format is not a CI contract.
+
+It compares against the merge base *and* the base tip, so a branch that is behind `main` cannot land a version somebody else already shipped. It reads committed history only, so `python scripts/check-version-bump.py` run locally before you commit will say so rather than pretend to have checked your working tree. It needs full history (`fetch-depth: 0`) and exits **2** rather than 0 when it cannot see the base — a guard that silently passes when it cannot run manufactures confidence.
+
+There is no override label. The escape hatch, on the rare occasion a bump feels disproportionate, is a patch bump: one line in two files, semantically honest, and unlike an exemption it actually delivers the change.
+
+A second job runs `claude plugin validate --strict` against each plugin and the marketplace, using the runtime's own parser. It is separate because it installs an npm toolchain and `validate.py` should stay fast, and it catches what a regex frontmatter reader cannot — real YAML errors, and unknown `plugin.json` keys. The CLI is pinned there deliberately: under `--strict` an upstream warning becomes an error, and an unpinned install would let someone else's release fail an unrelated PR.
+
+### Tags
+
+The repo has no git tags today, so nothing outside each `CHANGELOG.md` maps content to a version number. `claude plugin tag ./<plugin>` creates `{name}--v{version}` from `plugin.json`, refuses unless the marketplace entry agrees, and refuses on a dirty working tree so the tag points at the version you meant to release. Add `--push` to publish it. Adopting it is a separate decision; nothing installs from a tag — the marketplace serves `main` — so the merge is still the release.
 
 ## PR flow
 

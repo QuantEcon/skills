@@ -33,7 +33,8 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 |---|---|
 | What the marketplace is, installation (local, lecture repos, CI) | [README.md](README.md) |
 | Using the skills: setup, invocation, what to expect | [docs/using-skills.md](docs/using-skills.md) |
-| Contributing: layout, conventions, dev loop, local testing, versioning, PR flow | [docs/developing-skills.md](docs/developing-skills.md) |
+| Contributing: layout, conventions, dev loop, local testing, versioning, releases and tagging, PR flow | [docs/developing-skills.md](docs/developing-skills.md) |
+| What changed in a plugin, release by release | `<plugin>/CHANGELOG.md` — one per plugin, since the plugin is the released artifact and ships only its own directory |
 | Running an evaluation by hand, end to end | [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) |
 | Running a whole-tracker audit, and reviewing what it produces | [docs/tutorial-run-an-audit.md](docs/tutorial-run-an-audit.md) |
 | The benchmark skill: modes, report format, manual pipeline | [benchmark/README.md](benchmark/README.md) |
@@ -46,6 +47,7 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 ## Working in this repo
 
 - **Validate before committing**: `python scripts/validate.py`. A malformed manifest breaks installation silently in every consuming repo, so CI runs the same check.
+- **Changing a file under `<plugin>/` means a version bump and a changelog entry, in the same PR.** The install cache is keyed by version string, so content merged without a bump reaches nobody who already has the plugin installed. CI enforces it; see [developing-skills § Versioning and releases](docs/developing-skills.md#versioning-and-releases).
 - **Test from a real consuming project**, not from inside this repo — path-resolution bugs only surface when a plugin runs from an install location. Both tiers are in [developing-skills § Testing locally](docs/developing-skills.md#testing-locally).
 - **The product principles** — report first, fix on request; deterministic before LLM; cited claims and computed scores; scaffolding as advice rather than instruction — are stated once in [CATALOG.md § Principles](CATALOG.md#principles) and elaborated in [developing-skills § Conventions](docs/developing-skills.md#conventions). Follow them; don't restate them in new files.
 - **A new skill starts as an issue, not a doc entry.** CATALOG.md lists what has merged *and* is operational, so it stays true; the plan for something unbuilt — and the scaffolding for something merged but not yet operational — belongs in its plugin's tracking issue, where it can change without anyone mistaking it for a description of the repo.

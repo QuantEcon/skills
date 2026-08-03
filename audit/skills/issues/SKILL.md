@@ -1,6 +1,6 @@
 ---
 name: issues
-description: Audit every issue in a GitHub repository, open and closed — verify each status against the code rather than the thread, hunt fixed-but-open and never-landed-fix candidates, tier the open set into the repo's existing plan, and deliver a report bundle with a cross-link map. Read-only: it recommends tracker changes but never makes them. Use for a whole-tracker review, not a single issue.
+description: "Audit every issue in a GitHub repository, open and closed — verify each status against the code rather than the thread, hunt fixed-but-open and never-landed-fix candidates, tier the open set into the repo's existing plan, and deliver a report bundle with a cross-link map. Read-only: it recommends tracker changes but never makes them. Use for a whole-tracker review, not a single issue."
 ---
 
 # audit:issues
