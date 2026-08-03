@@ -45,6 +45,7 @@ Three ways, all equivalent:
 | Plugin | Skills | What they do | Status |
 |---|---|---|---|
 | `qe` | `/qe:check-style` + `check-{writing,math,code,figures,jax,refs}` | Style-guide compliance for lecture source, by rule ID | scaffolding — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
+| `qe` | `/qe:copilot-review` | Work through GitHub Copilot's review of a PR: a verdict and recommended fix per comment, then a threaded reply to each one so they can be resolved from the GitHub UI | runs, but never yet from an installed plugin — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
 | `benchmark` | `/benchmark:review-acceleration` | Score a NumPy→JAX/Numba conversion (review mode) or assess whether a lecture is worth converting (triage mode) | system landed — [guide](../benchmark/README.md), [skills#4](https://github.com/QuantEcon/skills/issues/4) |
 | `audit` | `/audit:issues` | Sweep a whole tracker: verify each issue's status against the code rather than the thread, tier the open set into the repo's plan, deliver a report bundle. Read-only — it recommends, never applies | runbook landed, method not yet validated — [tutorial](tutorial-run-an-audit.md), [guide](../audit/README.md), [skills#16](https://github.com/QuantEcon/skills/issues/16) |
 
