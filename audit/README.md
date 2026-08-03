@@ -43,7 +43,7 @@ Skills are thin; the method lives once at plugin level.
 
 Audits work from a frozen snapshot and checkpoint to disk as they go, so an interrupted run resumes rather than restarting — and every number in the report refers to one point in time.
 
-**Budget tens of minutes, not hours.** The first measured run covered a 230-item tracker in **22 minutes** ([record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md)). Cost tracks the number of **open issues** needing verification — about 10 seconds each — rather than total items, so a 1000-item repo with a small open set is cheaper than a 300-item repo with a large one. That is one data point; a repo whose issues need deeper code archaeology will run slower per issue.
+**Budget tens of minutes, not hours.** The first measured run covered a 230-item tracker in **22 minutes** end to end ([record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md)). What scales is the **open issue** count, not the item count: phase 2 verifies the open set at about 10 seconds each — 9 of those 22 minutes for 56 issues — while the remaining phases are largely fixed. So a 1000-item repo with a small open set is cheaper than a 300-item repo with a large one. That is one data point; a repo whose issues need deeper code archaeology will run slower per issue.
 
 Headless runs work the same way:
 

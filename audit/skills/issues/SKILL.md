@@ -5,7 +5,7 @@ description: "Audit every issue in a GitHub repository, open and closed — veri
 
 # audit:issues
 
-Whole-tracker review of one repository. It works from a frozen snapshot and checkpoints as it goes: the measured cost is roughly **10 seconds per open issue** — a 230-item tracker with 56 open took 22 minutes — and phase 2 is nearly all of the judgement, which is what makes it expensive to re-derive rather than long to sit through.
+Whole-tracker review of one repository. It works from a frozen snapshot and checkpoints as it goes. One measured run, on a 230-item tracker with 56 open issues: **22 minutes end to end**, of which phase 2 — verifying those 56 — was about 9, or roughly **10 seconds per open issue**. The two figures answer different questions: budget the total from the whole run, and scale it by the *open* count, since that is what phase 2 walks. Phase 2 also carries nearly all of the judgement, which is what makes a run expensive to re-derive rather than long to sit through.
 
 > **Status: first runbook of the `audit` family.** The procedure below is the QuantEcon-adapted form of a runbook that has been executed once end to end; the gap that execution found (closed threads unread) is now doctrine rule 3 and is closed by the snapshot. Plan and open questions: [issue #12](https://github.com/QuantEcon/skills/issues/12).
 
