@@ -20,17 +20,17 @@ Unlike the [ge_arrow validation run](validation-run-ge_arrow-2026-07-22.md), the
 
 ## Cost — the docs are wrong by an order of magnitude
 
-| Phase | Completed | Elapsed |
+| Phase | Completed (AEST, UTC+10) | Elapsed |
 |---|---|---|
 | 1 — snapshot | 16:45:59 | ~11 s |
 | 2 — verify (56 open issues) | 16:54:57 | ~9 min |
 | 3 — relate | 16:58:24 | ~3 min |
 | 4 — write (3 documents + index) | 17:08:05 | ~10 min |
-| **Total** | | **~23 min** for 230 items |
+| **Total** | | **~22 min** for 230 items |
 
 [`audit/README.md`](../audit/README.md) says *"Expect hours, not minutes, on a repo with a hundred items"*; [`SKILL.md`](../audit/skills/issues/SKILL.md) says *"a hundred-issue repo is a multi-hour run"*. Both are wrong by roughly an order of magnitude on this repo.
 
-This is uncomfortable rather than merely inaccurate, because it partly undercuts its own machinery. [doctrine §4](../audit/references/doctrine.md) justifies phase checkpointing on the premise that *"bulk audits outlive sessions"*. At 23 minutes they do not. Checkpointing is not thereby worthless — a 1000-item tracker scales up, interruption remains possible, and the incremental log turned out to be independently useful as an audit trail — but the stated *reason* is false and should be corrected rather than quietly retained. See defect 4.
+This is uncomfortable rather than merely inaccurate, because it partly undercuts its own machinery. [doctrine §4](../audit/references/doctrine.md#4-checkpointing) justifies phase checkpointing on the premise that *"bulk audits outlive sessions"*. At 22 minutes they do not. Checkpointing is not thereby worthless — a 1000-item tracker scales up, interruption remains possible, and the incremental log turned out to be independently useful as an audit trail — but the stated *reason* is false and should be corrected rather than quietly retained. See defect 4.
 
 ## The claims under test
 
@@ -55,7 +55,7 @@ Defect 2 makes this worse than a neutral gap: the resume rule as written would h
 
 ## Defects found
 
-1. **A `[verified]` citation that does not verify, on the headline finding.** The #91 wave-escape entry cites `b99b431` as where `docs/user/heading-maps.md`'s history ends. That commit is real and does touch the file — but it is **not on `main`**; it exists only on `origin/fix/heading-map-position-fallback`, unmerged, dated 2026-03-24. The last commit touching that path on `main` is `0ea2539`. The audit's own header says "verified against `main` @ `2c3d624`". The conclusion survives independent checking and is arguably strengthened, but a reviewer who checks the citation finds nothing — worse than no citation. [doctrine §2](../audit/references/doctrine.md) says cite `file:line`, a merged PR, or a tag; it never says *confirm the commit is an ancestor of the ref you named*. One `git merge-base --is-ancestor` closes it.
+1. **A `[verified]` citation that does not verify, on the headline finding.** The #91 wave-escape entry cites `b99b431` as where `docs/user/heading-maps.md`'s history ends. That commit is real and does touch the file — but it is **not on `main`**; it exists only on `origin/fix/heading-map-position-fallback`, unmerged, dated 2026-03-24. The last commit touching that path on `main` is `0ea2539`. The audit's own header says "verified against `main` @ `2c3d624`". The conclusion survives independent checking and is arguably strengthened, but a reviewer who checks the citation finds nothing — worse than no citation. [doctrine §2](../audit/references/doctrine.md#2-evidence-classes) says cite `file:line`, a merged PR, or a tag; it never says *confirm the commit is an ancestor of the ref you named*. One `git merge-base --is-ancestor` closes it.
 
 2. **The closed side was never checkpointed.** `findings.md` contains one section — `## Open issues`, 56 entries. The 62 closed issues were verified and appear in the catalog, but went straight to the deliverable. Half the phase-2 work sat outside the checkpoint, and it breaks the resume rule from #17: *"resume at the lowest number in `issues.json` with no entry"* would have re-verified all 62 closed issues from scratch. A defect in the fix, found by running it.
 
@@ -77,7 +77,7 @@ Three different verdicts, and only the third is a bug.
 
 **Never came up.** Rule 6 (draft policies are conditional) was applied to QEP-2 but did no work, because the repo's labels already carry QEP-shaped descriptions. Rule 4 (guarded vs fixed) was not visibly exercised. Neither is evidence against the rule — this is one repo of one type.
 
-**Had to be worked around.** §4's phase division assumes phases long enough to be worth checkpointing; at 23 minutes the ceremony exceeded the need, and the checkpoint that was written covered only half the phase (defect 2). The bundle destination could not be honoured at all (defect 3).
+**Had to be worked around.** §4's phase division assumes phases long enough to be worth checkpointing; at 22 minutes the ceremony exceeded the need, and the checkpoint that was written covered only half the phase (defect 2). The bundle destination could not be honoured at all (defect 3).
 
 ## Quality assessment
 
