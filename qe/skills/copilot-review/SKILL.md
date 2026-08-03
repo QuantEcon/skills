@@ -7,7 +7,7 @@ description: Review GitHub Copilot's feedback on a pull request, assess each com
 
 Automates the loop **review Copilot's PR feedback → advise → (fix) → reply to each comment on GitHub**, so the author can then click "Resolve conversation" in the UI.
 
-> **Status: promoted from a working personal skill, not yet validated as a plugin.** The procedure below has been in daily use, but only from `~/.claude/skills/`, in one person's repos. It has never run from an installed plugin, so `${CLAUDE_PLUGIN_ROOT}` resolution and the cross-repo mode are unexercised in that context. Plan and open questions: [issue #3](https://github.com/QuantEcon/skills/issues/3).
+> **Status: operational.** Promoted from a personal skill that had been in daily use, and validated on 2026-08-03 from an installed plugin: plugin-root path resolution, cross-repo mode, and running from outside a working tree. Plan and open questions: [issue #3](https://github.com/QuantEcon/skills/issues/3).
 
 Requires `gh`, authenticated. The working tree is only what an omitted repo or PR number is inferred from — name both and it runs from anywhere.
 

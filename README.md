@@ -16,7 +16,7 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 `qe` is the author-facing surface — one memorable prefix for everyday work, spanning a lecture's life from drafting to merge. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`) and the per-category sub-skills run the same shared rules individually; `/qe:copilot-review` picks the same lecture up after the PR is open, working through Copilot's review comment by comment. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
 
-**Which skills exist right now, and what state each is in, is in [CATALOG.md](CATALOG.md)** — that list is kept current with what has merged, so this page does not repeat it. Ideas nobody has committed to are in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
+**Which skills work right now is in [CATALOG.md](CATALOG.md)** — it lists what has merged *and* is operational, so this page does not repeat it. Skills whose scaffolding has merged but which do not run yet are in [docs/using-skills.md](docs/using-skills.md), because they still appear in the slash menu. Ideas nobody has committed to are in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
 
 ## Documentation
 
