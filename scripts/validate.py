@@ -183,10 +183,18 @@ def print_sources():
     if marketplace is None:
         print("\n".join(errors), file=sys.stderr)
         return 1
+    # The same top-level checks main() makes, so the two modes cannot disagree
+    # about whether a manifest is valid — one exiting 0 on something the other
+    # rejects is how a broken manifest reaches users through the quieter path.
+    owner = marketplace.get("owner")
+    if not isinstance(owner, dict) or not owner.get("name"):
+        error("marketplace.json: missing required `owner` object with a `name` field")
     plugins = marketplace.get("plugins", [])
-    if not isinstance(plugins, list) or not plugins:
-        print("marketplace.json: no plugins registered", file=sys.stderr)
-        return 1
+    if not isinstance(plugins, list):
+        error(f"marketplace.json: `plugins` must be a list, got {type(plugins).__name__}")
+        plugins = []
+    elif not plugins:
+        error("marketplace.json: no plugins registered")
     resolved = []
     for entry in plugins:
         if not isinstance(entry, dict) or not entry.get("name"):
