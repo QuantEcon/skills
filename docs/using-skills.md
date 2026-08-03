@@ -47,9 +47,9 @@ Everything that registers in your slash menu, working or not. That is wider than
 | Plugin | Skills | What they do | Status |
 |---|---|---|---|
 | `qe` | `/qe:check-style` + `check-{writing,math,code,figures,jax,refs}` | Style-guide compliance for lecture source, by rule ID | scaffolding — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
-| `qe` | `/qe:copilot-review` | Work through GitHub Copilot's review of a PR: a verdict and recommended fix per comment, then a threaded reply to each one so they can be resolved from the GitHub UI | operational, validated from an installed plugin 2026-08-03 — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
-| `benchmark` | `/benchmark:review-acceleration` | Score a NumPy→JAX/Numba conversion (review mode) or assess whether a lecture is worth converting (triage mode) | system landed — [guide](../benchmark/README.md), [skills#4](https://github.com/QuantEcon/skills/issues/4) |
-| `audit` | `/audit:issues` | Sweep a whole tracker: verify each issue's status against the code rather than the thread, tier the open set into the repo's plan, deliver a report bundle. Read-only — it recommends, never applies | runbook landed, method not yet validated — [tutorial](tutorial-run-an-audit.md), [guide](../audit/README.md), [skills#16](https://github.com/QuantEcon/skills/issues/16) |
+| `qe` | `/qe:copilot-review` | Work through GitHub Copilot's review of a PR: a verdict and recommended fix per comment, then a threaded reply to each one so they can be resolved from the GitHub UI | operational, validated from an installed plugin 2026-08-03 — [#26](https://github.com/QuantEcon/skills/pull/26) |
+| `benchmark` | `/benchmark:review-acceleration` | Score a NumPy→JAX/Numba conversion (review mode) or assess whether a lecture is worth converting (triage mode) | operational for workspace runs — [guide](../benchmark/README.md), [skills#4](https://github.com/QuantEcon/skills/issues/4) |
+| `audit` | `/audit:issues` | Sweep a whole tracker: verify each issue's status against the code rather than the thread, tier the open set into the repo's plan, deliver a report bundle. Read-only — it recommends, never applies | run once as a skill, method validated only that far — [tutorial](tutorial-run-an-audit.md), [guide](../audit/README.md), [skills#16](https://github.com/QuantEcon/skills/issues/16) |
 
 ## Updating and troubleshooting
 

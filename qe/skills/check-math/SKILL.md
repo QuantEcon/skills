@@ -1,6 +1,6 @@
 ---
 name: check-math
-description: Check a QuantEcon lecture's mathematical notation against the style guide — \\top transpose, aligned (never align) inside $$, no \\tag, \\mathbb P/E/V, plain-letter distribution names, sequence and matrix conventions. Reports violations by rule ID with an offer to fix.
+description: Check a QuantEcon lecture's mathematical notation against the style guide — \top transpose, aligned (never align) inside $$, no \tag, \mathbb P/E/V, plain-letter distribution names, sequence and matrix conventions. Reports violations by rule ID with an offer to fix.
 ---
 
 # check-math

@@ -1,6 +1,6 @@
 {
   "name": "qe",
   "description": "QuantEcon's author-facing base skills — style checking, lecture editing support, and working through a PR's review feedback",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": { "name": "QuantEcon" }
 }
