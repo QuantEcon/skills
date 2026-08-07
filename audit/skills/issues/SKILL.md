@@ -47,11 +47,13 @@ State which was used in the report's method section. Everything the run produces
 | Path | Written by | Holds |
 |---|---|---|
 | `snapshot/` | phase 1 | `meta.json`, `issues.json`, `prs.json`, `coverage.json` |
-| `findings.md` | phase 2 | one entry per item, appended as each is verified |
+| `findings.md` | phase 2 | one entry per item — **both** the open and the closed pass, under `## Open` and `## Closed`, appended as each is verified |
 | `links.md` | phase 3 | the cross-link graph |
 | `01-…` `02-…` `03-…` `README.md` | phase 4 | the delivered bundle |
 
-**Append to the checkpoint as you go, not when the phase ends** ([doctrine §4](../../references/doctrine.md#4-checkpointing)). Phase 2 carries nearly all the judgement, so it is both the phase an interruption lands inside rather than between, and the phase whose log the catalog is later assembled from. On restart, read `findings.md` and resume at the lowest number in `issues.json` that has no entry there; re-verify the last entry rather than trusting a possibly truncated write.
+**Append to the checkpoint as you go, not when the phase ends** ([doctrine §4](../../references/doctrine.md#4-checkpointing)). Phase 2 carries nearly all the judgement, so it is both the phase an interruption lands inside rather than between, and the phase whose log the catalog is later assembled from.
+
+**Both passes are checkpointed, and the resume rule reads `issues.json`.** Phase 2 walks two sets — the open issues and the closed ones — and each has its own section in `findings.md`. On restart, partition `issues.json` by state and, for each partition independently, resume at the lowest number with no entry under the matching heading; re-verify the last entry in each rather than trusting a possibly truncated write. Do not infer progress from the file's length or from a single block: run 1 wrote only the open set to `findings.md` and sent the 62 closed issues straight to the catalog, so a resume would have re-verified all 62 from scratch while reporting itself complete ([defect 2](https://github.com/QuantEcon/skills/issues/21)).
 
 ## Phase 1 — snapshot
 
@@ -77,7 +79,9 @@ Per [doctrine §1](../../references/doctrine.md#1-what-makes-a-bulk-audit-trustw
 
 Sibling-repo checks belong here too: for QuantEcon, "resolved in a sibling" and "one step of a rollout" are the two most common wrong conclusions a single-repo audit reaches.
 
-Write each item's finding to `findings.md` as it is verified, in the catalog entry format from [deliverables.md](../../references/deliverables.md#the-auditissues-bundle) — so phase 4 assembles the catalog rather than re-deriving it, and an interrupted run loses one item rather than the phase.
+**Check every citation against the baseline ref before tagging it `[verified]`** ([doctrine §2](../../references/doctrine.md#2-evidence-classes)). For a commit that is `git merge-base --is-ancestor <sha> <ref>`; for a `file:line` it is that line on the ref rather than in the working tree; for a PR it is merged into it. Evidence that lives only on an unmerged branch is still worth citing — as the open PR it is, tagged `[stated]` or `[inferred]`.
+
+Write each item's finding to `findings.md` as it is verified — the closed pass too, under its own heading, not straight into the catalog — in the catalog entry format from [deliverables.md](../../references/deliverables.md#the-auditissues-bundle), so phase 4 assembles the catalog rather than re-deriving it and an interrupted run loses one item rather than the phase.
 
 ## Phase 3 — relate
 

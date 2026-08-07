@@ -19,11 +19,23 @@ Findings are tagged so a reader can tell what was actually inspected. This is th
 
 | Tag | Means | Minimum citation |
 |---|---|---|
-| `[verified]` | Checked against code, a diff, or a build artifact | `file:line`, a merged PR, or a tag |
+| `[verified]` | Checked against code, a diff, or a build artifact | `file:line`, a merged PR, a tag, or a commit — each reachable from the baseline ref (below) |
 | `[stated]` | Asserted by a human in a thread or a notes file | Comment URL or `file:line` |
 | `[inferred]` | The audit's own reasoning across sources | The sources it reasons from |
 
 An unqualified claim is a defect. `[inferred]` is legitimate and often the most valuable class — but it must never be dressed as `[verified]`, and a status change recommended on `[inferred]` alone should say so in the recommendation itself.
+
+**Every `[verified]` citation is relative to one named ref, and must be reachable from it.** An audit states the ref it verified against — the default branch at the snapshot commit — and that ref is what makes its citations checkable. A citation the reader cannot resolve there is not a weaker citation; it is a false one, and worse than an untagged claim, because the tag is what invited the trust.
+
+The failure is easy to miss because it resolves for whoever wrote it. Run 1's headline finding cited a commit that is real, does touch the file, and exists only on an unmerged branch — while the report's own header said "verified against `main` @ `2c3d624`" ([defect 1](https://github.com/QuantEcon/skills/issues/21)). A working tree carrying extra branches, or a `gh` call that searches the whole repository rather than one ref, will both produce citations that a reader checking out the stated ref finds nothing at.
+
+So, before tagging anything `[verified]`:
+
+```bash
+git merge-base --is-ancestor <sha> <ref>   # exit 0 = citable; non-zero = not on that ref
+```
+
+The same question applies to the other citation forms, mechanically or by eye: a `file:line` must be that file and that line **on the baseline ref**, not in the working tree; a PR must be *merged into* it; a tag must be an ancestor of it. Where a claim genuinely rests on off-ref work — an open PR's branch, a fork — that is legitimate evidence, but it is cited as the open PR it is and tagged `[stated]` or `[inferred]`, never `[verified]`.
 
 ## 3. Read-only boundary
 
