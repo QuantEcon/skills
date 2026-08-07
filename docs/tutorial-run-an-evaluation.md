@@ -80,16 +80,18 @@ python $CLAUDE_PLUGIN_ROOT/scripts/scoring/score.py benchmark-eval/ge_arrow
 No score is ever typed by hand — the engine computes all seven dimensions and prints the derivation of each. The validation run's tail:
 
 ```
-WEIGHTED TOTAL                                           2.85
 VERDICT: no-conversion — the baseline as-used total 0.0292 s is under the 1 s
 materiality floor and the candidate is slower as-used (0.0251×): this lecture
 should not be converted, whatever the candidate's polish. Candidate quality
 for the record: 2.85/5, mixed/wash
+WEIGHTED TOTAL (for the record)                          2.85
 SENSITIVITY: fragile (29 single-input perturbations scored)
-     └ quantitative.correctness.builds: True → False ⇒ total 2.30, ...
-     └ quantitative.correctness.matches_under_x64: True → False ⇒ total 2.30, ...
-     └ structural.logic_design.criteria.good_algorithmic_choices: False → True ⇒ total 3.00, ...
+     └ quantitative.correctness.builds: True → False ⇒ verdict no-conversion; net regression — ... (recomputed total, for the record: 2.30)
+     └ quantitative.correctness.matches_under_x64: True → False ⇒ verdict no-conversion; net regression — ... (recomputed total, for the record: 2.30)
+     └ structural.logic_design.criteria.good_algorithmic_choices: False → True ⇒ verdict no-conversion; net positive — ... (recomputed total, for the record: 3.00)
 ```
+
+The verdict prints first, and the deciding flips name the verdict they flip to before the recomputed number: the total and the verdict are different layers — the total measures the candidate's polish, the verdict carries the decision — and the output order makes sure a reader who takes away one line takes away the recommendation.
 
 Three things to read off a v2 scorecard beyond the total: the **verdict gate** (broken correctness caps the band regardless of polish), the **no-conversion** verdict (a lecture with nothing to gain shouldn't be converted, however good the candidate), and the **sensitivity stamp** (would any single contestable input flip the outcome? here: yes, three would — the scorecard says so instead of hiding it).
 
