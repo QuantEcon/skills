@@ -27,7 +27,7 @@ The decision criteria are canonical in the manual's JAX style page — [when to 
 3. **Crossover comparison** — the lecture's problem sizes vs the warm crossover-n from the scaling data.
 4. **Readability-cost forecast** — which concepts the conversion would force on readers (static args, `lax` carries, checkify, the float32/x64 distinction), against the prerequisite-concept bands.
 
-Then the decision rule that falls out of the rubric weights: efficiency (0.15) can gain at most +0.30 weighted (band 3→5), while readability (0.25) losing two bands costs −0.50 — **a conversion that costs meaningful readability cannot break even on speed alone**; it must also win on logic & design and ergonomics, and those structural wins are usually achievable in plain NumPy.
+Then the decision rule ([EVALUATION_FRAMEWORK.md §1](references/EVALUATION_FRAMEWORK.md)): the rubric weights readability above efficiency on purpose, so **a conversion that costs meaningful readability cannot break even on speed alone** — the weight algebra behind that lives in the framework, not here; it must also win on logic & design and ergonomics, and those structural wins are usually achievable in plain NumPy.
 
 **Validation (2026-07-21):** triage applied blind (baseline-side data only) to the three known cases reproduces every known verdict:
 
