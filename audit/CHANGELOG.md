@@ -6,6 +6,15 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/audit)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.2.0 — 2026-08-07
+
+The two severity-1 defects from the first measured run, which are the same defect at different altitudes: an audit's own record claiming more than it can support.
+
+**Changed**
+
+- **`[verified]` now requires evidence reachable from the ref the audit named.** Doctrine §2 is the single statement of it — §1 rule 1 no longer carries its own copy of the accepted-forms list, which is how the two drifted apart in the first place — and it covers every citation form — a commit must be an ancestor of the baseline ref, a `file:line` must be that line *on the ref* rather than in the working tree, a PR must be merged into it — and `/audit:issues` runs `git merge-base --is-ancestor <sha> <ref>` before tagging a commit citation. Run 1's headline finding cited a commit that is real, does touch the file, and exists only on an unmerged branch, while the report's header said it had verified against `main`. A citation that resolves for its author and not for its reader is worse than an untagged claim, because the tag is what invited the trust. Evidence that genuinely lives off-ref stays citable — as the open PR it is, tagged `[stated]` or `[inferred]`.
+- **Phase 2 checkpoints both of its passes.** `findings.md` now carries `## Open` and `## Closed` sections, and the resume rule partitions `issues.json` by state and resumes each side independently at the lowest number with no entry. Run 1 wrote only the 56 open issues to the checkpoint and sent the 62 closed ones straight to the catalog, so a run interrupted during the closed pass would have re-verified all 62 from scratch while reporting itself complete — the single-block resume rule shipped in 0.1.2 could not see the difference.
+
 ## 0.1.4 — 2026-08-03
 
 Doctrine §4's rule survived the first measured run; its justification did not. The section is re-derived from what that run actually produced, and the cost figures the skill quotes are replaced with measured ones.
