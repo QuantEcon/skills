@@ -79,7 +79,13 @@ Per [doctrine §1](../../references/doctrine.md#1-what-makes-a-bulk-audit-trustw
 
 Sibling-repo checks belong here too: for QuantEcon, "resolved in a sibling" and "one step of a rollout" are the two most common wrong conclusions a single-repo audit reaches.
 
-**Check every citation against the baseline ref before tagging it `[verified]`** ([doctrine §2](../../references/doctrine.md#2-evidence-classes)). For a commit that is `git merge-base --is-ancestor <sha> <ref>`; for a `file:line` it is that line on the ref rather than in the working tree; for a PR it is merged into it. Evidence that lives only on an unmerged branch is still worth citing — as the open PR it is, tagged `[stated]` or `[inferred]`.
+**Check every citation against the baseline ref before tagging it `[verified]`** ([doctrine §2](../../references/doctrine.md#2-evidence-classes)):
+
+- **a commit** — run `git merge-base --is-ancestor <sha> <ref>`; exit 0 means citable
+- **a `file:line`** — confirm that line says what the finding claims *on the ref*, not in the working tree
+- **a pull request** — confirm it is merged into that ref
+
+Evidence that lives only on an unmerged branch is still worth citing — as the open PR it is, tagged `[stated]` or `[inferred]`.
 
 Write each item's finding to `findings.md` as it is verified — the closed pass too, under its own heading, not straight into the catalog — in the catalog entry format from [deliverables.md](../../references/deliverables.md#the-auditissues-bundle), so phase 4 assembles the catalog rather than re-deriving it and an interrupted run loses one item rather than the phase.
 

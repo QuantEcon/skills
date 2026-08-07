@@ -4,7 +4,7 @@ The method every skill in this plugin follows. Skills own their subject matter �
 
 ## 1. What makes a bulk audit trustworthy
 
-1. **Never trust an artifact's claim about its own state.** Every "fixed in X", "scheduled into Y", "superseded by Z" is a hypothesis until checked against the current default branch, `CHANGELOG.md`, and merged PRs. Cite `file:line`, a PR, or a tag for each verified claim.
+1. **Never trust an artifact's claim about its own state.** Every "fixed in X", "scheduled into Y", "superseded by Z" is a hypothesis until checked against the current default branch, `CHANGELOG.md`, and merged PRs. Every verified claim carries a citation that resolves on the ref the audit named — the accepted forms and the reachability rule are [§2](#2-evidence-classes).
 2. **Check both directions.** Open items that are actually resolved, *and* closed items whose fix never really landed. An audit that only prunes is half an audit.
 3. **Read every thread, closed ones included.** Closed threads carry decisions, deferred remainders, and agreed-but-never-filed work. Skipping the closed side was the one gap in this runbook's first execution, and it is the default failure mode — the snapshot captures closed threads precisely so there is no cost excuse.
 4. **Distinguish guarded from fixed.** "Now fails loudly" is not "root cause resolved". Record which kind of remainder each item carries.
