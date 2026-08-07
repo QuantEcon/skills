@@ -40,6 +40,8 @@ Never write into the plugin directory. Scoring works on any directory: `python $
 
 When the question is "should this lecture be converted at all," run the prospective subset — only the existing lecture is needed, and **no candidate is built**: the skill measures the lecture as it stands and bounds what a conversion could deliver, which is what makes the advice cheap enough to ask for routinely.
 
+The decision criteria themselves are canonical in the manual's JAX style page — [when to use JAX, when not to](https://manual.quantecon.org/styleguide/jax.html), including *Converting from Numba § Decide first* — cite them in the advice, never restate them. The checks below are the measurement layer that tests whether the page's criteria hold for this lecture: whether there is "a real bottleneck" is exactly what checks 1–2 establish or refute, and the sequential-vs-vectorizable question is check 2's pattern match. The page's "teaching JAX itself" criterion is editorial, not measurable — when it might apply, say so and leave it as the maintainer's call.
+
 1. **Baseline as-used total**: adapt just the baseline half of an `as_used_total.py` template and replay the lecture's real call sequence — this bounds the maximum possible win (a 30 ms lecture has nothing to give).
 2. **Pattern-match** against the calibrated poles: aiyagari-shaped (large fixed shapes, many re-solves, stable static args → ~24× win) vs ge_arrow-shaped (tiny models, fresh static args per call → ~45× loss).
 3. **Crossover check**: the lecture's problem sizes vs warm crossover-n.

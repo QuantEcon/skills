@@ -20,7 +20,7 @@ Status: operational for workspace runs since v0.3.0, which wired the skill to th
 
 ### Triage mode — before any code is written
 
-Four checks, using only the existing lecture — no candidate is built:
+The decision criteria are canonical in the manual's JAX style page — [when to use JAX, when not to](https://manual.quantecon.org/styleguide/jax.html) — and the advice cites them; the skill's contribution is the measurement layer that tests whether they hold. Four checks, using only the existing lecture — no candidate is built:
 
 1. **Baseline as-used total** — replay the lecture's real call sequence (the NumPy half of an `as_used_total.py` template). This bounds the entire possible win: a lecture whose compute totals 30ms has nothing to give.
 2. **Workload-pattern match** — against the two calibrated poles: **aiyagari-shaped** (large fixed-shape arrays, many re-solves, stable static args → measured ~24× as-used win) vs **ge_arrow-shaped** (tiny models, fresh static args per call → measured ~45× as-used loss).
