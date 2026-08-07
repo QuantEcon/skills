@@ -127,8 +127,13 @@ def main(lecture_dir):
               f"{r['score']:>3d} {r['weighted']:>5.2f}")
         print(f"     └ {r['reason']}")
     print("-" * 78)
-    print(f"{'WEIGHTED TOTAL':34s} {'':11s} {'':>4s} {'':>3s} {result['total']:>5.2f}")
+    # The verdict prints before the number: the two are different layers (the
+    # total measures polish, the verdict carries the decision), and a reader
+    # who takes away one line must take away the recommendation. Both the
+    # system's designer and its sponsor read the total as the headline when it
+    # came first — skills#14, finding 6.
     print(f"VERDICT: {result['verdict']}")
+    print(f"{'WEIGHTED TOTAL (for the record)':34s} {'':11s} {'':>4s} {'':>3s} {result['total']:>5.2f}")
     skipped = sens["perturbations_skipped"]
     print(f"SENSITIVITY: {sens['stamp']} "
           f"({sens['perturbations_tested']} single-input perturbations scored"
@@ -138,7 +143,8 @@ def main(lecture_dir):
         print(f"     └ {sens['stamp_note']}")
     for fl in sens["deciding_flips"]:
         print(f"     └ {fl['input']}: {fl['from']} → {fl['to']} "
-              f"⇒ total {fl['total']:.2f}, {fl['outcome']}")
+              f"⇒ verdict {fl['outcome']} "
+              f"(recomputed total, for the record: {fl['total']:.2f})")
 
     out = {
         "lecture": lecture,

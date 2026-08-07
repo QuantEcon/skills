@@ -2,39 +2,25 @@
 
 Evaluation tooling for QuantEcon lecture code rewrites — the question it answers is never "is JAX faster?" but **"does this implementation earn its place in this lecture?"** Lectures are teaching materials first and programs second; the plugin's rubric weights readability (0.25) above efficiency (0.15) on purpose.
 
-One skill, two modes:
+One skill, two modes — triage is the front door, since most questions arrive before any code is written:
 
 | Mode | Question | Needs | Produces |
 |---|---|---|---|
+| **Triage** | Is this lecture worth converting at all? | the existing lecture only | A recommendation with the binding constraint named |
 | **Review** | Did this conversion PR improve the lecture? | baseline + candidate implementations | A scored report with a merge recommendation |
-| **Triage** | Is this lecture worth converting at all? | the existing lecture only | A predicted verdict band with the binding constraint named |
 
 Status: operational for workspace runs since v0.3.0, which wired the skill to the scoring engine — what shipped in which release is in [CHANGELOG.md](CHANGELOG.md), and remaining plan items are in [skills#4](https://github.com/QuantEcon/skills/issues/4). The system was developed and validated by [@xuanguang-li](https://github.com/xuanguang-li) on [lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717) and [#654](https://github.com/QuantEcon/lecture-python.myst/pull/654).
 
 ## Using the skill
 
 ```
-/benchmark:review-acceleration <PR number or baseline..candidate refs>   # review mode
 /benchmark:review-acceleration should we convert <lecture>?              # triage mode
+/benchmark:review-acceleration <PR number or baseline..candidate refs>   # review mode
 ```
-
-### Review mode — what you get
-
-The skill follows the measure → record-evidence → score contract ([scripts/README.md](scripts/README.md)): it extracts both implementations verbatim from the lecture's code cells, adapts the measurement templates, runs them, fills `evidence.json` with cited answers, and lets the engine compute the verdict — **no score is ever typed by hand**. The session shows the engine's derivation table (every score with the measured number and threshold band that produced it), and the final report follows the worked examples' format:
-
-1. **TL;DR** — weighted score, verdict band, the decisive facts in one paragraph
-2. **Dimension table** — weight / score / weighted contribution / one-line driver each
-3. **What changed** — before/after implementation shape
-4. **Evidence by dimension** — `max|Δ|` in both dtype regimes, prerequisite-concept and docstring deltas, the as-used vs warm timing table, crossover-n, recompile audit
-5. **Recommendation** — a must-fix list where each item is tagged with the dimension it lifts, plus where the score lands after fixes
-
-See [references/examples/ge_arrow/ge_arrow_REPORT.md](references/examples/ge_arrow/ge_arrow_REPORT.md) (2.85/5, no-conversion; candidate band mixed/wash) and [references/examples/markov_asset/markov_asset_REPORT.md](references/examples/markov_asset/markov_asset_REPORT.md) (2.25/5, no-conversion + gated net regression) for complete real reports. Verdict bands, the v2 verdict gates / no-conversion rule / sensitivity stamp, weights, and scoring anchors: [references/EVALUATION_FRAMEWORK.md](references/EVALUATION_FRAMEWORK.md) §1–2.
-
-**The one rule to remember:** warm-only speedups are never the headline. The ge_arrow case measured 1.4–4.8× faster warm and **45× slower as-used** — the as-used number (fresh process, actual problem sizes, compile time included) decides the efficiency score.
 
 ### Triage mode — before any code is written
 
-Four checks, using only the existing lecture:
+Four checks, using only the existing lecture — no candidate is built:
 
 1. **Baseline as-used total** — replay the lecture's real call sequence (the NumPy half of an `as_used_total.py` template). This bounds the entire possible win: a lecture whose compute totals 30ms has nothing to give.
 2. **Workload-pattern match** — against the two calibrated poles: **aiyagari-shaped** (large fixed-shape arrays, many re-solves, stable static args → measured ~24× as-used win) vs **ge_arrow-shaped** (tiny models, fresh static args per call → measured ~45× as-used loss).
@@ -54,6 +40,20 @@ Then the decision rule that falls out of the rubric weights: efficiency (0.15) c
 The baseline totals above are the **triage-time** measurements taken on 2026-07-21, kept as a record of what that blind run saw. They are not the numbers the no-conversion gate reads: that value is each lecture's `baseline_as_used_seconds` in its own `evidence.json`, re-measured at evaluation time. Both are the same quantity, so expect them to differ by run rather than to agree.
 
 Scope limit, confirmed by the same test: triage predicts whether the prize is worth pursuing — it cannot predict conversion-quality outcomes (markov_asset's masked `err.throw()` defect was a property of the PR, invisible to triage). Note also that this validation is **in-sample** — the three cases are the ones the thresholds were calibrated on; out-of-sample validation accumulates as fresh lectures are triaged.
+
+### Review mode — what you get
+
+The skill follows the measure → record-evidence → score contract ([scripts/README.md](scripts/README.md)): it extracts both implementations verbatim from the lecture's code cells, adapts the measurement templates, runs them, fills `evidence.json` with cited answers, and lets the engine compute the verdict — **no score is ever typed by hand**. The session shows the engine's derivation table (every score with the measured number and threshold band that produced it), and the final report follows the worked examples' format, leading with the decision:
+
+1. **TL;DR** — the *full* verdict first (gate / no-conversion / sensitivity included), the decisive facts, and the weighted score alongside as candidate quality for the record
+2. **Dimension table** — a verdict row, then weight / score / weighted contribution / one-line driver each, so the table still carries the decision when quoted on its own
+3. **What changed** — before/after implementation shape
+4. **Evidence by dimension** — `max|Δ|` in both dtype regimes, prerequisite-concept and docstring deltas, the as-used vs warm timing table, crossover-n, recompile audit
+5. **Recommendation** — a must-fix list where each item is tagged with the dimension it lifts, plus where the score lands after fixes
+
+See [references/examples/ge_arrow/ge_arrow_REPORT.md](references/examples/ge_arrow/ge_arrow_REPORT.md) (2.85/5, no-conversion; candidate band mixed/wash) and [references/examples/markov_asset/markov_asset_REPORT.md](references/examples/markov_asset/markov_asset_REPORT.md) (2.25/5, no-conversion + gated net regression) for complete real reports. Verdict bands, the v2 verdict gates / no-conversion rule / sensitivity stamp, weights, and scoring anchors: [references/EVALUATION_FRAMEWORK.md](references/EVALUATION_FRAMEWORK.md) §1–2.
+
+**The one rule to remember:** warm-only speedups are never the headline. The ge_arrow case measured 1.4–4.8× faster warm and **45× slower as-used** — the as-used number (fresh process, actual problem sizes, compile time included) decides the efficiency score.
 
 ## Manual usage (no skill)
 
