@@ -70,13 +70,13 @@ Your counts will differ from the ones above — the tracker moves (#11 measured 
 
 ## Step 4 — phase 2, verify — and interrupt it
 
-The long phase: 116 items checked against the default branch rather than against what their threads claim. Findings are appended to `findings.md` **one entry per item, as each is verified**.
+The long phase: 116 items checked against the default branch rather than against what their threads claim. Findings are appended to `findings.md` **one entry per item, as each is verified** — both passes, the open issues under `## Open` and the closed ones under `## Closed`.
 
-**This is the test.** Once 20–30 entries exist, interrupt the session — close it, or press Esc twice. Then open a new session in the same directory and re-invoke the same command. What should happen: it reads `findings.md`, resumes at the lowest issue number with no entry, and re-verifies only the last entry (which may have been half-written). What would be a failure: restarting from item 1, skipping the item it died on, or duplicating entries.
+**This is the test.** Once 20–30 entries exist, interrupt the session — close it, or press Esc twice. Then open a new session in the same directory and re-invoke the same command. What should happen: it partitions `issues.json` by state and, for each side independently, resumes at the lowest number with no entry under the matching heading, re-verifying only the last entry in each (which may have been half-written). What would be a failure: restarting from item 1, skipping the item it died on, duplicating entries, or resuming the open set correctly while re-doing the closed set from scratch.
 
-Resumability is asserted in three separate files and has never been tested. Until this run, phases 2 and 3 named no artifacts at all, so a resumed session could only work if it happened to invent the same filename — the fix is [#17](https://github.com/QuantEcon/skills/pull/17), and this is what checks it.
+**Interrupt during the closed pass too, if you get the chance** — that is the half that was not checkpointed at all before #34, so nothing has ever resumed from it. Resumability is asserted in three separate files and has never been tested. Two fixes have gone in ahead of this run and neither has been exercised: [#17](https://github.com/QuantEcon/skills/pull/17) named the artifacts, since before it phases 2 and 3 named none and a resumed session could only work by inventing the same filename; and [#34](https://github.com/QuantEcon/skills/pull/34) made the checkpoint cover both passes, since run 1 wrote only the open set and sent 62 closed issues straight to the catalog. This run is what checks both.
 
-While it runs, `tail findings.md` occasionally. Every status claim should carry `[verified]`, `[stated]` or `[inferred]`, and a `[verified]` should cite `file:line`, a merged PR, or a tag — never a comment.
+While it runs, `tail findings.md` occasionally. Every status claim should carry `[verified]`, `[stated]` or `[inferred]`, and a `[verified]` should cite `file:line`, a merged PR, a tag, or a commit — **and whatever it cites must resolve on the ref the audit named**, never a comment. A citation that only resolves in the author's working tree or on an unmerged branch is the defect [doctrine §2](../audit/references/doctrine.md#2-evidence-classes) now rules out; run 1's headline finding had exactly that shape.
 
 ## Step 5 — phases 3 to 5
 
@@ -92,9 +92,9 @@ The run cannot check any of this about itself. Ten checks, the last two of which
 |---|---|---|---|
 | 1 | Method section is complete | report §1 | The plan anchor, label policy and prior-audit search are not all named |
 | 2 | Every claim is tagged | catalog entries | An untagged status claim — a defect by the doctrine's own rule |
-| 3 | `[verified]` means verified | sample 5 "fixed" calls | Citation is a thread comment rather than code, a merged PR, or a tag |
+| 3 | `[verified]` means verified | sample 5 "fixed" calls, and **resolve each on the ref named in the header** | Citation is a thread comment rather than code — or a citation of any form that looks right and does not resolve on that ref. `git merge-base --is-ancestor <sha> <ref>` on any commit cited. This is the check run 1 passed and should not have |
 | 4 | Code beat the thread | sample 5 more | The report repeats "fixed in #204" without saying it checked the branch |
-| 5 | The closed side was read | closed-set verification | Closed issues summarised from title and `stateReason` only; no deferred remainders surfaced |
+| 5 | The closed side was read | closed-set verification, **and `findings.md`** | Closed issues summarised from title and `stateReason` only; no deferred remainders surfaced. Also check the checkpoint, not just the output: closed entries reaching the catalog with no matching `## Closed` block is how run 1 passed this check in its report while failing it in its log |
 | 6 | Coverage is honest | `README.md` index | Unaccounted numbers waved at collectively; residue (inline review comments, GraphQL-only data) not stated |
 | 7 | Siblings were checked | external cross-link registry | No sibling considered, in an org where the same fix lands in several repos as `SYNC:` PRs |
 | 8 | Drafted comments are safe | GC tier | A closing keyword immediately before an `owner/repo#N` reference — that closes the *upstream* item when it lands |
