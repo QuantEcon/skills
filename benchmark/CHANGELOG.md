@@ -6,6 +6,20 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/benchmark)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.4.0 — 2026-08-07
+
+Triage becomes the front door, and every output leads with the decision. The reframing follows the maintainers' direction — the product most wanted is "look at a lecture and advise whether a JAX upgrade is recommended" — and the measured record agrees: in every evaluation to date (ge_arrow, markov_asset, wald_friedman, and the 2026-08-06 ge_arrow re-run on [skills#10](https://github.com/QuantEcon/skills/issues/10)) the recommendation was decided by the triage-layer instruments — the as-used baseline and what a conversion could reach — and never moved by the scorecard on top. Review mode is unchanged and stays: it is the mode that caught markov_asset's masked build defect, and it applies the day a conversion PR exists.
+
+**Changed**
+
+- `SKILL.md` leads with triage — the no-candidate "should this lecture be converted?" question — behind a "Which mode" router, with review as the second mode. The frontmatter description now opens with the advise use case, so natural-language invocation matches the common question. Review-mode content is unchanged.
+- The scorer's printed output and the report format lead with the verdict. `score.py` prints `VERDICT:` above the weighted total, labels the total "for the record", and the deciding-flip lines name the verdict they flip to before the recomputed number (previously `⇒ total 2.30, …`, which two careful readers in a row took as the headline — [skills#14, finding 6](https://github.com/QuantEcon/skills/issues/14)). The report's TL;DR opens with the full verdict and carries the score alongside as candidate quality for the record; the dimension table gains a verdict row so it still carries the decision when quoted on its own.
+- `README.md` puts triage first throughout — the mode table, the invocation examples, and the mode sections — and states that triage builds no candidate: it measures the lecture as it stands and bounds what a conversion could deliver.
+- Triage now names its canonical decision criteria: the manual's JAX style page ([when to use JAX, when not to](https://manual.quantecon.org/styleguide/jax.html), including *Converting from Numba § Decide first*), cited rather than restated. The skill's four checks are framed as the measurement layer that tests whether those criteria hold for a given lecture — "a real bottleneck" is a claim the as-used baseline and pattern match establish or refute, while the page's "teaching JAX itself" criterion is editorial and stays a maintainer call.
+- The triage decision rule no longer re-derives numbers from the rubric weights: it states the conclusion qualitatively and points to `references/EVALUATION_FRAMEWORK.md`, which the skill's own scoring step already said was the only place weights live. Triage's outcome vocabulary is standardized on **convert / don't-convert** in both `SKILL.md` and `README.md`. (Caught by Copilot's review of the 0.4.0 PR.)
+
+Nothing in the rubric, weights, gates, or scorecard JSON changed: the regression anchors (2.85 / 2.25) and the fixtures reproduce unchanged.
+
 ## 0.3.2 — 2026-08-03
 
 **Fixed**
