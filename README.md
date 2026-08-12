@@ -10,25 +10,17 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 | Plugin | For | Covers |
 |---|---|---|
-| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide, and working through the review feedback on a PR once it is open |
+| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide (scaffolding today), and working through the review feedback on a PR once it is open |
 | `benchmark` | Maintainers reviewing accelerated implementations | Measured, rubric-scored evaluation of a conversion |
 | `audit` | Maintainers sweeping a whole repository | Bulk, read-only audits — every issue, every PR, a codebase, a translated series — each producing a written report |
 
-`qe` is the author-facing surface — one memorable prefix for everyday work, spanning a lecture's life from drafting to merge. `check-style` is the umbrella (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`) and the per-category sub-skills run the same shared rules individually; `/qe:copilot-review` picks the same lecture up after the PR is open, working through Copilot's review comment by comment. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
+`qe` is the author-facing surface — one memorable prefix for everyday work, spanning a lecture's life from drafting to merge. `check-style` is the umbrella style check (whole lecture, optional category filter, e.g. `/qe:check-style lectures/aiyagari.md figures math`; merged as scaffolding, not yet operational) and `/qe:copilot-review` picks the lecture up after the PR is open, working through Copilot's review comment by comment. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
 
-**Which skills work right now is in [CATALOG.md](CATALOG.md)** — it lists what has merged *and* is operational, so this page does not repeat it. Skills whose scaffolding has merged but which do not run yet are in [docs/using-skills.md](docs/using-skills.md), because they still appear in the slash menu. Ideas nobody has committed to are in [FUTURE-IDEAS.md](FUTURE-IDEAS.md).
+**Which skills work right now is in [CATALOG.md](CATALOG.md)** — it lists what has merged *and* is operational, so this page does not repeat it. Skills whose scaffolding has merged but which do not run yet are in [docs/using-skills.md](docs/using-skills.md), because they still appear in the slash menu. Ideas nobody has committed to are tracked as [low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority).
 
 ## Documentation
 
-| Guide | For |
-|---|---|
-| [AGENTS.md](AGENTS.md) | AI agents and contributors: canonical repo instructions — the single-source-of-truth principle, doc map, working conventions |
-| [docs/using-skills.md](docs/using-skills.md) | Authors/reviewers: setup, invoking skills, what to expect |
-| [docs/developing-skills.md](docs/developing-skills.md) | Contributors: layout, conventions, dev loop, testing locally, versioning and releases, PR flow |
-| [docs/tutorial-run-an-evaluation.md](docs/tutorial-run-an-evaluation.md) | Tutorial: the evaluation procedure by hand, with the ge_arrow validation run as the checkable example |
-| [docs/tutorial-run-an-audit.md](docs/tutorial-run-an-audit.md) | Tutorial: a whole-tracker audit end to end, and how to review what it produces |
-| [benchmark/README.md](benchmark/README.md) | The evaluation skill: review mode, triage mode, report format, manual pipeline |
-| [audit/README.md](audit/README.md) | The audit family: what belongs in it, the shared method, running one |
+Start with [docs/using-skills.md](docs/using-skills.md) to use the skills, and [docs/developing-skills.md](docs/developing-skills.md) to build or change one. The full map of which file owns which topic is in [AGENTS.md](AGENTS.md) — the canonical instructions for contributors and coding agents — so it is not repeated here.
 
 ## Installation
 
@@ -75,38 +67,8 @@ The official action accepts the marketplace and plugin directly:
     prompt: "/benchmark:review-acceleration <args>"
 ```
 
-## Layout
-
-```
-.claude-plugin/marketplace.json   # the marketplace catalogue
-scripts/                          # manifest + frontmatter validation, version-bump guard (run in CI)
-qe/                               # author-facing plugin
-  .claude-plugin/plugin.json
-  CHANGELOG.md                    # what shipped in each version
-  skills/check-style/SKILL.md     # umbrella skill
-  skills/check-<category>/        # thin per-category sub-skills
-  skills/copilot-review/SKILL.md  # PR review-feedback workflow
-  references/rules/               # shared rule files (style-guide schema)
-  scripts/                        # deterministic preflight checkers + fetch-copilot.sh
-benchmark/                        # specialist plugin
-  .claude-plugin/plugin.json
-  CHANGELOG.md
-  skills/review-acceleration/SKILL.md
-  scripts/                        # supporting Python scripts the skill drives
-audit/                            # maintainer-facing bulk-audit plugin
-  .claude-plugin/plugin.json
-  CHANGELOG.md
-  skills/issues/SKILL.md          # one skill per audit subject
-  references/                     # shared doctrine, org context, reporting guidance
-  scripts/                        # deterministic snapshot + coverage machinery
-```
-
 ## Contributing
 
-Open a PR adding or modifying a plugin directory and registering it in `.claude-plugin/marketplace.json`. Test locally with `claude --plugin-dir ./<plugin>` before submitting.
-
-Run `python scripts/validate.py` before pushing — it checks that every plugin resolves, that `plugin.json` agrees with `marketplace.json` on name, version, and description, and that each `SKILL.md` has frontmatter whose `name` matches its directory. CI runs the same script on every PR; a malformed manifest otherwise breaks installation silently in every consuming lecture repository.
-
-CI also fails a PR that changes files under a plugin directory without bumping that plugin's version and adding its changelog entry — the install cache is keyed by version string, so an unbumped change reaches nobody ([developing-skills § Versioning and releases](docs/developing-skills.md#versioning-and-releases)).
+Open a PR adding or modifying a plugin directory and registering it in `.claude-plugin/marketplace.json`. The whole workflow — repo layout, conventions, local testing, validation (`python scripts/validate.py`), and the version-bump-plus-changelog rule that CI enforces on every plugin change — is in [docs/developing-skills.md](docs/developing-skills.md), and the repo-wide ground rules are in [AGENTS.md](AGENTS.md).
 
 Broader context for this repository: [QuantEcon/meta#304](https://github.com/QuantEcon/meta/issues/304) (toolkit proposal) and [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (benchmarking programme).

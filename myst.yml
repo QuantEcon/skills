@@ -38,7 +38,6 @@ project:
     - title: Project
       children:
         - file: CATALOG.md
-        - file: FUTURE-IDEAS.md
 
 site:
   template: book-theme
