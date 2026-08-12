@@ -41,7 +41,7 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 | Rubric: dimensions, weights, anchors, verdict bands | [benchmark/references/EVALUATION_FRAMEWORK.md](benchmark/references/EVALUATION_FRAMEWORK.md) |
 | Style rule text and schema | `QuantEcon/style-guide` (upstream — never authored in this repo) |
 | What has shipped, and the principles behind it | [CATALOG.md](CATALOG.md) |
-| Parked ideas, not committed to | [FUTURE-IDEAS.md](FUTURE-IDEAS.md) |
+| Parked ideas, not committed to | [Low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority) in the tracker, one per idea with its merit assessment |
 | Work in flight, per plugin | issues [#3](https://github.com/QuantEcon/skills/issues/3) (`qe`), [#4](https://github.com/QuantEcon/skills/issues/4) (`benchmark`), [#12](https://github.com/QuantEcon/skills/issues/12) (`audit`) |
 
 ## Working in this repo
@@ -52,7 +52,7 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 - **The product principles** — report first, fix on request; deterministic before LLM; cited claims and computed scores; scaffolding as advice rather than instruction — are stated once in [CATALOG.md § Principles](CATALOG.md#principles) and elaborated in [developing-skills § Conventions](docs/developing-skills.md#conventions). Follow them; don't restate them in new files.
 - **A new skill starts as an issue, not a doc entry.** CATALOG.md lists what has merged *and* is operational, so it stays true; the plan for something unbuilt — and the scaffolding for something merged but not yet operational — belongs in its plugin's tracking issue, where it can change without anyone mistaking it for a description of the repo.
 - **Commit subjects** name the area, then the change: `Docs: hands-on evaluation tutorial…`, `Rubric v2: enforced couplings…`. The repo squash-merges, so stacked branches need `git rebase --onto origin/main <old-base>` once the base PR lands.
-- **`NEXT-SESSION.md` is scratch**: deliberately uncommitted working notes. Don't commit it and don't cite it as documentation.
+- **Session-to-session state lives in the tracker, not in scratch files.** A workplan issue (currently [#25](https://github.com/QuantEcon/skills/issues/25)) holds the current state and ordering, with sub-issues as tasks, following the org's QEP-2 practice in [QuantEcon/qeps](https://github.com/QuantEcon/qeps). The earlier `NEXT-SESSION.md` scratch-file practice is retired; don't recreate it.
 
 ## Writing to GitHub
 
