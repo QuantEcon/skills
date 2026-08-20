@@ -18,7 +18,7 @@ Requires `gh`, authenticated. The convention this skill operates — body as sin
 ## Invocation
 
 ```
-/qe:workplan-update [resume|update|close] [issue#]
+/qe:workplan-update [resume [--full] | update | close] [issue#]
 ```
 
 Both arguments are optional. With no issue, discovery looks for the repo's open plan (`gh issue list --state open --search "work plan in:title"`, plus `TRACKING:`/`PLAN:` title prefixes): exactly one hit proceeds; several is a finding to surface, not a coin flip; zero means there is no plan yet — that is [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md)'s job, offer it. With no verb, ask which moment this is rather than inferring — the cost of running `close` when the user meant `update` is a wrongly closed plan.

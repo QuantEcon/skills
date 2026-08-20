@@ -17,7 +17,7 @@ Requires `gh`, authenticated.
 
 This is observed practice across the org's work-plan issues (exemplars: the [project-translation#37](https://github.com/QuantEcon/project-translation/issues/37) session chain, the [workspace-lectures#48](https://github.com/QuantEcon/workspace-lectures/issues/48) weekly series, [skills#25](https://github.com/QuantEcon/skills/issues/25)). Formalising it as a QEP is planned; until that lands, this section records the practice — and once it lands, this section becomes a pointer. `workplan-update` operates the same convention and links here.
 
-- **The body is the single source of truth for current state, revised in place.** It never accumulates narrative, and it stamps its own revision date ("Revised YYYY-MM-DD").
+- **The body is the single source of truth for current state, revised in place.** It never accumulates narrative, and it stamps its own revision — with time and timezone, not a bare date, when sessions run close together (see the date-rollover gotcha in [`workplan-update`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-update/SKILL.md#gotchas)).
 - **Comments are revision logs**: what changed and why — especially premises that *inverted* rather than merely aged.
 - **Claims are verified against live state, never assumed or carried forward.** A plan body silently carrying a dead premise is worse than no plan.
 - **Two genres, one lifecycle each.** A *period plan* (a session's or week's work) closes with a ledger and is succeeded; a *long-lived tracker* (a project-duration state register) gets resumed and updated but is never session-closed.
