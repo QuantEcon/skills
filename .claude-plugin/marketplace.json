@@ -9,8 +9,8 @@
     {
       "name": "qe",
       "source": "./qe",
-      "version": "0.3.0",
-      "description": "QuantEcon's author-facing base skills — style checking, lecture editing support, working through a PR's review feedback, and turning audit reports into tracked work packages"
+      "version": "0.4.0",
+      "description": "QuantEcon's author-facing base skills — style checking, lecture editing support, working through a PR's review feedback, turning audit reports into tracked work projects, and creating and carrying work-plan state across agent sessions"
     },
     {
       "name": "benchmark",
