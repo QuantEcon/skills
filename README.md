@@ -10,7 +10,7 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 | Plugin | For | Covers |
 |---|---|---|
-| `qe` | Authors and RAs writing lectures | Style checks against the QuantEcon style guide (scaffolding today), working through the review feedback on a PR once it is open, and the `workplan-*` family — turning audit reports into tracked work projects and carrying work-plan state between agent sessions |
+| `qe` | Authors and RAs writing lectures; maintainers organising work | Style checks against the QuantEcon style guide (scaffolding today), working through the review feedback on a PR once it is open, and the `workplan-*` family — turning audit reports into tracked work projects and carrying work-plan state between agent sessions |
 | `benchmark` | Maintainers reviewing accelerated implementations | Measured, rubric-scored evaluation of a conversion |
 | `audit` | Maintainers sweeping a whole repository | Bulk, read-only audits — every issue, every PR, a codebase, a translated series — each producing a written report |
 

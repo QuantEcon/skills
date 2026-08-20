@@ -54,7 +54,7 @@ Everything that registers in your slash menu, working or not. That is wider than
 
 ## Updating and troubleshooting
 
-- **Update**: `claude plugin update qe@quantecon` (per plugin, from any shell), or `/plugin` → marketplace → update; repos with the settings.json opt-in track the marketplace automatically. Like installs, updates apply on the next session restart.
+- **Update**: `claude plugin update <plugin>@quantecon` (per plugin, from any shell — e.g. `qe@quantecon`), or `/plugin` → marketplace → update; repos with the settings.json opt-in track the marketplace automatically. Like installs, updates apply on the next session restart.
 - **Skill not in the menu?** Check the plugin is installed and enabled (`/plugin`), and that you trusted the repo. In settings-managed repos, `enabledPlugins` must list it.
 - **`Unknown command: /benchmark:review-acceleration`?** The plugin-prefixed slash form needs a recent Claude Code (v2.1.216+; check with `claude --version`). On older versions the skill still registers under the bare `/review-acceleration`, and **natural-language invocation works on any version** — just describe the task ("is this JAX conversion worth merging?"). If it resolves under none of these, the install didn't complete — re-run `/plugin install benchmark@quantecon`.
 - **A skill reports "not yet operational"** — it's scaffolding; its issue link says what's pending.
