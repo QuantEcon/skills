@@ -1,20 +1,22 @@
 ---
-name: workplan
-description: Turn an audit or review report into a QEP-compliant work package — extract the high-value findings, re-verify each one against the target repository's current state, and organise the survivors into a GitHub tracking issue with linked sub-issues, labelled per QEP-2. Everything is drafted locally first; nothing is filed on GitHub until the user approves the drafts. Use when asked to process a report or audit into a work plan, turn review findings into issues, or build a work package from a report bundle. Takes a path to a report file or bundle directory, and optionally the target owner/repo.
+name: workplan-project
+description: Turn an audit or review report into a QEP-compliant work project — extract the high-value findings, re-verify each one against the target repository's current state, and organise the survivors into a GitHub tracking issue with linked sub-issues, labelled per QEP-2. Everything is drafted locally first; nothing is filed on GitHub until the user approves the drafts. Use when asked to process a report or audit into a work plan, turn review findings into issues, or build a work package from a report bundle. Takes a path to a report file or bundle directory, and optionally the target owner/repo.
 ---
 
-# workplan
+# workplan-project
 
-Automates the loop **read a report bundle → extract the high-value findings → re-verify each against the repo as it is today → draft a work package → (on approval) file it as a tracking issue with sub-issues**.
+Automates the loop **read a report bundle → extract the high-value findings → re-verify each against the repo as it is today → draft a work project → (on approval) file it as a tracking issue with sub-issues**.
 
-> **Status: merged, no validated run yet.** Shipped in `qe` 0.3.0. First-run validation — a real bundle, from an installed plugin — is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
+The `workplan-*` family: this skill builds a **project** (tracker + sub-issues, the phased-package shape); [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md) creates a single **work-plan issue** (the cross-session state carrier); [`workplan-update`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-update/SKILL.md) maintains one across sessions.
+
+> **Status: merged, no validated run yet.** Shipped in `qe` 0.3.0 as `/qe:workplan`; renamed in 0.4.0 when it became part of the family. First-run validation — a real bundle, from an installed plugin — is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
 Requires `gh`, authenticated: step 3 reads the target repo, step 5 writes to it. The reports themselves are local files — typically bundles under `~/work/quantecon/_audits/` and `~/work/quantecon/_reviews/`, many produced by the [`audit`](https://github.com/QuantEcon/skills/tree/main/audit) plugin, but any evidence-cited report works.
 
 ## Invocation
 
 ```
-/qe:workplan <report-or-bundle> [owner/repo]
+/qe:workplan-project <report-or-bundle> [owner/repo]
 ```
 
 The first argument is a report file or a bundle directory. The target repo defaults to the repository the report names in its own header block; name it explicitly when the report spans several repos or the header is ambiguous. **Quote the path** — real bundle names contain colons, spaces, and `+`.

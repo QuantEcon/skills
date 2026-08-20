@@ -6,6 +6,21 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.4.0 — 2026-08-20
+
+The work-plan surface becomes a three-skill family with one name scheme: `workplan-project` builds a *project* (tracker + sub-issues) from a report, `workplan-issue` creates a single *work-plan issue* (the org's cross-session state carrier), and `workplan-update` maintains one across agent sessions. The family formalises a practice observed across ~45 ad-hoc work-plan issues in 15 org repos; the convention itself is slated for a QEP, and until that lands it is stated once, in `workplan-issue`, with the other skills pointing at it.
+
+**Added**
+
+- `/qe:workplan-issue [owner/repo]` — triage and organise work into a work-plan tracking issue, from any of three sources: a backlog triage (a planning pass over agreed work — a full tracker *audit* stays `/audit:issues`' job), a session bootstrap (the first plan is a handover with no predecessor), or a closing plan's carry-forward register (succession — the register, never a copy of the old body). The body shape comes from the org's exemplars: a live-state table in which every fact is measured now and stamped with time and timezone, dependency-ordered work blocks with their gates named, an explicit front of plan, and an "explicitly not doing" section so deferrals are decisions rather than omissions. Files nothing until the draft is approved, and checks the one-open-plan-per-repo invariant before creating.
+- `/qe:workplan-update [resume|update|close] [issue#]` — maintains a work-plan issue across sessions, where a session is one agent context window. Three moments: `resume` (session start — re-verify the plan's premises against live state and revise the body *before* working it; `--full` re-verifies every claim), `update` (session end, plan continues — body revised in place with a resume pointer, plus a revision-log comment built from verifiable traces swept since the body's own revision stamp), and `close` (plan complete — closing ledger, successor created via `workplan-issue`, in an order that never leaves the chain dangling; closing a long-lived tracker is a category error the skill refuses). One acceptance test governs every write: a fresh agent, given only the issue, can resume the work without the old conversation.
+- The same third-party-write discipline as the rest of `qe`: every `gh` mutation tabulated and gated on an approved draft (shown as a diff against the *freshly re-fetched* live body, since `gh issue edit --body` replaces wholesale), the close path behind a separate explicit confirmation, and warnings not to run the mutating paths headlessly.
+
+**Changed**
+
+- `/qe:workplan` is renamed `/qe:workplan-project`. It shipped this morning in 0.3.0; the rename lands the same day, before any installed use, so the family shares one prefix while the cost is zero. The procedure is unchanged; its output is now called a work *project* to match the family vocabulary.
+- The plugin description widens to cover creating and carrying work-plan state across agent sessions.
+
 ## 0.3.0 — 2026-08-20
 
 Adds `/qe:workplan`, which closes the loop the `audit` plugin opens: audits produce evidence-cited report bundles, and this skill turns a bundle into tracked, actionable work.
