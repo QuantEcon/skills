@@ -6,6 +6,23 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.3.0 — 2026-08-20
+
+Adds `/qe:workplan`, which closes the loop the `audit` plugin opens: audits produce evidence-cited report bundles, and this skill turns a bundle into tracked, actionable work.
+
+**Added**
+
+- `/qe:workplan <report-or-bundle> [owner/repo]` — turns an audit or review report into a QEP-compliant work package: read the bundle (index first, metadata scraped from the bolded header block — these reports carry no frontmatter), extract the findings that clear a stated three-part bar (actionable, evidenced, material), re-verify each against the target repo's current `main` before it earns a place, draft a tracking issue and sub-issues locally in the shape of the worked exemplar QuantEcon.py#925/#926, and — only after the user approves the drafts — file them with `gh` and link them as native GitHub sub-issues.
+- A default mapping from the priority vocabularies the existing report corpus actually uses — triage verdicts (`MERGE`…`CLOSE`), 1–5 star quality, `P0`–`P3`, `GC`/`T0`–`T3` tiers, word priorities, severity glyphs — to an in/out decision, read against the rubric each report states for itself.
+- Deduplication and supersession rules: trust the header **Snapshot** date over the directory name, keep the latest snapshot when bundles overlap, warn before building from a `_processed/` bundle, and surface disagreements between reports rather than silently resolving them.
+- QEP alignment: exactly one QEP-2 type label per issue, priority labels only for outliers (no `medium-priority` exists), labels checked against the target repo before being proposed; and a QEP-1 check that flags a package which crosses repos or changes team workflow as possibly wanting a QEP instead of a pile of issues.
+- The same third-party-write discipline as `/qe:copilot-review`: a "what this skill writes" table, every `gh` mutation gated on draft approval, safe re-runs by searching before creating, and a warning not to run the filing step headlessly.
+- A method note in every draft package recording what was extracted *and* what was dropped in re-verification and why, so the filtering itself is checkable by someone who will not re-run it.
+
+**Changed**
+
+- The plugin description widens from "…working through a PR's review feedback" to also cover turning audit and review reports into tracked work packages.
+
 ## 0.2.2 — 2026-08-03
 
 **Fixed**
