@@ -19,7 +19,7 @@ docs/                             # these guides
 
 **A plugin needs its manifest and its changelog; a skill needs only `SKILL.md`.** A skill that is purely a procedure — nothing deterministic to run, no long reference material to point at — is one file in one directory, and should stay that way. `scripts/` appears when there is something mechanical worth doing in code; `references/` when the skill needs more context than belongs in its body. Adding either before you need it just makes the skill harder to read.
 
-The three live plugins show some of the range: `qe` (an umbrella skill plus thin per-category sub-skills sharing plugin-level rules and scripts, alongside an unrelated standalone procedure with one script of its own), `benchmark` (one skill driving a deterministic engine, with worked examples as its regression baseline), and `audit` (sibling procedures sharing a method document). None of these is the house style — they are what three problems happened to need.
+The three live plugins show some of the range: `qe` (an umbrella skill plus thin per-category sub-skills sharing plugin-level rules and scripts, alongside standalone procedures — a PR-feedback loop with one script of its own, and a three-skill work-plan family whose shared convention is stated in one of the three with the others pointing at it), `benchmark` (one skill driving a deterministic engine, with worked examples as its regression baseline), and `audit` (sibling procedures sharing a method document). None of these is the house style — they are what three problems happened to need.
 
 ## Conventions
 
