@@ -1,6 +1,6 @@
 ---
 name: workplan-update
-description: Maintain a work-plan tracking issue across agent sessions — at session start, re-verify the plan's premises against live state and revise the body before working; at session end, record what the session did with a revision-log comment and a resume pointer, or, when the plan is complete, close it with a ledger and hand the carry-forward register to a successor. Updates are built from verifiable traces (commits, PRs, issues) so a fresh session can resume from the issue alone. Use when asked to update a work plan, resume from one, close out a session, record session state, or hand over to the next session. Takes the plan issue's URL or number, or discovers the repo's single open work-plan issue.
+description: Maintain a work-plan tracking issue across agent sessions — at session start, re-verify the plan's premises against live state and revise the body before working; at session end, record what the session did with a revision-log comment and a resume pointer, or, when the plan is complete, close it with a ledger and hand the carry-forward register to a successor. Updates are built from verifiable traces (commits, PRs, issues) so a fresh session can resume from the issue alone. Use when asked to update a work plan, resume from one, close out a session, record session state, or hand over to the next session. Every path writes to the issue — to only look at a plan (show it, check status, see what's next) use workplan-read instead. Takes the plan issue's URL or number, or discovers the repo's single open work-plan issue.
 ---
 
 # workplan-update
@@ -9,7 +9,7 @@ Maintains the issue that carries **cross-session state**: the work-plan issue a 
 
 > **A fresh agent, given only the issue, can resume the work without the old conversation.**
 
-The `workplan-*` family: [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report; [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md) creates a work-plan issue and owns the convention that defines its shape; this skill maintains one across sessions.
+The `workplan-*` family: [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report; [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md) creates a work-plan issue and owns the convention that defines its shape; this skill maintains one across sessions; [`workplan-read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-read/SKILL.md) reads one without writing.
 
 > **Status: merged, no validated run yet.** Shipped in `qe` 0.4.0. First-run validation is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
@@ -21,7 +21,7 @@ Requires `gh`, authenticated. The convention this skill operates — body as sin
 /qe:workplan-update [resume [--full] | update | close] [issue#]
 ```
 
-Both arguments are optional. With no issue, discovery looks for the repo's open plan (`gh issue list --state open --search "work plan in:title"`, plus `TRACKING:`/`PLAN:` title prefixes): exactly one hit proceeds; several is a finding to surface, not a coin flip; zero means there is no plan yet — that is [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md)'s job, offer it. With no verb, ask which moment this is rather than inferring — the cost of running `close` when the user meant `update` is a wrongly closed plan.
+Both arguments are optional. With no issue, discovery looks for the repo's open plan (`gh issue list --state open --search "work plan in:title"`, plus `TRACKING:`/`PLAN:` title prefixes): exactly one hit proceeds; several is a finding to surface, not a coin flip; zero means there is no plan yet — that is [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md)'s job, offer it. With no verb, ask which moment this is rather than inferring — the cost of running `close` when the user meant `update` is a wrongly closed plan. And if the user only wants to *look* at the plan — status, what's next, where things were left — no verb here fits: that is [`workplan-read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-read/SKILL.md)'s job, offer it the same way.
 
 ## What this skill writes
 

@@ -6,6 +6,19 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.5.0 — 2026-08-25
+
+The work-plan family gains its read-only member. In real use, asking to *read* a plan ("what's on the plan?", "where did we leave off?") routed to `/qe:workplan-update` — the only skill whose description mentions an existing plan — whose every verb writes; invoked with no verb it asked "resume, update, or close?" when the honest answer was "none, just show me" ([#50](https://github.com/QuantEcon/skills/issues/50)).
+
+**Added**
+
+- `/qe:workplan-read [issue#|url]` — read a work-plan issue and report its state: the revision stamp and its age first (the plan's warranty date), then the front of the plan, the live-state facts *as of the stamp*, block status, and the latest revision-log comment. Writes nothing, so it carries no approval gates. Its one obligation is honesty about staleness: it reports the body faithfully, notes (never silently corrects) any discrepancy it happens to observe, and points anyone about to work the plan at `/qe:workplan-update resume` — reading is the front door to a session, not a way around the verification discipline.
+
+**Changed**
+
+- `/qe:workplan-update`'s description now says every path writes and routes read-shaped requests to `workplan-read`; its no-verb prompt hands off "just looking" the same way it already hands "no plan exists" to `workplan-issue`. The family cross-reference in the other three skills gains the fourth member.
+- The plugin description widens to "creating, reading and carrying work-plan state across agent sessions".
+
 ## 0.4.0 — 2026-08-20
 
 The work-plan surface becomes a three-skill family with one name scheme: `workplan-project` builds a *project* (tracker + sub-issues) from a report, `workplan-issue` creates a single *work-plan issue* (the org's cross-session state carrier), and `workplan-update` maintains one across agent sessions. The family formalises a practice observed across ~45 ad-hoc work-plan issues in 15 org repos; the convention itself is slated for a QEP, and until that lands it is stated once, in `workplan-issue`, with the other skills pointing at it.
