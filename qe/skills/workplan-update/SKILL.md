@@ -9,7 +9,7 @@ Maintains the issue that carries **cross-session state**: the work-plan issue a 
 
 > **A fresh agent, given only the issue, can resume the work without the old conversation.**
 
-The `workplan-*` family: [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report; [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md) creates a work-plan issue and owns the convention that defines its shape; this skill maintains one across sessions; [`workplan-read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-read/SKILL.md) reads one without writing.
+The `workplan-*` family: [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report; [`workplan-issue`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-issue/SKILL.md) creates a work-plan issue and owns the convention that defines its shape; this skill maintains one across sessions; [`workplan-read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-read/SKILL.md) reads and validates one, recommending next steps, without writing.
 
 > **Status: merged, no validated run yet.** Shipped in `qe` 0.4.0. First-run validation is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 

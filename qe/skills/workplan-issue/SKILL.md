@@ -7,7 +7,7 @@ description: Create a work-plan tracking issue — triage and organise work into
 
 Creates the artifact the rest of the family revolves around: the **work-plan issue**, the org's cross-session state carrier. Triage and organise work — from a backlog, from the session in progress, or from a closing plan — into one dependency-ordered, live-state-verified issue that a future session can work from without any other context.
 
-The `workplan-*` family: [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report; this skill creates a single work-plan issue; [`workplan-update`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-update/SKILL.md) maintains one across sessions; [`workplan-read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-read/SKILL.md) reads one without writing.
+The `workplan-*` family: [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report; this skill creates a single work-plan issue; [`workplan-update`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-update/SKILL.md) maintains one across sessions; [`workplan-read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-read/SKILL.md) reads and validates one, recommending next steps, without writing.
 
 > **Status: merged, no validated run yet.** Shipped in `qe` 0.4.0. First-run validation is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
