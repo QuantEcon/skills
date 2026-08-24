@@ -6,6 +6,26 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.5.0 — 2026-08-25
+
+The work-plan lifecycle consolidates into one skill and gains a read verb. Two findings from reviewing the family in real use drove this ([#50](https://github.com/QuantEcon/skills/issues/50)): asking to *read* a plan routed to `workplan-update` — the only skill whose description mentioned an existing plan — whose every verb writes; and the deeper cause was structural: `workplan-issue`, `workplan-update`, and the proposed `workplan-read` were all verbs on the *same artifact* split across separate skills, which is what forced the cross-skill handoffs (close handing succession to `workplan-issue`, discovery and anchor-and-sweep linked between files, four descriptions competing for "work plan" requests). The family is now two skills: `/qe:workplan` (the state-carrier issue's lifecycle) and `/qe:workplan-project` (report → project), unchanged.
+
+**Added**
+
+- `/qe:workplan [create [owner/repo] | read [--full] | resume [--full] | update | close] [issue#]` — the work-plan issue's whole lifecycle in one skill. `create`, `resume`, `update`, and `close` are the procedures shipped in 0.4.0 as `workplan-issue` and `workplan-update`, now sharing one statement of the convention, one issue-discovery rule, and one anchor-and-sweep section; succession is internal to `close` (draft successor via `create`'s succession source → post ledger citing it → close, so the chain never dangles) instead of a documented handshake between two skills. With no verb, a look-shaped request dispatches to `read`; anything else asks which moment it is.
+- The new `read` verb — look, validate, recommend, writing nothing. **Read**: the revision stamp and its age first (the plan's warranty date), then the front of the plan, the live-state facts *as of the stamp*, block status, and the latest revision-log comment. **Validate**: a read-only sweep since the stamp checks the plan's premises — default depth is the front-of-plan items plus anything the sweep contradicts, `--full` checks every claim — and classifies each as *holds*, *aged*, or *inverted*, with a trace citation, reporting body and reality side by side rather than blended. **Recommend**: what actually leads next and whether the body needs re-stamping first (via `resume`), or which other verb the moment calls for — named, never run unasked. No approval gates because there is nothing to gate; `resume` now begins as a `read` at working depth.
+
+**Removed**
+
+- `/qe:workplan-issue` and `/qe:workplan-update` as separate skills — their procedures live on unchanged as `workplan`'s verbs. They existed for one release (0.4.0) with no validated run, so consolidating before first use costs nothing.
+
+**Changed**
+
+- The name `/qe:workplan` is reused: it meant the report-to-project skill for one morning in 0.3.0 (renamed `workplan-project` in 0.4.0, before any installed use); from this release it is the lifecycle skill.
+- `workplan-project`'s family cross-reference now names the two-skill shape.
+- Skill status banners no longer restate release history (which skill shipped when, under what name) — this changelog owns that; a banner now says only the skill's validation status. Applied to `workplan` and `workplan-project`.
+- The plugin description widens to "creating, reading and carrying work-plan state across agent sessions".
+
 ## 0.4.0 — 2026-08-20
 
 The work-plan surface becomes a three-skill family with one name scheme: `workplan-project` builds a *project* (tracker + sub-issues) from a report, `workplan-issue` creates a single *work-plan issue* (the org's cross-session state carrier), and `workplan-update` maintains one across agent sessions. The family formalises a practice observed across ~45 ad-hoc work-plan issues in 15 org repos; the convention itself is slated for a QEP, and until that lands it is stated once, in `workplan-issue`, with the other skills pointing at it.
