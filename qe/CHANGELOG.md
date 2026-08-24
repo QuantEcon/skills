@@ -23,6 +23,7 @@ The work-plan lifecycle consolidates into one skill and gains a read verb. Two f
 
 - The name `/qe:workplan` is reused: it meant the report-to-project skill for one morning in 0.3.0 (renamed `workplan-project` in 0.4.0, before any installed use); from this release it is the lifecycle skill.
 - `workplan-project`'s family cross-reference now names the two-skill shape.
+- Skill status banners no longer restate release history (which skill shipped when, under what name) — this changelog owns that; a banner now says only the skill's validation status. Applied to `workplan` and `workplan-project`.
 - The plugin description widens to "creating, reading and carrying work-plan state across agent sessions".
 
 ## 0.4.0 — 2026-08-20
