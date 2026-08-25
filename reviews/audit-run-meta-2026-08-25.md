@@ -237,7 +237,13 @@ Filed separately, not as paragraphs here, per the plan convention:
 3. **Add "the highest recorded number" to [`SKILL.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/skills/audit-issues/SKILL.md)'s list of wrong ways to infer progress** (§5, residue).
 4. **Make the tracker fingerprint-diff a standard run step** (§4).
 5. **Run 3 should interrupt mid-write, and inside the closed pass** (§4).
-6. **`#23` input**: the closed pass is 179 of 317 items — 56% of the run — for the cheapest checks in the audit.
+6. **Clarify what "dirty" means in the working-directory rule.** Its stated goal is that "a run leaves
+   `git status` clean", and option 3 (outside the checkout) is conditioned on the repo otherwise "showing dirty" —
+   but option 2 (`.audit/` at the checkout root) leaves an untracked directory, which *does* show in
+   `git status` unless the repo ignores that path. `meta` has no `.gitignore` at all, so option 3 was indicated
+   and option 2 was taken. The consequence here was 2.4 MB of findings, including AWS and access-token material,
+   sitting untracked in a public repo checkout until moved by hand.
+7. **`#23` input**: the closed pass is 179 of 317 items — 56% of the run — for the cheapest checks in the audit.
    It scales badly (on `lecture-python.myst`, 1003 items against 73 open, it would be ~93% of the run) and, unlike
    the bundle, has no scale rule. Whether it earns that share is now answerable with two data points.
 
@@ -248,5 +254,8 @@ The one thing no self-audit can supply, and run 1's checks 9 and 10 in a new ins
 - Does the tiering against `#344`/`#357` match how the repo is actually planned, and would you act on it?
 - Are the 19 drafted closing comments ones you would send?
 - Where should the bundle live? It contains AWS and access-token findings; the run flagged
-  `QuantEcon/infrastructure` as the better home for those portions. `meta` is public and has no notes system, so
-  the bundle currently sits untracked in `.audit/`.
+  `QuantEcon/infrastructure` as the better home for those portions. **Partly resolved 2026-08-25**: the bundle was
+  moved out of the checkout to `~/work/quantecon/_audits/2026-08-25-quantecon-meta-issues`, matching the existing
+  `_audits` convention, after which the `meta` checkout returned to fully clean — `git status` empty, `HEAD`
+  unchanged. Whether the AWS and access-token portions should additionally be filed against
+  `QuantEcon/infrastructure` is still open.
