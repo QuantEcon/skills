@@ -70,6 +70,6 @@ The official action accepts the marketplace and plugin directly:
 
 ## Contributing
 
-Open a PR modifying the `qe/` plugin directory (its `marketplace.json` entry included when the version moves). The whole workflow — repo layout, conventions, local testing, validation (`python scripts/validate.py`), and the version-bump-plus-changelog rule that CI enforces on every plugin change — is in [docs/developing-skills.md](docs/developing-skills.md), and the repo-wide ground rules are in [AGENTS.md](AGENTS.md).
+Open a PR — repo-level docs and plugin changes alike. A change under `qe/` bumps the plugin version in both `qe/.claude-plugin/plugin.json` and its entry in `.claude-plugin/marketplace.json`; the whole workflow — repo layout, conventions, local testing, validation (`python scripts/validate.py`), and the version-bump-plus-changelog rule that CI enforces — is in [docs/developing-skills.md](docs/developing-skills.md), and the repo-wide ground rules are in [AGENTS.md](AGENTS.md).
 
 Broader context for this repository: [QuantEcon/meta#304](https://github.com/QuantEcon/meta/issues/304) (toolkit proposal) and [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (benchmarking programme).
