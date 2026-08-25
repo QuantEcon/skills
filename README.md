@@ -2,7 +2,7 @@
 
 A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) housing QuantEcon's shared agent skills and their supporting scripts.
 
-Each plugin bundles one area of work — a skill (the instructions Claude follows) plus the deterministic scripts it drives — so the same versioned toolkit works locally for authors and RAs, and headlessly in CI.
+One plugin, `qe`, bundles the skills (the instructions Claude follows) with the deterministic scripts they drive, so the same versioned toolkit works locally for authors and RAs, and headlessly in CI.
 
 📖 **[quantecon.github.io/skills](https://quantecon.github.io/skills)** — the documentation, rendered and navigable. It is built from the files in this repository, so reading either one gets you the same content.
 
@@ -30,7 +30,7 @@ Start with [docs/using-skills.md](docs/using-skills.md) to use the skills, and [
 
 ### Automatic (lecture repos)
 
-Lecture repositories opt in by checking the following into their `.claude/settings.json`. Anyone who opens the repo and trusts it gets the marketplace and plugins installed automatically — no commands to run:
+Lecture repositories opt in by checking the following into their `.claude/settings.json`. Anyone who opens the repo and trusts it gets the marketplace and plugin installed automatically — no commands to run:
 
 ```json
 {
@@ -70,6 +70,6 @@ The official action accepts the marketplace and plugin directly:
 
 ## Contributing
 
-Open a PR adding or modifying a plugin directory and registering it in `.claude-plugin/marketplace.json`. The whole workflow — repo layout, conventions, local testing, validation (`python scripts/validate.py`), and the version-bump-plus-changelog rule that CI enforces on every plugin change — is in [docs/developing-skills.md](docs/developing-skills.md), and the repo-wide ground rules are in [AGENTS.md](AGENTS.md).
+Open a PR — repo-level docs and plugin changes alike. A change under `qe/` bumps the plugin version in both `qe/.claude-plugin/plugin.json` and its entry in `.claude-plugin/marketplace.json`; the whole workflow — repo layout, conventions, local testing, validation (`python scripts/validate.py`), and the version-bump-plus-changelog rule that CI enforces — is in [docs/developing-skills.md](docs/developing-skills.md), and the repo-wide ground rules are in [AGENTS.md](AGENTS.md).
 
 Broader context for this repository: [QuantEcon/meta#304](https://github.com/QuantEcon/meta/issues/304) (toolkit proposal) and [QuantEcon/meta#335](https://github.com/QuantEcon/meta/issues/335) (benchmarking programme).

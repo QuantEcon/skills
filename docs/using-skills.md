@@ -37,7 +37,7 @@ Two ways, equivalent:
 - **Evidence, not vibes.** Reports cite rule IDs, `file:line` locations, and measured numbers. The benchmark skill goes further: its scores are computed by a deterministic engine from recorded evidence — the session shows the full derivation.
 - **The same skill works pre-PR and in review.** Run it on your working copy before opening a PR (catch issues early), or point it at an open PR (consistent review).
 
-## The plugins
+## The skills
 
 Everything that registers in your slash menu — one plugin, five skills. Since `qe` 0.6.0 every entry is a skill that actually runs — an unbuilt skill lives only as the plan in its family's tracking issue (the style-check family, for example, is [skills#3](https://github.com/QuantEcon/skills/issues/3)). [CATALOG.md](../CATALOG.md) is the stricter list: merged, operational, *and* stating how far each has been validated.
 
