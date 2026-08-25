@@ -28,11 +28,10 @@ Either route, **restart the session afterwards** — plugins register at startup
 
 ## Invoking a skill
 
-Three ways, all equivalent:
+Two ways, equivalent:
 
 1. **Slash command** — type `/` and pick from the menu, e.g. `/benchmark:review-acceleration 717`. Trailing words are passed to the skill as arguments.
-2. **Natural language** — describe what you want ("check this lecture's figures against the style guide"; "is this JAX conversion actually an improvement?") and the matching skill triggers on its description.
-3. **Category entry points** — some plugins expose thin sub-skills (`/qe:check-figures`, `/qe:check-math`, …) so a narrow check is one keystroke and shows up in autocomplete.
+2. **Natural language** — describe what you want ("work through Copilot's review of this PR"; "is this JAX conversion actually an improvement?") and the matching skill triggers on its description.
 
 ## What to expect
 
@@ -42,11 +41,10 @@ Three ways, all equivalent:
 
 ## The plugins
 
-Everything that registers in your slash menu, working or not. That is wider than [CATALOG.md](../CATALOG.md), which lists only skills that are merged *and* operational — scaffolding appears here instead, because installing its plugin puts it in the menu whether or not it does anything yet, and you should know which is which before you type it.
+Everything that registers in your slash menu. Since `qe` 0.6.0 every entry is a skill that actually runs — an unbuilt skill lives only as the plan in its plugin's tracking issue (the style-check family, for example, is [skills#3](https://github.com/QuantEcon/skills/issues/3)). [CATALOG.md](../CATALOG.md) is the stricter list: merged, operational, *and* stating how far each has been validated.
 
 | Plugin | Skills | What they do | Status |
 |---|---|---|---|
-| `qe` | `/qe:check-style` + `check-{writing,math,code,figures,jax,refs}` | Style-guide compliance for lecture source, by rule ID | scaffolding — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
 | `qe` | `/qe:copilot-review` | Work through GitHub Copilot's review of a PR: a verdict and recommended fix per comment, then a threaded reply to each one so they can be resolved from the GitHub UI | operational, validated from an installed plugin 2026-08-03 — [#26](https://github.com/QuantEcon/skills/pull/26) |
 | `qe` | `/qe:workplan-project`, `/qe:workplan` | The work-plan family: `workplan-project` turns an audit/review report into a tracking issue with linked sub-issues; `workplan` carries the single work-plan issue that holds state between agent sessions through its lifecycle — `create`, `read` (validate against live state and recommend next steps; writes nothing), `resume`, `update`, `close`-and-succeed. All GitHub writes are drafted first and gated on your approval | merged as complete procedures, no validated run yet — [skills#3](https://github.com/QuantEcon/skills/issues/3) |
 | `benchmark` | `/benchmark:review-acceleration` | Advise whether a lecture is worth converting at all (triage — the front door), or score a submitted NumPy→JAX/Numba conversion against the rubric (review) | operational for workspace runs — [guide](../benchmark/README.md), [skills#4](https://github.com/QuantEcon/skills/issues/4) |
@@ -57,5 +55,4 @@ Everything that registers in your slash menu, working or not. That is wider than
 - **Update**: `claude plugin update <plugin>@quantecon` (per plugin, from any shell — e.g. `qe@quantecon`), or `/plugin` → marketplace → update; repos with the settings.json opt-in track the marketplace automatically. Like installs, updates apply on the next session restart.
 - **Skill not in the menu?** Check the plugin is installed and enabled (`/plugin`), and that you trusted the repo. In settings-managed repos, `enabledPlugins` must list it.
 - **`Unknown command: /benchmark:review-acceleration`?** The plugin-prefixed slash form needs a recent Claude Code (v2.1.216+; check with `claude --version`). On older versions the skill still registers under the bare `/review-acceleration`, and **natural-language invocation works on any version** — just describe the task ("is this JAX conversion worth merging?"). If it resolves under none of these, the install didn't complete — re-run `/plugin install benchmark@quantecon`.
-- **A skill reports "not yet operational"** — it's scaffolding; its issue link says what's pending.
 - **Version pinning**: plugin versions live in the marketplace catalogue; CI validates that every manifest is consistent, so a broken install is a bug — please open an issue.
