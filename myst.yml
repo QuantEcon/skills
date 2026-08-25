@@ -23,18 +23,18 @@ project:
         - file: docs/developing-skills.md
         - file: docs/tutorial-run-an-evaluation.md
         - file: docs/tutorial-run-an-audit.md
-    - title: Plugins
+    - title: Skill families
       children:
-        - file: benchmark/README.md
-          title: Benchmark plugin
+        - file: qe/references/benchmark/README.md
+          title: The benchmark skill
           children:
-            - file: benchmark/references/EVALUATION_FRAMEWORK.md
-        - file: audit/README.md
-          title: Audit plugin
+            - file: qe/references/benchmark/EVALUATION_FRAMEWORK.md
+        - file: qe/references/audit/README.md
+          title: The audit skills
           children:
-            - file: audit/references/doctrine.md
-            - file: audit/references/quantecon-context.md
-            - file: audit/references/deliverables.md
+            - file: qe/references/audit/doctrine.md
+            - file: qe/references/audit/quantecon-context.md
+            - file: qe/references/audit/deliverables.md
     - title: Project
       children:
         - file: CATALOG.md

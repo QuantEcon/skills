@@ -45,7 +45,7 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: python scripts/check-version-bump.py --base "origin/$BASE_REF"
 
-      # The benchmark plugin's claim is that no score is ever written by hand:
+      # The benchmark skill's claim is that no score is ever written by hand:
       # every scorecard is a deterministic function of its evidence.json. That
       # only stays true if it is checked. A non-empty diff here means either a
       # scorecard was hand-edited, or a rubric change moved a published verdict
@@ -53,13 +53,13 @@ jobs:
       # to re-run these two commands and commit, so the verdict move lands in
       # the diff where a reviewer sees it. Stdlib only; no install step needed.
       - name: Scorecards reproduce from evidence
-        working-directory: benchmark
+        working-directory: qe
         run: |
-          python scripts/scoring/score.py references/examples/ge_arrow
-          python scripts/scoring/score.py references/examples/markov_asset
-          python scripts/scoring/score.py references/fixtures/rubric_v2
-          git diff --exit-code -- 'references/examples/*/results/scorecard.json' \
-                                  'references/fixtures/*/results/scorecard.json'
+          python scripts/benchmark/scoring/score.py references/benchmark/examples/ge_arrow
+          python scripts/benchmark/scoring/score.py references/benchmark/examples/markov_asset
+          python scripts/benchmark/scoring/score.py references/benchmark/fixtures/rubric_v2
+          git diff --exit-code -- 'references/benchmark/examples/*/results/scorecard.json' \
+                                  'references/benchmark/fixtures/*/results/scorecard.json'
 
   # A separate job on purpose: this one installs an ~85 MB npm toolchain, and
   # running it beside `validate` rather than inside it keeps that job four fast

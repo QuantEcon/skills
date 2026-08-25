@@ -6,17 +6,21 @@ Each plugin bundles one area of work — a skill (the instructions Claude follow
 
 📖 **[quantecon.github.io/skills](https://quantecon.github.io/skills)** — the documentation, rendered and navigable. It is built from the files in this repository, so reading either one gets you the same content.
 
-## Plugins
+## The `qe` plugin
 
-| Plugin | For | Covers |
+One plugin, one namespace ([#43](https://github.com/QuantEcon/skills/issues/43)): every skill installs as `/qe:<name>`, so an invocation always reads as a QuantEcon skill.
+
+| Skill | For | Does |
 |---|---|---|
-| `qe` | Authors and RAs writing lectures; maintainers organising work | Working through the review feedback on a PR once it is open, and the `workplan-*` family — turning audit reports into tracked work projects and carrying work-plan state between agent sessions. Style checks against the QuantEcon style guide are planned ([skills#3](https://github.com/QuantEcon/skills/issues/3)) |
-| `benchmark` | Maintainers reviewing accelerated implementations | Measured, rubric-scored evaluation of a conversion |
-| `audit` | Maintainers sweeping a whole repository | Bulk, read-only audits — every issue, every PR, a codebase, a translated series — each producing a written report |
+| `/qe:copilot-review` | Authors with an open PR | Works through Copilot's review comment by comment: verdict and fix per comment, threaded replies so each resolves from the GitHub UI |
+| `/qe:benchmark` | Maintainers weighing acceleration | Advises whether a lecture is worth converting at all (triage), or scores a submitted NumPy→JAX/Numba conversion against the rubric (review) |
+| `/qe:audit-issues` | Maintainers sweeping a repository | Whole-tracker audit, read-only: every issue's status verified against the code, tiered into the repo's plan, delivered as a report bundle |
+| `/qe:workplan-project` | Maintainers organising work | Turns an audit or review report into a tracking issue with linked sub-issues |
+| `/qe:workplan` | Anyone carrying work across sessions | The work-plan issue's whole lifecycle — create, read (validate and recommend, writing nothing), resume, update, close-and-succeed |
 
-`qe` is the author-facing surface — one memorable prefix for everyday work, spanning a lecture's life from drafting to merge and the work planning around it. `/qe:copilot-review` picks the lecture up after the PR is open, working through Copilot's review comment by comment; the style-check family (`/qe:check-style` against the QuantEcon style guide) is planned in [skills#3](https://github.com/QuantEcon/skills/issues/3) and lands once its rule snapshot and deterministic preflight exist. The `workplan-*` family serves the maintainer end with two skills: `/qe:workplan-project` turns an audit or review report into a tracking issue with sub-issues, and `/qe:workplan` carries the single work-plan issue that holds state between agent sessions through its whole lifecycle — create, read (validate against live state and recommend next steps, writing nothing), resume, update, and close-and-succeed. `benchmark` and `audit` are specialist toolkits, installed by the maintainers who need them.
+Style checks against the QuantEcon style guide (`/qe:check-style`) are planned in [skills#3](https://github.com/QuantEcon/skills/issues/3) and land once their rule snapshot and deterministic preflight exist. Until qe 0.7.0 the benchmark and audit skills were the separate `benchmark` and `audit` plugins — if you installed those, uninstall them (`claude plugin uninstall benchmark@quantecon audit@quantecon`) so the retired names don't linger in your menu.
 
-**Which skills work right now is in [CATALOG.md](CATALOG.md)** — it lists what has merged *and* is operational, so this page does not repeat it. Skills not yet built live only as plans in their plugin's tracking issue — nothing ships as a non-working menu entry. Ideas nobody has committed to are tracked as [low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority).
+**How far each skill has been validated is in [CATALOG.md](CATALOG.md)** — it lists what has merged *and* is operational, so this page does not repeat it. Skills not yet built live only as plans in the tracking issues — nothing ships as a non-working menu entry. Ideas nobody has committed to are tracked as [low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority).
 
 ## Documentation
 
@@ -36,21 +40,18 @@ Lecture repositories opt in by checking the following into their `.claude/settin
     }
   },
   "enabledPlugins": {
-    "qe@quantecon": true,
-    "benchmark@quantecon": true
+    "qe@quantecon": true
   }
 }
 ```
 
-`audit` is deliberately absent from the lecture-repo block: it is maintainer tooling, and the plugin is the enable unit, so auto-installing it would put org-wide audit skills in every author's command list. Maintainers install it themselves.
+Since the plugin is the enable unit and there is now one plugin, every consumer gets the full skill list — including the read-only maintainer tooling (audits, benchmark). That trade was weighed in [#43](https://github.com/QuantEcon/skills/issues/43): two extra read-only entries in a five-item menu, against a namespace every invocation shares.
 
 ### Manual (any project)
 
 ```
 /plugin marketplace add QuantEcon/skills
 /plugin install qe@quantecon
-/plugin install benchmark@quantecon
-/plugin install audit@quantecon
 ```
 
 Those are slash commands in a Claude Code session; **restart the session afterwards**, since plugins register at startup. `/plugin` is a terminal-CLI built-in, so in the VS Code extension or the web app use the equivalent `claude plugin …` CLI commands instead — see [using-skills § Setup](docs/using-skills.md#setup).
@@ -63,8 +64,8 @@ The official action accepts the marketplace and plugin directly:
 - uses: anthropics/claude-code-action@v1
   with:
     plugin_marketplaces: "https://github.com/QuantEcon/skills.git"
-    plugins: "benchmark@quantecon"
-    prompt: "/benchmark:review-acceleration <args>"
+    plugins: "qe@quantecon"
+    prompt: "/qe:benchmark <args>"
 ```
 
 ## Contributing
