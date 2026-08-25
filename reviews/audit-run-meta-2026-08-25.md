@@ -13,6 +13,10 @@ observed it from outside — sampling `findings.md` every 15–20 seconds, finge
 after, and recording a prediction of the resume point *before* the resume happened. That external observation is
 what produced the findings in §5; none of them is visible in the finished bundle. Recommended for run 3.
 
+**Citations are pinned to `qe--v0.7.0`** — the tag whose tree this run actually executed — so every quoted
+guarantee stays checkable against the same artifact even after the skill changes. A run record whose citations
+drift is the defect run 1 was faulted for, one level up.
+
 ## 1. Snapshot provenance
 
 | Field | Value |
@@ -98,7 +102,7 @@ would raise.
 
 **Two things this interrupt did *not* test**, stated so run 3 can target them:
 
-1. **The truncation guard.** SKILL.md says to "re-verify the last entry in each rather than trusting a possibly
+1. **The truncation guard.** [`SKILL.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/skills/audit-issues/SKILL.md) says to "re-verify the last entry in each rather than trusting a possibly
    truncated write". The kill left a clean write, so the guard was never exercised. Whether `#260` was
    re-verified is *indeterminate from the artifacts* — there is no duplicate entry, but re-verifying need not
    mean rewriting. Only the session transcript could settle it. **Run 3 should interrupt mid-write** to produce
@@ -114,8 +118,9 @@ before: 317 issues, sha256 024ccc8d4cd437e7…
 after:  317 issues, sha256 024ccc8d4cd437e7…  (identical)
 ```
 
-Any close, label, or comment would have moved `updated_at` on the affected issue. The working tree was likewise
-unchanged: `HEAD` still `58d577d`, `git status` showing only `?? .audit/`. Run 1 asserted read-only compliance;
+Any close, label, or comment would have moved `updated_at` on the affected issue. **No tracked file changed**
+either: `HEAD` still `58d577d` and a clean index with no diff, the only entry in `git status` being the
+untracked `?? .audit/` — the run's own output directory, which is where the working-directory rule puts it. Run 1 asserted read-only compliance;
 this is the first run to demonstrate it. **Recommend the fingerprint-diff become a standard step** — it costs two
 `gh` calls and converts a doctrine promise into a measurement.
 
@@ -133,7 +138,7 @@ Sampling `findings.md` throughout gave the write pattern:
 | Open (138 items) | 15+ | batches of 8–9 entries, every 75–120s |
 | Closed (179 items) | **1** | nothing for the entire survey, then the complete 10.8 KB section in a single write |
 
-SKILL.md's phase 2 states the guarantee plainly:
+[`SKILL.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/skills/audit-issues/SKILL.md) phase 2 states the guarantee plainly:
 
 > Write each item's finding to `findings.md` as it is verified — **the closed pass too** … so that an interrupted
 > run loses one item rather than the phase.
@@ -148,7 +153,7 @@ added the `## Closed` heading and the two-partition resume rule. That fixed the 
 There is a second-order consequence worth recording separately, because the two conventions were written
 independently and do not compose:
 
-- **`deliverables.md` permits grouped entries** — "entries are grouped where a whole family shares one answer;
+- **[`deliverables.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/references/audit/deliverables.md) permits grouped entries** — "entries are grouped where a whole family shares one answer;
   every closed issue is named exactly once" — and this run used them, giving 9 `**#N` headers covering all 179
   closed issues.
 - **The resume rule addresses by issue number** — "resume at the lowest number with no entry under the matching
@@ -165,7 +170,7 @@ because the evidence did not support them:
   which is order-independent, so ordering is cosmetic. The hazard argument required assuming the run used a
   high-water-mark algorithm, and the only evidence for that was it *describing* its position as "verified through
   `#260`" — an accurate plain-English summary of a correct set-difference result. Inferring an implementation
-  from prose is not evidence. **Residue**: SKILL.md's guard names two wrong shortcuts ("do not infer progress
+  from prose is not evidence. **Residue**: [`SKILL.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/skills/audit-issues/SKILL.md)'s guard names two wrong shortcuts ("do not infer progress
   from the file's length or from a single block") but not "the highest recorded number". Adding the third is a
   one-line clarification, not a defect.
 - *Batched writes violate append-as-you-go.* They do not. Writing after 9 of 70 items is checkpointing
@@ -227,9 +232,9 @@ Filed separately, not as paragraphs here, per the plan convention:
 
 1. **Checkpoint the closed pass incrementally**, and reconcile the resume rule with grouped entries (§5). This is
    the one defect of substance.
-2. **Promote `[verified live <date>]` into `doctrine.md` §2** as a named evidence class, or state explicitly that
+2. **Promote `[verified live <date>]` into [`doctrine.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/references/audit/doctrine.md) §2** as a named evidence class, or state explicitly that
    ref-relative verification does not apply to trackers without code (§3, §7).
-3. **Add "the highest recorded number" to SKILL.md's list of wrong ways to infer progress** (§5, residue).
+3. **Add "the highest recorded number" to [`SKILL.md`](https://github.com/QuantEcon/skills/blob/qe--v0.7.0/qe/skills/audit-issues/SKILL.md)'s list of wrong ways to infer progress** (§5, residue).
 4. **Make the tracker fingerprint-diff a standard run step** (§4).
 5. **Run 3 should interrupt mid-write, and inside the closed pass** (§4).
 6. **`#23` input**: the closed pass is 179 of 317 items — 56% of the run — for the cheapest checks in the audit.
