@@ -6,6 +6,19 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.6.0 — 2026-08-25
+
+The style-check scaffolding leaves the shipped plugin. The seven `check-*` skills had reported "not yet operational" since they merged in [#2](https://github.com/QuantEcon/skills/pull/2), because everything that would make them work — the rendered rules snapshot, the deterministic preflight — is still pending upstream (see [issue #3](https://github.com/QuantEcon/skills/issues/3)). Shipping menu entries that do nothing costs more than it signals: they occupy seven slots in every consumer's slash menu and every description competes for natural-language routing against skills that actually run. The plan is unchanged and stays in issue #3, where unbuilt work belongs; the skills return operational, not as scaffolding.
+
+**Removed**
+
+- `/qe:check-style` and the six per-category entry points (`/qe:check-writing`, `/qe:check-math`, `/qe:check-code`, `/qe:check-figures`, `/qe:check-jax`, `/qe:check-refs`) — all scaffolding, none operational. The carefully-authored frontmatter descriptions and the umbrella's procedure sketch are preserved on issue #3 for when the skills re-land.
+- `qe/references/rules/` (the documented location for the pending rules snapshot) and the "Style preflight" section of `qe/scripts/README.md` — scaffolding for the same pending work, likewise consolidated into issue #3.
+
+**Changed**
+
+- The plugin description drops "style checking, lecture editing support" — it now names only what ships: PR review feedback, report-to-project, and the work-plan lifecycle.
+
 ## 0.5.0 — 2026-08-25
 
 The work-plan lifecycle consolidates into one skill and gains a read verb. Two findings from reviewing the family in real use drove this ([#50](https://github.com/QuantEcon/skills/issues/50)): asking to *read* a plan routed to `workplan-update` — the only skill whose description mentioned an existing plan — whose every verb writes; and the deeper cause was structural: `workplan-issue`, `workplan-update`, and the proposed `workplan-read` were all verbs on the *same artifact* split across separate skills, which is what forced the cross-skill handoffs (close handing succession to `workplan-issue`, discovery and anchor-and-sweep linked between files, four descriptions competing for "work plan" requests). The family is now two skills: `/qe:workplan` (the state-carrier issue's lifecycle) and `/qe:workplan-project` (report → project), unchanged.
