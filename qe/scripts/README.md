@@ -1,5 +1,7 @@
 # qe plugin — scripts
 
+Each skill family's deterministic machinery lives in its own subdirectory: [`benchmark/`](benchmark/README.md) (the scoring engine and calibration behind `/qe:benchmark`) and [`audit/`](audit/README.md) (the tracker-snapshot fetcher behind `/qe:audit-issues`). `fetch-copilot.sh` predates that layout and stays at the top level, where `/qe:copilot-review` already points.
+
 ## `fetch-copilot.sh`
 
 Dumps GitHub Copilot's review of a pull request — the overview, then every inline comment with the ID to reply to — for [`/qe:copilot-review`](../skills/copilot-review/SKILL.md). Read-only: it never posts. Requires an authenticated `gh`; run `bash fetch-copilot.sh --help` for the argument forms.

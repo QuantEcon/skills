@@ -1,12 +1,12 @@
 # Tutorial: run a full evaluation by hand
 
-This walks the `/benchmark:review-acceleration` procedure end-to-end **by hand**, using the recorded [ge_arrow validation run](../reviews/validation-run-ge_arrow-2026-07-22.md) as the worked example — so every number you produce can be checked against a committed reference. When you invoke the skill, Claude drives these same steps for you; doing it manually once is the fastest way to understand what the skill measures, what the scorecard means, and how to debug a run that goes wrong.
+This walks the `/qe:benchmark` procedure end-to-end **by hand**, using the recorded [ge_arrow validation run](../reviews/validation-run-ge_arrow-2026-07-22.md) as the worked example — so every number you produce can be checked against a committed reference. When you invoke the skill, Claude drives these same steps for you; doing it manually once is the fastest way to understand what the skill measures, what the scorecard means, and how to debug a run that goes wrong.
 
-Canonical references (this tutorial points, never restates): the procedure in [SKILL.md](../benchmark/skills/review-acceleration/SKILL.md), the rubric in [EVALUATION_FRAMEWORK.md](../benchmark/references/EVALUATION_FRAMEWORK.md), the engine contract in [scripts/README.md](../benchmark/scripts/README.md).
+Canonical references (this tutorial points, never restates): the procedure in [SKILL.md](../qe/skills/benchmark/SKILL.md), the rubric in [EVALUATION_FRAMEWORK.md](../qe/references/benchmark/EVALUATION_FRAMEWORK.md), the engine contract in [scripts/README.md](../qe/scripts/benchmark/README.md).
 
 ## What you need
 
-- The `benchmark` plugin installed (or this repo checked out — its `benchmark/` directory serves as the plugin root).
+- The `qe` plugin installed (or this repo checked out — its `qe/` directory serves as the plugin root).
 - A Python environment with `jax`, `numpy`, and the lecture's imports. The reference used jax 0.4.35; the validation run used jax **0.10.1** — the verdict reproduced anyway, which is the point of band-based scoring.
 - A checkout of the lecture repo. Evaluations always compare two refs: a **baseline** (the lecture before the conversion) and a **candidate** (the conversion PR's head).
 
@@ -28,10 +28,10 @@ The merge-base is the "world before the PR" — that's the baseline. The PR bran
 Evaluations live in **your workspace**, never inside the plugin (which is read-only when installed):
 
 ```bash
-export CLAUDE_PLUGIN_ROOT=/path/to/plugin/benchmark   # or the installed plugin root
+export CLAUDE_PLUGIN_ROOT=/path/to/skills/qe          # or the installed plugin root
 mkdir -p benchmark-eval/ge_arrow/scripts
-cp $CLAUDE_PLUGIN_ROOT/references/examples/ge_arrow/scripts/*.py benchmark-eval/ge_arrow/scripts/
-cp $CLAUDE_PLUGIN_ROOT/scripts/scoring/EVIDENCE_TEMPLATE.json benchmark-eval/ge_arrow/evidence.json
+cp $CLAUDE_PLUGIN_ROOT/references/benchmark/examples/ge_arrow/scripts/*.py benchmark-eval/ge_arrow/scripts/
+cp $CLAUDE_PLUGIN_ROOT/scripts/benchmark/scoring/EVIDENCE_TEMPLATE.json benchmark-eval/ge_arrow/evidence.json
 ```
 
 Because we are *reproducing* the ge_arrow evaluation, we copy its already-adapted scripts. For a **new** lecture you adapt them — extract `model_old.py` from the lecture at the baseline ref and `model_new.py` at the candidate ref **verbatim** (disclose any deviation), and rewrite the measurement scripts around the lecture's actual examples and call sequence. That adaptation is the skill's real work; there is deliberately no rigid harness. Either way, before measuring, diff your extractions against the lecture's cells — the validation run did exactly this and caught an undisclosed whitespace normalisation in the committed baseline extraction.
@@ -74,7 +74,7 @@ Fill `benchmark-eval/ge_arrow/evidence.json` from `results/`: measured numbers i
 ## Step 4 — score
 
 ```bash
-python $CLAUDE_PLUGIN_ROOT/scripts/scoring/score.py benchmark-eval/ge_arrow
+python $CLAUDE_PLUGIN_ROOT/scripts/benchmark/scoring/score.py benchmark-eval/ge_arrow
 ```
 
 No score is ever typed by hand — the engine computes all seven dimensions and prints the derivation of each. The validation run's tail:
@@ -110,4 +110,4 @@ If your bands move, something real changed — check `results/env.json` first, t
 
 ## Step 6 — report
 
-Write `<lecture>_REPORT.md` from the scorecard + evidence following the worked examples' format ([ge_arrow](../benchmark/references/examples/ge_arrow/ge_arrow_REPORT.md), [markov_asset](../benchmark/references/examples/markov_asset/markov_asset_REPORT.md)): TL;DR with the full verdict, dimension table, evidence per dimension, and a must-fix list. For the validation run the "report" is the [cross-comparison record](../reviews/validation-run-ge_arrow-2026-07-22.md) itself.
+Write `<lecture>_REPORT.md` from the scorecard + evidence following the worked examples' format ([ge_arrow](../qe/references/benchmark/examples/ge_arrow/ge_arrow_REPORT.md), [markov_asset](../qe/references/benchmark/examples/markov_asset/markov_asset_REPORT.md)): TL;DR with the full verdict, dimension table, evidence per dimension, and a must-fix list. For the validation run the "report" is the [cross-comparison record](../reviews/validation-run-ge_arrow-2026-07-22.md) itself.

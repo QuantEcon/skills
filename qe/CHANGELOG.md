@@ -6,6 +6,24 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.7.0 — 2026-08-25
+
+One namespace ([#43](https://github.com/QuantEcon/skills/issues/43)): the `benchmark` and `audit` plugins fold into `qe`, so every invocation reads as a QuantEcon skill and the catalog is one flat, small list. Three plugin prefixes encoded an installation distinction users don't care about when typing a command. This release starts strictly above every retiring stream (qe 0.6.0, benchmark 0.4.0, audit 0.2.0), so no version number in this merged changelog ever names two trees; the retired plugins' own entries are preserved below as historical sections.
+
+**Added**
+
+- `/qe:benchmark` — the benchmark plugin's `/benchmark:review-acceleration`, renamed to match how everyone refers to it; triage vs review stays mode selection from the arguments. Procedure unchanged; the scoring engine now lives at `scripts/benchmark/scoring/` and the framework, worked examples and fixtures at `references/benchmark/`, with `${CLAUDE_PLUGIN_ROOT}` paths updated throughout (including the worked examples' `run_all.py` engine lookup and its repo-layout fallback).
+- `/qe:audit-issues` — the audit plugin's `/audit:issues`; the `audit-` stem keeps the family greppable if `/qe:audit-prs` or `/qe:audit-translations` ever pass their validation gate. Procedure unchanged; the shared method docs live at `references/audit/` and the snapshot fetcher at `scripts/audit/`.
+
+**Removed**
+
+- The separate `benchmark` and `audit` plugins. **Migration for installed users**: run `claude plugin uninstall benchmark@quantecon audit@quantecon` (or the `/plugin` menu equivalent), or the retired skills linger in the slash menu under their old names; lecture repos drop `benchmark@quantecon` from `enabledPlugins` in `.claude/settings.json`. One consequence is deliberate and worth knowing: the plugin is the enable unit, so every `qe` consumer now gets the audit skills too — two extra read-only entries in a five-item menu, judged an acceptable trade in #43.
+
+**Changed**
+
+- The plugin description now names the whole surface: PR review feedback, acceleration triage/review, bulk audits, report-to-project, and the work-plan lifecycle.
+- Old tags (`benchmark--v0.4.0`, `audit--v0.2.0`, …) remain valid archaeology for the retired streams.
+
 ## 0.6.0 — 2026-08-25
 
 The style-check scaffolding leaves the shipped plugin. The seven `check-*` skills had reported "not yet operational" since they merged in [#2](https://github.com/QuantEcon/skills/pull/2), because everything that would make them work — the rendered rules snapshot, the deterministic preflight — is still pending upstream (see [issue #3](https://github.com/QuantEcon/skills/issues/3)). Shipping menu entries that do nothing costs more than it signals: they occupy seven slots in every consumer's slash menu and every description competes for natural-language routing against skills that actually run. The plan is unchanged and stays in issue #3, where unbuilt work belongs; the skills return operational, not as scaffolding.
@@ -134,3 +152,182 @@ First release. The author-facing style-check surface appears in the slash menu a
 ---
 
 **Before this file existed**, two changes to `qe/` shipped without a version bump, so two different trees have been distributed under one version string each. Under 0.1.0, [#5](https://github.com/QuantEcon/skills/pull/5) rewrote the status banner in all seven `check-*` skills to point at [issue #3](https://github.com/QuantEcon/skills/issues/3) instead of `CATALOG.md`. Under 0.2.0, [#27](https://github.com/QuantEcon/skills/pull/27) made the correction now released as 0.2.1. If your install predates those dates, `claude plugin update` will not have reconciled it — reinstalling at 0.2.1 gets you the current tree. The [CI guard](https://github.com/QuantEcon/skills/blob/main/scripts/check-version-bump.py) landed alongside this release is what stops it happening again.
+
+---
+
+## Historical — the `benchmark` plugin (folded into `qe` at 0.7.0)
+
+Released 2026-07-07 to 2026-08-07 as the separate `benchmark` plugin; its skill lives on as `/qe:benchmark`. These entries are frozen as shipped — version numbers and tags (`benchmark--v0.4.0`) name the retired plugin's own stream, which qe's 0.7.0 starts strictly above so no number ever names two trees.
+
+### benchmark 0.4.0 — 2026-08-07
+
+Triage becomes the front door, and every output leads with the decision. The reframing follows the maintainers' direction — the product most wanted is "look at a lecture and advise whether a JAX upgrade is recommended" — and the measured record agrees: in every evaluation to date (ge_arrow, markov_asset, wald_friedman, and the 2026-08-06 ge_arrow re-run on [skills#10](https://github.com/QuantEcon/skills/issues/10)) the recommendation was decided by the triage-layer instruments — the as-used baseline and what a conversion could reach — and never moved by the scorecard on top. Review mode is unchanged and stays: it is the mode that caught markov_asset's masked build defect, and it applies the day a conversion PR exists.
+
+**Changed**
+
+- `SKILL.md` leads with triage — the no-candidate "should this lecture be converted?" question — behind a "Which mode" router, with review as the second mode. The frontmatter description now opens with the advise use case, so natural-language invocation matches the common question. Review-mode content is unchanged.
+- The scorer's printed output and the report format lead with the verdict. `score.py` prints `VERDICT:` above the weighted total, labels the total "for the record", and the deciding-flip lines name the verdict they flip to before the recomputed number (previously `⇒ total 2.30, …`, which two careful readers in a row took as the headline — [skills#14, finding 6](https://github.com/QuantEcon/skills/issues/14)). The report's TL;DR opens with the full verdict and carries the score alongside as candidate quality for the record; the dimension table gains a verdict row so it still carries the decision when quoted on its own.
+- `README.md` puts triage first throughout — the mode table, the invocation examples, and the mode sections — and states that triage builds no candidate: it measures the lecture as it stands and bounds what a conversion could deliver.
+- Triage now names its canonical decision criteria: the manual's JAX style page ([when to use JAX, when not to](https://manual.quantecon.org/styleguide/jax.html), including *Converting from Numba § Decide first*), cited rather than restated. The skill's four checks are framed as the measurement layer that tests whether those criteria hold for a given lecture — "a real bottleneck" is a claim the as-used baseline and pattern match establish or refute, while the page's "teaching JAX itself" criterion is editorial and stays a maintainer call.
+- The triage decision rule no longer re-derives numbers from the rubric weights: it states the conclusion qualitatively and points to `references/EVALUATION_FRAMEWORK.md`, which the skill's own scoring step already said was the only place weights live. Triage's outcome vocabulary is standardized on **convert / don't-convert** in both `SKILL.md` and `README.md`. (Caught by Copilot's review of the 0.4.0 PR.)
+
+Nothing in the rubric, weights, gates, or scorecard JSON changed: the regression anchors (2.85 / 2.25) and the fixtures reproduce unchanged.
+
+### benchmark 0.3.2 — 2026-08-03
+
+**Fixed**
+
+- The plugin README's status line said skill wiring was "tracked in skills#4". The wiring shipped in 0.3.0 — it is in that release's entry below — so the line pointed at an open issue for work that had already landed. 0.3.1 corrected the version number in that same sentence and left the stale clause standing, which is how a half-fixed line survives a review. It now describes the plugin as operational for workspace runs since 0.3.0 and points at this changelog for what shipped when.
+
+### benchmark 0.3.1 — 2026-08-03
+
+**Added**
+
+- This changelog.
+
+**Fixed**
+
+- The plugin README's status line named `v0.2.0` — a version that was never released (see the note at the foot of this file). It now names `v0.3.0`, the release in which the evaluation system actually became runnable. That is a historical fact rather than a restatement of the current version, so it will not go stale again on the next bump.
+
+### benchmark 0.3.0 — 2026-07-27
+
+The evaluation system became runnable: a deterministic scoring engine, rubric v2 with verdict gates, two complete worked evaluations to copy from, a triage mode, and the install fix that made the plugin installable at all.
+
+**Added**
+
+- A runnable scoring engine: `python scripts/scoring/score.py <lecture-dir>` turns an evidence file into a scorecard. No score is ever typed by hand; the session shows the derivation table — every dimension score with the measured number and threshold band that produced it.
+- `references/EVALUATION_FRAMEWORK.md` — the rubric in prose: seven weighted dimensions, numeric scoring anchors, structural checklists, verdict bands, worked HIGH/LOW examples. `SKILL.md` points here instead of restating weights, so recalibration cannot drift the copies.
+- `scripts/scoring/EVIDENCE_TEMPLATE.json` — the judgement contract you fill in: measured numbers plus cited yes/no answers.
+- Two complete worked evaluations in `references/examples/` (ge_arrow 2.85/5, markov_asset 2.25/5) with measurement scripts, results, evidence and reports — usable as per-lecture templates and as regression anchors, plus a README documenting where every evidence number came from.
+- `scripts/calibration/bellman_bench.py` — the shared aiyagari Bellman benchmark that pins the "25x as-used = score 5" efficiency anchor.
+- Rubric v2 verdict gates: the logic-and-design bug cap is derived from the correctness evidence (does it build, does it diverge under x64) rather than trusting a hand-set boolean, and the correctness score caps the verdict — a float32 catastrophe with no logic bug can no longer come out as "merge".
+- A no-conversion verdict: a lecture whose baseline as-used total is under the 1 s materiality floor, with a slower candidate, now gets "don't convert" instead of a polished score of the rewrite.
+- A sensitivity stamp on every scorecard: each scored input is perturbed one at a time (bools flipped, counts ±1, floats ±10%) and the verdict is stamped robust / fragile / robust-at-floor with the deciding flips listed.
+- K-repeat as-used measurement: `run_all.py` repeats each side three times in fresh processes, the headline speedup is the median, and per-run spread feeds a contested-band annotation.
+- Triage mode — "is this lecture worth converting at all?", answered from the existing lecture alone: baseline as-used total, workload-pattern match against the two calibrated poles, crossover check, readability-cost forecast, and the weight algebra that follows. Validated blind against the three known cases before being documented, including the documented limit that it cannot predict conversion-quality defects.
+- `benchmark/README.md` — the plugin's user guide: review vs triage mode, the report format, the manual pipeline quickstart, and the one rule to remember (warm-only speedups are never the headline).
+- Skill wiring for installed runs: evaluations are scaffolded under `<workspace>/benchmark-eval/<lecture>/` with the plugin read-only at `${CLAUDE_PLUGIN_ROOT}`, preconditions stated up front, and an extraction/replay diff check so the replay provably matches the lecture.
+- A provenance stamp written to `results/env.json` (python/platform/numpy/jax/quantecon versions), including the titles of any failed pipeline step so a partial run cannot claim full provenance.
+- `references/fixtures/rubric_v2` — synthetic evidence whose only job is to execute five v2 code paths the worked examples never touch; every source string is prefixed `SYNTHETIC:` so the numbers cannot be cited as evidence about a lecture.
+
+**Changed**
+
+- The skill is now `/benchmark:review-acceleration`, renamed from `/benchmark:eval-py-acceleration`. The rename was authored on 2026-07-21 in [#1](https://github.com/QuantEcon/skills/pull/1) but reached installed users only with this version bump.
+- `score.py` takes a lecture directory path and works from any working directory, instead of resolving a lecture name against a package root.
+- Correction of record on markov_asset: the lecture does build in notebook order — a stale global `err` masks a stray `err.throw()`, silently disabling the checkify stability validation. Worse than a crash, but not the build failure the original report claimed; erratum prepended to the report and the wording fixed in the examples README, `SKILL.md` and the plugin README.
+- Two earlier certifications withdrawn as overstated: the reference replays deviate from the lectures' construction patterns (not "mirrors the lecture exactly"), and the as-used totals were single-pass, not medians over repeats (v2 restores repeats explicitly).
+- The plugin README's triage baselines are labelled as triage-time (2026-07-21) measurements, and the framework and `SKILL.md` stop restating them — the gate reads each lecture's own `baseline_as_used_seconds`.
+- `SKILL.md` forbids reporting robust-at-floor as plain robust: a verdict already in the bottom band cannot be perturbed downward, so zero deciding flips there is band geometry, not evidence strength.
+
+**Fixed**
+
+- Install was broken for every user. The repo-level `.claude-plugin/marketplace.json` omitted the required top-level `owner`, and every plugin entry — this one included — used a remote source `{"source": "github", "repo": "QuantEcon/skills", "path": "benchmark"}` that forced an install-time SSH re-clone of this repo. All three entries switched to the co-located relative-path form (`"./benchmark"`), so install uses the marketplace copy already on disk: no SSH, no auth prerequisite. Surfaced by [@xuanguang-li](https://github.com/xuanguang-li) testing this plugin, [#10](https://github.com/QuantEcon/skills/issues/10).
+- The verdict band is computed from the rounded total, so the band always agrees with the number shown — raw floating-point sums could land at 2.4999999999999996 for combinations that are exactly 2.50 (797 of 78125 score combinations affected).
+- `matches_under_x64` now caps correctness on its own. The extra `max_delta_shipped > 1e-8` conjunct made the guard structurally unable to fire in exactly the "wrong economics masked by low precision" case it exists to catch — such a candidate scored correctness 5 / total 3.25; it now scores correctness 1 / total 2.30, gated to net regression.
+- `score.py` validates evidence before scoring and refuses evidence that omits a scored input the gates read, or that marks a structural criterion met without a citation. A missing `baseline_as_used_seconds` silently disarmed the no-conversion verdict, and stripping every citation left the score unchanged.
+- The headline metrics (as-used total, cold start) are persisted to `results/as_used.json` and `results/cold_start.json` with the derived speedup, instead of existing only on the console while the docstrings claimed aggregation.
+- The sensitivity stamp's denominator is honest: perturbations that raise are recorded in `perturbations_skipped` rather than silently counted as tested.
+- `run_all.py` hardened — JSON scalar stdout lines no longer abort the pipeline, per-step return codes are tracked, the as-used speedup derivation guards both sides, and duplicate mode keys warn instead of silently overwriting.
+- ge_arrow's `check_equivalence.py` writes `equivalence_x64.json` under `JAX_ENABLE_X64` instead of clobbering the as-shipped results.
+- ge_arrow static metrics double-counted concept-token hits via a duplicated pattern (informational metric; 110 → 105).
+- markov_asset's `statements_for_one_asset` renamed to `statements_for_one_result` to match the evidence-template vocabulary (values unchanged).
+- Two files that were CRLF (`references/EVALUATION_FRAMEWORK.md`, the ge_arrow report) are normalized to LF, so a future one-line edit no longer renders as a whole-file diff.
+
+### benchmark 0.1.0 — 2026-07-07
+
+First release: the plugin appears in the marketplace with a documented but not yet runnable evaluation procedure — a v0 outline skill, no executable scripts.
+
+- `/benchmark:eval-py-acceleration` — a v0 outline of the acceleration-review procedure: the five steps (equivalence check, static metrics, as-used benchmark, seven-dimension scoring, report), the seven weights (readability 0.25 deliberately above efficiency 0.15), the verdict bands, and the two calibration anchors (aiyagari Bellman ~25x faster as-used = HIGH; ge_arrow ~45x slower as-used = LOW).
+- The guiding principle a user is meant to apply: lectures are teaching materials first, so "uses JAX" is never a goal in itself.
+- `scripts/README.md` listing the eight measurement scripts still to be collected from [lecture-python.myst#717](https://github.com/QuantEcon/lecture-python.myst/pull/717).
+
+---
+
+**There is no 0.2.0.** It existed on a branch inside [#5](https://github.com/QuantEcon/skills/pull/5) and was superseded within the same pull request; because the repo squash-merges, `main` went 0.1.0 → 0.3.0 in one commit and 0.2.0 was never published. Nothing is missing from this file.
+
+## Historical — the `audit` plugin (folded into `qe` at 0.7.0)
+
+Released 2026-07-27 to 2026-08-07 as the separate `audit` plugin; its skill lives on as `/qe:audit-issues`. Frozen as shipped, same convention as above (tags `audit--v0.2.0` etc.).
+
+### audit 0.2.0 — 2026-08-07
+
+The two severity-1 defects from the first measured run, which are the same defect at different altitudes: an audit's own record claiming more than it can support.
+
+**Changed**
+
+- **`[verified]` now requires evidence reachable from the ref the audit named.** Doctrine §2 is the single statement of it — §1 rule 1 no longer carries its own copy of the accepted-forms list, which is how the two drifted apart in the first place — and it covers every citation form — a commit must be an ancestor of the baseline ref, a `file:line` must be that line *on the ref* rather than in the working tree, a PR must be merged into it — and `/audit:issues` runs `git merge-base --is-ancestor <sha> <ref>` before tagging a commit citation. Run 1's headline finding cited a commit that is real, does touch the file, and exists only on an unmerged branch, while the report's header said it had verified against `main`. A citation that resolves for its author and not for its reader is worse than an untagged claim, because the tag is what invited the trust. Evidence that genuinely lives off-ref stays citable — as the open PR it is, tagged `[stated]` or `[inferred]`.
+- **Phase 2 checkpoints both of its passes.** `findings.md` now carries `## Open` and `## Closed` sections, and the resume rule partitions `issues.json` by state and resumes each side independently at the lowest number with no entry. Run 1 wrote only the 56 open issues to the checkpoint and sent the 62 closed ones straight to the catalog, so a run interrupted during the closed pass would have re-verified all 62 from scratch while reporting itself complete — the single-block resume rule shipped in 0.1.2 could not see the difference.
+
+### audit 0.1.4 — 2026-08-03
+
+Doctrine §4's rule survived the first measured run; its justification did not. The section is re-derived from what that run actually produced, and the cost figures the skill quotes are replaced with measured ones.
+
+**Changed**
+
+- Doctrine §4 is renamed from "Surviving a long run" to "Checkpointing", and rests on three reasons that hold at any duration rather than on the claim that audits outlive sessions. The first measured run refuted that claim outright — 230 items in 22 minutes, with no context exhaustion, rate limit or sleeping machine in play. The strongest replacement reason is checkable: the per-item log is what the final enumeration is assembled *from*, and what a reviewer counts the coverage numbers against.
+- `/audit:issues` no longer describes itself as "long-running by design — a hundred-issue repo is a multi-hour run". It now quotes the measured cost: roughly **10 seconds per open issue**, with a 230-item tracker carrying 56 open issues taking 22 minutes. Cost tracks open issues needing verification rather than total items, so a large tracker with a small open set is cheaper than a small one with a large set.
+- The cost figures are stated so the two measures cannot be confused. Previously a reader met "roughly 10 seconds per open issue" beside "a 230-item tracker with 56 open took 22 minutes" and could not reconcile them — 56 × 10 s is 9 minutes, not 22. The 10-second rate is phase 2 alone; 22 minutes is end to end, and the remaining phases are largely fixed. Both numbers now say which question they answer.
+- Checkpoint artifacts are named where they carry evidence rather than at every phase boundary out of symmetry — a checkpoint written and superseded minutes later without ever being read earns nothing.
+
+### audit 0.1.3 — 2026-08-03
+
+**Added**
+
+- This changelog.
+
+**Fixed**
+
+- `/audit:issues`'s frontmatter `description` was an unquoted YAML plain scalar containing `Read-only: it recommends…`. A `: ` inside a plain scalar is a parse error, so a strict loader drops the skill's metadata rather than reading it, and `claude plugin validate` rejects the file outright. The value is now quoted. Nothing about the procedure changed.
+
+### audit 0.1.2 — 2026-07-28
+
+Resolves the contradiction that told an audit to write its bundle into the repo it promised not to touch: the boundary is now mutation, not writing, and the skill says exactly where to put its working directory so a run leaves `git status` clean.
+
+**Added**
+
+- Discovery-ordered working-directory selection, taken from contact with a real repo: prefer a location the repo already ignores (`.dev/scratch/audit-<YYYY-MM-DD>/` in QuantEcon repos, where `.dev/scratch/*` is already gitignored), fall back to an untracked `.audit/<repo>-<YYYY-MM-DD>/` at the checkout root, then to somewhere outside the checkout entirely. Which one was used goes in the report's method section.
+- Doctrine §3 now says explicitly that a run may write its own working directory, including inside the audited checkout — provided the directory stays untracked and nothing is added to `.gitignore`, since that would itself be an edit to a tracked file.
+
+**Changed**
+
+- Doctrine §3 narrowed from "no branch or file changes in the audited repo" to what it was always protecting — content and history: no commits, no pushes, no branches, no edits to tracked files. Mutation, not writing, is the boundary.
+- `deliverables.md` states the split: writing the bundle is the audit's job, committing or publishing it is a human step taken after reading it.
+
+**Fixed**
+
+- The read-only/working-directory contradiction the plugin carried since 0.1.0 — §3 forbade file changes in the audited repo while `deliverables.md` made that repo's own notes system the bundle's first-choice destination, and 0.1.1's default `--out` wrote there too. A run following the docs literally could not satisfy both.
+
+### audit 0.1.1 — 2026-07-28
+
+An interrupted run can actually be resumed: the intermediate artifacts now have names and locations, phase 2 appends per item instead of writing at the end, and the bundle shrinks to fit a small tracker.
+
+**Added**
+
+- A stated working-directory layout under `--out` (`.audit/<repo>-<YYYY-MM-DD>/` by convention): `snapshot/` from phase 1, `findings.md` from phase 2, `links.md` from phase 3, and the delivered `01-…`/`02-…`/`03-…`/`README.md` bundle from phase 4. Previously phases 2 and 3 produced "per-item findings" and "the cluster map" with no filename and no location, so resuming worked only if two sessions independently invented the same file.
+- A stated resume rule: on restart, read `findings.md` and resume at the lowest number in `issues.json` with no entry, re-verifying the last entry rather than trusting a possibly truncated write.
+- `meta.json` records `fetched_by`, the account the snapshot was taken as — which matters because visibility on the org's private repos is per-account.
+
+**Changed**
+
+- Phase 2 appends each item's finding to `findings.md` as it is verified, in the catalog entry format, so phase 4 assembles the catalog instead of re-deriving it.
+- The bundle scales to the tracker: below roughly 30 open issues, fold the catalog and the link graph into the report, keep the `README.md` index, and say which shape was used in the coverage statement. Four unconditional documents forced three files of padding on a small tracker, and padding makes a report less checkable.
+- Doctrine §4 now states the general rule: a checkpoint owes a findable name and incremental writes, or it is a claim about resumability rather than the property itself.
+
+**Fixed**
+
+- `meta["authenticated"]` is removed, not deprecated. It could only ever be `true` (preflight exits on every unauthenticated path), so it was a provenance field carrying no evidence — in the plugin whose doctrine is that every claim carries its evidence class. **Anything reading that field must switch to `fetched_by`.**
+- An interrupted phase 2 now loses one item rather than the whole phase — it was the phase specified to write on completion, and the phase a hundred-item run dies inside rather than between.
+
+### audit 0.1.0 — 2026-07-27
+
+First release. `/audit:issues` sweeps an entire GitHub tracker — open and closed — verifies each item against the code rather than the thread, tiers the open set into the repo's existing plan, and delivers an evidence-cited report bundle, without ever touching the tracker.
+
+- `/audit:issues <owner/repo>` — a whole-tracker audit in five phases (snapshot, per-item verification, cross-link graph, tiered report, coverage self-audit). The four runbook fields (plan anchor, tier scheme, repo type, notes system) are optional arguments with documented discovery, so the usual invocation is just the repo.
+- A deterministic snapshot step, `scripts/fetch_tracker.py OWNER/REPO --out <dir>`: every issue and PR in any state with full comment threads (and PR reviews, and `closingIssuesReferences`) in two `gh` round trips, written as `meta.json`, `issues.json`, `prs.json`, `coverage.json`. Closed threads cost nothing extra to read, and the snapshot freezes the audit's point in time so "events after the snapshot" is a stated property of the report instead of an unnoticed gap.
+- `coverage.json` reconciliation: captured items against the number sequence `1..max`, discussion counts split open/closed, and an explicit truncation flag when a stream returns exactly at `--limit` (default 1000) — a case indistinguishable from truncation, so it is surfaced rather than swallowed. PR review bodies count toward captured discussion, not just comments: on the example repo, closed PRs carried 374 reviews against 28 comments.
+- Snapshot files are written in issue/PR number order, so two runs over an unchanged tracker are byte-identical and a re-fetch diffs down to what actually changed.
+- Thread payloads are shape-asserted at capture, so a `gh` build returning counts instead of lists fails by name at the point of capture rather than crashing later or silently under-reporting threads while the report still claims thread-completeness.
+- Preflight that refuses to start without `gh` and an authenticated account, because the anonymous API is 60 req/h per IP and returns nothing at all for the org's private repos.
+- Plugin-level method shared by every future audit skill: `references/doctrine.md` (trust rules, evidence classes `[verified]`/`[stated]`/`[inferred]`, the read-only boundary, checkpointing, the coverage self-audit), `references/quantecon-context.md` (repo types, label ownership, the cross-repo graph, access, and the caveat that an HTML-reconstructed thread may start mid-conversation), and `references/deliverables.md` (what an audit owes its reader, and where a bundle may land).
+- QuantEcon-specific triage judgement: tier by repo type (a build break in a lecture repo and a consumer-visible change in an action repo outrank thread activity), check sibling repos before concluding, leave label application to `qe`, and keep GitHub closing keywords out of drafted cross-repo references so drafted text cannot close an upstream item when someone posts it.
+- The four-document bundle, the five phases and "produces a bundle" are stated as a worked example rather than a requirement, after a single execution. What an audit owes its reader — coverage statement, evidence tag per claim, recommendations marked as proposals, drafted comments marked unsent, a date and a named snapshot — stays mandatory and presumes no file count.

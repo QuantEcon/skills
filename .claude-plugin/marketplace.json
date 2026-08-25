@@ -4,25 +4,13 @@
     "name": "QuantEcon"
   },
   "description": "QuantEcon's shared Claude Code skills and tools",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "plugins": [
     {
       "name": "qe",
       "source": "./qe",
-      "version": "0.6.0",
-      "description": "QuantEcon's author-facing base skills — working through a PR's review feedback, turning audit reports into tracked work projects, and creating, reading and carrying work-plan state across agent sessions"
-    },
-    {
-      "name": "benchmark",
-      "source": "./benchmark",
-      "version": "0.4.0",
-      "description": "Benchmarking and acceleration-evaluation tools for QuantEcon lecture code"
-    },
-    {
-      "name": "audit",
-      "source": "./audit",
-      "version": "0.2.0",
-      "description": "Bulk, read-only audits of a QuantEcon repository — issue triage, PR review, technical debt, translation parity — each producing an evidence-cited report bundle"
+      "version": "0.7.0",
+      "description": "QuantEcon's shared agent skills under one namespace — working through a PR's review feedback, advising on and scoring lecture acceleration (benchmark), bulk read-only repository audits, turning audit reports into tracked work projects, and creating, reading and carrying work-plan state across agent sessions"
     }
   ]
 }

@@ -1,10 +1,10 @@
 # Tutorial: run a whole-tracker audit
 
-This walks `/audit:issues` end to end against **[QuantEcon/action-translation](https://github.com/QuantEcon/action-translation)** — 228 items, the repo the runbook was first executed against by hand.
+This walks `/qe:audit-issues` end to end against **[QuantEcon/action-translation](https://github.com/QuantEcon/action-translation)** — 228 items, the repo the runbook was first executed against by hand.
 
-It differs from the [evaluation tutorial](tutorial-run-an-evaluation.md) in one important way. That one reproduces a committed reference, so every number you produce can be checked. Here there is no reference: `/audit:issues` has been run as a skill exactly **once** — run 1, against this same repo on 2026-07-28, which found seven plugin defects and is recorded [here](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md). A method generalised from one execution is still a hypothesis, so your run is the next data point in the validation program ([skills#16](https://github.com/QuantEcon/skills/issues/16)), and the part no automation can supply is your judgement of the output. Step 6 is therefore not optional garnish — it is the result.
+It differs from the [evaluation tutorial](tutorial-run-an-evaluation.md) in one important way. That one reproduces a committed reference, so every number you produce can be checked. Here there is no reference: `/qe:audit-issues` has been run as a skill exactly **once** — run 1, against this same repo on 2026-07-28, which found seven plugin defects and is recorded [here](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md). A method generalised from one execution is still a hypothesis, so your run is the next data point in the validation program ([skills#16](https://github.com/QuantEcon/skills/issues/16)), and the part no automation can supply is your judgement of the output. Step 6 is therefore not optional garnish — it is the result.
 
-Canonical references (this tutorial points, never restates): the procedure in [SKILL.md](../audit/skills/issues/SKILL.md), the method in [doctrine.md](../audit/references/doctrine.md), the org conventions in [quantecon-context.md](../audit/references/quantecon-context.md), the output contract in [deliverables.md](../audit/references/deliverables.md).
+Canonical references (this tutorial points, never restates): the procedure in [SKILL.md](../qe/skills/audit-issues/SKILL.md), the method in [doctrine.md](../qe/references/audit/doctrine.md), the org conventions in [quantecon-context.md](../qe/references/audit/quantecon-context.md), the output contract in [deliverables.md](../qe/references/audit/deliverables.md).
 
 ## What you need
 
@@ -17,14 +17,14 @@ Canonical references (this tutorial points, never restates): the procedure in [S
 
 ```bash
 claude plugin marketplace add QuantEcon/skills
-claude plugin install audit@quantecon
+claude plugin install qe@quantecon
 ```
 
 **Then restart your session** — plugins register at startup, so the skill does not appear until you reopen.
 
-The `/plugin marketplace add …` slash form does the same job, but it is a *terminal-CLI built-in*: the VS Code extension and the web app answer `/plugin isn't available in this environment`, while the `claude plugin` CLI above works from any shell. Confirm with `claude plugin list` — the version it reports should match the `audit` entry in [`marketplace.json`](../.claude-plugin/marketplace.json). (Naming a number here would go stale on the next release; if the two disagree, the install did not pick up the latest — `claude plugin update audit@quantecon`.)
+The `/plugin marketplace add …` slash form does the same job, but it is a *terminal-CLI built-in*: the VS Code extension and the web app answer `/plugin isn't available in this environment`, while the `claude plugin` CLI above works from any shell. Confirm with `claude plugin list` — the version it reports should match the `qe` entry in [`marketplace.json`](../.claude-plugin/marketplace.json). (Naming a number here would go stale on the next release; if the two disagree, the install did not pick up the latest — `claude plugin update qe@quantecon`.)
 
-If `/audit:issues` is still unrecognised after restarting, the plugin-prefixed slash form needs Claude Code 2.1.216+; the bare `/issues` works on older builds, and natural-language invocation ("audit every issue in this repo, output to …") works on any version ([using-skills § troubleshooting](using-skills.md#updating-and-troubleshooting)).
+If `/qe:audit-issues` is still unrecognised after restarting, the plugin-prefixed slash form needs Claude Code 2.1.216+; the bare `/audit-issues` works on older builds, and natural-language invocation ("audit every issue in this repo, output to …") works on any version ([using-skills § troubleshooting](using-skills.md#updating-and-troubleshooting)).
 
 ## Step 1 — put the working directory where the repo already ignores it
 
@@ -37,12 +37,12 @@ git check-ignore -v .dev/scratch/x        # → .gitignore:… .dev/scratch/*
 
 **Be on the default branch, not merely clean.** Phase 2's core question is whether an issue still reproduces on `main`; run from a feature branch and every answer is measured against your unmerged work instead. A clean tree on the wrong branch passes the `git status` check and silently invalidates the phase the whole run exists to test — so check the branch, not just the status.
 
-`action-translation` has a `.dev/` notes system whose `.dev/scratch/*` is already gitignored, which makes it the first-choice working directory: the run leaves `git status` completely clean, and no `.gitignore` edit is needed — that would itself be a change to a tracked file. Repos without one fall back to an untracked `.audit/` at the root ([SKILL.md § Working directory](../audit/skills/issues/SKILL.md)).
+`action-translation` has a `.dev/` notes system whose `.dev/scratch/*` is already gitignored, which makes it the first-choice working directory: the run leaves `git status` completely clean, and no `.gitignore` edit is needed — that would itself be a change to a tracked file. Repos without one fall back to an untracked `.audit/` at the root ([SKILL.md § Working directory](../qe/skills/audit-issues/SKILL.md)).
 
 ## Step 2 — invoke
 
 ```
-/audit:issues QuantEcon/action-translation --out .dev/scratch/audit-2026-07-28
+/qe:audit-issues QuantEcon/action-translation --out .dev/scratch/audit-2026-07-28
 ```
 
 Before phase 1 the skill *discovers* its inputs rather than asking for them: the notes system (here `.dev/` — `STATE.md`, `PLAN.md`, `FUTURE.md`, `decisions/`), the label policy, the work-plan anchor to tier against, and any prior audits. It should ask you only where discovery is genuinely ambiguous — two plausible plan anchors, say — and never merely because something came up empty. **Every resolved input must appear in the report's method section**; that is the first thing to check in Step 6.
@@ -76,7 +76,7 @@ The long phase: 116 items checked against the default branch rather than against
 
 **Interrupt during the closed pass too, if you get the chance** — that is the half that was not checkpointed at all before #34, so nothing has ever resumed from it. Resumability is asserted in three separate files and has never been tested. Two fixes have gone in ahead of this run and neither has been exercised: [#17](https://github.com/QuantEcon/skills/pull/17) named the artifacts, since before it phases 2 and 3 named none and a resumed session could only work by inventing the same filename; and [#34](https://github.com/QuantEcon/skills/pull/34) made the checkpoint cover both passes, since run 1 wrote only the open set and sent 62 closed issues straight to the catalog. This run is what checks both.
 
-While it runs, `tail findings.md` occasionally. Every status claim should carry `[verified]`, `[stated]` or `[inferred]`, and a `[verified]` should cite `file:line`, a merged PR, a tag, or a commit — **and whatever it cites must resolve on the ref the audit named**, never a comment. A citation that only resolves in the author's working tree or on an unmerged branch is the defect [doctrine §2](../audit/references/doctrine.md#2-evidence-classes) now rules out; run 1's headline finding had exactly that shape.
+While it runs, `tail findings.md` occasionally. Every status claim should carry `[verified]`, `[stated]` or `[inferred]`, and a `[verified]` should cite `file:line`, a merged PR, a tag, or a commit — **and whatever it cites must resolve on the ref the audit named**, never a comment. A citation that only resolves in the author's working tree or on an unmerged branch is the defect [doctrine §2](../qe/references/audit/doctrine.md#2-evidence-classes) now rules out; run 1's headline finding had exactly that shape.
 
 ## Step 5 — phases 3 to 5
 
