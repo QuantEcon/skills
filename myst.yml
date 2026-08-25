@@ -12,8 +12,8 @@ project:
   title: QuantEcon Skills
   description: >-
     QuantEcon's shared Claude Code skills and the deterministic scripts they
-    drive — style checks for authors, acceleration evaluation, and bulk
-    repository audits.
+    drive — PR review support for authors, acceleration triage and review,
+    bulk repository audits, and cross-session work-plan tooling.
   github: https://github.com/QuantEcon/skills
   toc:
     - file: README.md
