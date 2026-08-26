@@ -31,7 +31,7 @@ Observed practice across the org's work-plan issues (exemplars: the [project-tra
 
 ## The tracker contract
 
-A long-lived tracker is not only read by the next session. Since 2026-08-24 it is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only; the interface half becomes a public QEP, and this section re-points at it when it lands). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
+A long-lived tracker is not only read by the next session. Since 2026-08-24 it is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only; the interface C2 implements is planned as a public QEP that C2 will cite, and this section re-points at that once it lands). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
 
 - **The stamp is a heading**, written in one of these two forms:
 
