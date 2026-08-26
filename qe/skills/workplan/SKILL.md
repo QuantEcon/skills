@@ -31,9 +31,16 @@ Observed practice across the org's work-plan issues (exemplars: the [project-tra
 
 ## The tracker contract
 
-A long-lived tracker is not only read by the next session. Since 2026-08-24 it is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2) — read it there rather than here. What this skill owes it:
+A long-lived tracker is not only read by the next session. Since 2026-08-24 it is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only; the interface half becomes a public QEP, and this section re-points at it when it lands). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
 
-- **The stamp is a heading, and its form is exact.** `## Where we stand (verified 2026-08-24)` or `## Where we stand (verified 2026-08-24 12:05 AEST)` — H2 or H3, the text exactly `Where we stand`, a parenthetical holding `verified`, a mandatory ISO date and an optional time and zone, nothing else inside the parentheses and nothing but whitespace after them. A `> **Updated 2026-08-24.**` banner is an accepted fallback; free text is never a stamp, and neither is a differently-worded heading however well dated. Context goes in the prose *below* the heading.
+- **The stamp is a heading**, written in one of these two forms:
+
+  ```markdown
+  ## Where we stand (verified 2026-08-24)
+  ## Where we stand (verified 2026-08-24 12:05 AEST)
+  ```
+
+  The heading text is exactly `Where we stand`; the date is mandatory and the time and zone optional. A `> **Updated 2026-08-24.**` banner is an accepted fallback. **Free text is never a stamp** — a `verified` date in a sentence, a table cell or a checklist item stamps nothing, and neither does a differently-worded heading however well dated, so context goes in the prose *below* the heading rather than inside it. C2 states the full grammar and is the authority wherever this summary and it disagree.
 - **Progress is native sub-issues, never body checkboxes.** A tracker whose work lives in checkboxes publishes as *unmeasured* — `null`, not 0% — because counting checkboxes would make progress mean different things on different trackers.
 - **The `Project` type is the tracker signal**, and its absence is a finding rather than a failure: an untyped tracker is still read, and simply reports `untyped`.
 - **A tracker is observed only once it is registered** in the dashboard's `projects.yml`. Creating a conformant tracker does not put it on the dashboard; see `create` step 4.
