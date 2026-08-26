@@ -1,6 +1,6 @@
 {
   "name": "qe",
   "description": "QuantEcon's shared agent skills under one namespace — working through a PR's review feedback, advising on and scoring lecture acceleration (benchmark), bulk read-only repository audits, turning audit reports into tracked work projects, and creating, reading and carrying work-plan state across agent sessions",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "author": { "name": "QuantEcon" }
 }

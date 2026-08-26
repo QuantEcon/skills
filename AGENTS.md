@@ -42,7 +42,8 @@ Before adding a paragraph, check whether it already exists. If it does, link to 
 | Style rule text and schema | `QuantEcon/style-guide` (upstream — never authored in this repo) |
 | What has shipped, and the principles behind it | [CATALOG.md](CATALOG.md) |
 | Parked ideas, not committed to | [Low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority) in the tracker, one per idea with its merit assessment |
-| Work in flight, per skill family | issues [#3](https://github.com/QuantEcon/skills/issues/3) (style), [#4](https://github.com/QuantEcon/skills/issues/4) (benchmark), [#12](https://github.com/QuantEcon/skills/issues/12) (audit) |
+| What a skill actually did when it was run | `reviews/` — one record per validation run, cited from [CATALOG.md](CATALOG.md) and the tutorials |
+| Work in flight, per skill family | issues [#3](https://github.com/QuantEcon/skills/issues/3) (style, and the `workplan-*` family), [#4](https://github.com/QuantEcon/skills/issues/4) (benchmark), [#12](https://github.com/QuantEcon/skills/issues/12) (audit) — the families outlived the plugins they were named for |
 
 ## Working in this repo
 
