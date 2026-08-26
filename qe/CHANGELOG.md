@@ -6,6 +6,22 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.8.0 — 2026-08-26
+
+The work-plan skills gain a second reader. Since 2026-08-24 the [projects dashboard](https://quantecon.github.io/status-projects/) parses every registered project tracker nightly and publishes a per-tracker compliance block, so a tracker these skills produce is now read by a machine as well as by the next session. The two ends are pointed at one contract — [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2), which states the rules once and which the skills link to rather than restate ([#49](https://github.com/QuantEcon/skills/issues/49) item 2).
+
+**Changed**
+
+- **The revision stamp is now a heading in a fixed form** — `## Where we stand (verified YYYY-MM-DD)`, optionally with a time and zone. Both skills stamped before this release; they stamped in prose the collector cannot read, so a plan revised faithfully every session still published as unstamped. `create` writes the heading, `resume` and `update` re-date it, `read` reports its age and says when it is absent or malformed, and anchor-and-sweep reads the date from the stamp alone — a `verified` in a table cell or a checklist is not a stamp, and taking one as the anchor mis-scopes the sweep.
+- **Long-lived trackers carry the native `Project` issue type**, applied after creation by `workplan`'s `create` and by `workplan-project`'s filing step. This replaces "plan issues stay untyped pending the QEP-2 field report": the field report is [qeps#11](https://github.com/QuantEcon/qeps/issues/11) and its answer turned out not to be a label at all, so QEP-2's set is untouched and `type:Project` filters org-wide. Period plans stay untyped — a session's working document is not a project.
+- **`workplan-project` drafts the work as native sub-issues, explicitly.** It already created them; the reason is now stated, because it is load-bearing rather than cosmetic — a tracker whose work lives in body checkboxes publishes its progress as `null`, not as a percentage.
+
+**Added**
+
+- **Both skills now say that a conformant tracker is still invisible until it is registered**, and offer to draft its `projects.yml` row — slug, programme, stage, owner, one public sentence, and the tracker in `Owner/repo#N` form. Opening the pull request against `QuantEcon/status-projects` stays the user's move; the skills draft and stop. Automating the registration PR end to end is [#49](https://github.com/QuantEcon/skills/issues/49) item 1 and is not in this release.
+
+**Known gaps, tracked rather than fixed here**: the `qe:tracker-conform` skill the contract names as the fix half of its compliance block ([#49](https://github.com/QuantEcon/skills/issues/49) item 3), and the `wp{issue#}-stage{n}` milestone convention ([#55](https://github.com/QuantEcon/skills/issues/55)).
+
 ## 0.7.0 — 2026-08-25
 
 One namespace ([#43](https://github.com/QuantEcon/skills/issues/43)): the `benchmark` and `audit` plugins fold into `qe`, so every invocation reads as a QuantEcon skill and the catalog is one flat, small list. Three plugin prefixes encoded an installation distinction users don't care about when typing a command. This release starts strictly above every retiring stream (qe 0.6.0, benchmark 0.4.0, audit 0.2.0), so no version number in this merged changelog ever names two trees; the retired plugins' own entries are preserved below as historical sections.
