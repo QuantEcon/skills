@@ -8,14 +8,16 @@ For contributors adding or modifying plugins in this repo. (Using them: [using-s
 .claude-plugin/marketplace.json   # the catalogue — every plugin registers here
 scripts/                          # manifest + frontmatter validation, version-bump guard (CI runs these)
 docs/                             # these guides
-<plugin>/                         # one directory per plugin
+reviews/                          # validation-run records — what a skill did when it was actually used
+qe/                               # the plugin (one directory per plugin; since 0.7.0 there is one)
   .claude-plugin/plugin.json      # name, description, version
   CHANGELOG.md                    # required: one entry per released version
-  README.md                       # the plugin's user guide
   skills/<skill-name>/SKILL.md    # one directory per skill
-  scripts/                        # deterministic scripts the skills drive
-  references/                     # rule/rubric content the skills read
+  scripts/<family>/               # deterministic scripts the skills drive
+  references/<family>/            # rule/rubric/method content the skills read
 ```
+
+Under one plugin, `scripts/` and `references/` are subdivided by skill family (`scripts/benchmark/`, `references/audit/`) rather than sitting flat — the [#43](https://github.com/QuantEcon/skills/issues/43) consolidation's one structural consequence.
 
 **A plugin needs its manifest and its changelog; a skill needs only `SKILL.md`.** A skill that is purely a procedure — nothing deterministic to run, no long reference material to point at — is one file in one directory, and should stay that way. `scripts/` appears when there is something mechanical worth doing in code; `references/` when the skill needs more context than belongs in its body. Adding either before you need it just makes the skill harder to read.
 
@@ -120,7 +122,7 @@ A second job runs `claude plugin validate --strict` against each plugin and the 
 
 ### Tags
 
-Each release is tagged `{name}--v{version}`, so three independently-versioned plugins share one tag namespace. Tag from a clean checkout of `main` after the release merges:
+Each release is tagged `{name}--v{version}`. The scheme was adopted when three plugins were versioned independently and shared one tag namespace; since 0.7.0 only `qe` is live, and the retired `benchmark--v*` and `audit--v*` tags stay as archaeology. Tag from a clean checkout of `main` after the release merges:
 
 ```bash
 claude plugin tag ./<plugin> --push -m "<plugin> %s"
@@ -134,4 +136,4 @@ It takes the version from `plugin.json`, refuses unless the marketplace entry ag
 
 - Branch, PR, CI must be green. This repo **squash-merges** — stacked branches need `git rebase --onto origin/main <old-base>` after the base PR merges (already-upstream commits drop automatically).
 - External contributions land with the contributor as git author (`--author`, GitHub noreply address unless they prefer otherwise) and integration fixes as separate commits — see PR #5 for the pattern.
-- [CATALOG.md](../CATALOG.md) lists what has merged *and* is operational, and nothing else, so a PR that makes a skill operational updates it while a PR that merely plans one does not. Scaffolding does not ship at all (a policy set with `qe` 0.6.0): an unbuilt skill lives only as the plan in its plugin's tracking issue ([#3](https://github.com/QuantEcon/skills/issues/3) `qe`, [#4](https://github.com/QuantEcon/skills/issues/4) `benchmark`, [#12](https://github.com/QuantEcon/skills/issues/12) `audit`), never as a shipped menu entry that reports it does nothing. Ideas nobody has committed to belong in the tracker as [low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority), each carrying its own merit assessment. The style-guide rule content is authored in `QuantEcon/style-guide`, never here — when the style skills land, this repo's `qe` plugin will consume a rendered snapshot ([project-style-guide#6](https://github.com/QuantEcon/project-style-guide/issues/6)).
+- [CATALOG.md](../CATALOG.md) lists what has merged *and* is operational, and nothing else, so a PR that makes a skill operational updates it while a PR that merely plans one does not. Scaffolding does not ship at all (a policy set with `qe` 0.6.0): an unbuilt skill lives only as the plan in its **family's** tracking issue ([#3](https://github.com/QuantEcon/skills/issues/3) style and workplan, [#4](https://github.com/QuantEcon/skills/issues/4) benchmark, [#12](https://github.com/QuantEcon/skills/issues/12) audit — the families outlived the plugins they were named for), never as a shipped menu entry that reports it does nothing. Ideas nobody has committed to belong in the tracker as [low-priority enhancement issues](https://github.com/QuantEcon/skills/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement+label%3Alow-priority), each carrying its own merit assessment. The style-guide rule content is authored in `QuantEcon/style-guide`, never here — when the style skills land, this repo's `qe` plugin will consume a rendered snapshot ([project-style-guide#6](https://github.com/QuantEcon/project-style-guide/issues/6)).
