@@ -17,6 +17,7 @@ One plugin, one namespace ([#43](https://github.com/QuantEcon/skills/issues/43))
 | `/qe:audit-issues` | Maintainers sweeping a repository | Whole-tracker audit, read-only: every issue's status verified against the code, tiered into the repo's plan, delivered as a report bundle |
 | `/qe:workplan-project` | Maintainers organising work | Turns an audit or review report into a tracking issue with linked sub-issues |
 | `/qe:workplan` | Anyone carrying work across sessions | The work-plan issue's whole lifecycle — create, read (validate and recommend, writing nothing), resume, update, close-and-succeed |
+| `/qe:workplan-roadmap` | Maintainers reviewing a project plan | Draws a project tracker as mermaid flowcharts — phases, decision gates, pathways, and every work item with its dependencies — and keeps the drawing in step with the tracker after a plan review |
 
 Style checks against the QuantEcon style guide (`/qe:check-style`) are planned in [skills#3](https://github.com/QuantEcon/skills/issues/3) and land once their rule snapshot and deterministic preflight exist. Until qe 0.7.0 the benchmark and audit skills were the separate `benchmark` and `audit` plugins — if you installed those, uninstall them (`claude plugin uninstall benchmark@quantecon audit@quantecon`) so the retired names don't linger in your menu.
 
