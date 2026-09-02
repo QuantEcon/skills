@@ -91,7 +91,10 @@ print(quoted(issue["body"]), end="")
 print("\n## Sub-issues, in tracker order (position is sequence)\n")
 for i, n in enumerate(issue["subIssues"]["nodes"], 1):
     t = (n.get("issueType") or {}).get("name") or "untyped"
-    role = "decision" if t == "Decision" or re.search(r"\*\*Decision point\*\*", n.get("body") or "") else "work"
+    # QEP-6's role marker counts only when the body *opens* with it — a later
+    # mention is discussion of some other decision, not a role claim.
+    opens_with_marker = re.match(r"\s*\*\*Decision point\*\*", n.get("body") or "") is not None
+    role = "decision" if t == "Decision" or opens_with_marker else "work"
     print(f"== #{n['number']}  {i:>2}  {n['state']:<6} {t:<9} {role:<8} {n['repository']['nameWithOwner']}  {n['title']}")
     if os.environ.get("BODIES") == "1":
         print(quoted(n.get("body")), end="")
