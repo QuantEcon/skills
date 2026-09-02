@@ -6,6 +6,20 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.0 — 2026-09-02
+
+`workplan-project` is brought into line with [QEP-6](https://github.com/QuantEcon/qeps/pull/18) (draft), the standard for project-tracker structure and order, following the six findings its field test ([qeps#19](https://github.com/QuantEcon/qeps/issues/19)) filed against the skill — [#69](https://github.com/QuantEcon/skills/issues/69) to [#74](https://github.com/QuantEcon/skills/issues/74), adopted into [#63](https://github.com/QuantEcon/skills/issues/63) as phase 1. The skill has still not run against a real bundle ([#65](https://github.com/QuantEcon/skills/issues/65)); this release changes what that run will produce. Where C2 and QEP-6 disagree the skill now says so and cites QEP-6's Adoption clause 3, which rules QEP-6 authoritative for structure until the contract's handover.
+
+**Changed**
+
+- **The tracker body carries a phase table, not a plan table.** `Phase | Intent | Exit criterion` replaces `Phase | Issue | Work item`: membership, order and state belong to the sub-issue list, and the old table was the body mirror QEP-6 §7 forbids — C2-conformant, since C2 only rules that checkbox progress is never read, and QEP-6-non-conformant. The tracking issue is now written once: no placeholder numbers, no backfill edit, and no second body write to lose the stamp in (#69).
+- **Plan order is stated and kept.** Draft file order is plan order; sub-issues are linked with `gh issue edit --add-sub-issue` in that order, the read-back asserts it, and a re-run places a recovered item in its position with the reprioritise API instead of appending it to the bottom of the list. The database-id gotcha moves off the link path to the one call that needs it. Until [status-projects#19](https://github.com/QuantEcon/status-projects/issues/19) ships the dashboard cannot show the difference, so the check is on GitHub (#70).
+- **Linking reads the parent first.** Sub-issue membership is single-parent and `gh`'s link verbs replace an existing parent silently, so every pre-existing issue's parent is read before it is linked; an already-parented item is named in the approval draft with the tracker it would leave, and a re-run that finds one stops before linking (#72).
+- **A membership gate, new step 4**, sits between validation and drafting: the definition of done is written first, each survivor is tested against QEP-6 §1's criterion, packages split by definition of done rather than by count or phase, and findings that clear the bar but not the gate are filed unparented (#71).
+- **The exemplar is cited for content, not shape.** QuantEcon.py#925's stamp now parses, but its plan table still carries an `Issue` and a `Status` column; the shape comes from QEP-6 Appendix A, with #925 cited for body content and #926 for the evidence bar (#73).
+- **Split packages get `Related work` and `Gates`**: each package names its siblings (projects, never work items), and a gate between packages is written once, in the body of the package that waits, at phase granularity by default (#74).
+- Housekeeping: the status banner points at #65 rather than #3, and the retired `audit` plugin link points at `/qe:audit-issues`.
+
 ## 0.9.0 — 2026-09-02
 
 The work-plan family gains a third skill, extracted from a hand run: the roadmap drawn for the Lectures monorepo project from its tracker ([project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30), members-only). Tracked in [#63](https://github.com/QuantEcon/skills/issues/63).
