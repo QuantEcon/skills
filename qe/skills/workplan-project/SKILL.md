@@ -11,7 +11,7 @@ The `workplan-*` family is three skills: this one builds a **project** (tracker 
 
 > **Status: merged, no validated run yet.** First-run validation — a real bundle, from an installed plugin — is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
-Requires `gh`, authenticated: step 3 reads the target repo, step 5 writes to it. The reports themselves are local files — typically bundles under `~/work/quantecon/_audits/` and `~/work/quantecon/_reviews/`, many produced by the [`audit`](https://github.com/QuantEcon/skills/tree/main/audit) plugin, but any evidence-cited report works.
+Requires `gh`, authenticated: step 3 reads the target repo, step 6 writes to it. The reports themselves are local files — typically bundles under `~/work/quantecon/_audits/` and `~/work/quantecon/_reviews/`, many produced by the [`audit`](https://github.com/QuantEcon/skills/tree/main/audit) plugin, but any evidence-cited report works.
 
 ## Invocation
 
@@ -23,16 +23,16 @@ The first argument is a report file or a bundle directory. The target repo defau
 
 ## What this skill writes
 
-Steps 1–4 write only local draft files, next to the report. Step 5 acts on a third party, so every mutating call is listed here, and each happens only after the user has approved the drafts:
+Steps 1–5 write only local draft files, next to the report. Step 6 acts on a third party, so every mutating call is listed here, and each happens only after the user has approved the drafts:
 
 | Call | Step | What it does |
 |---|---|---|
-| `gh issue create` | 5 | the tracking issue, then one issue per work item |
-| `gh issue edit <parent> --add-sub-issue` | 5 | links each work item as a native sub-issue, in plan order |
-| `gh api …/issues/<parent>/sub_issues/priority` (PATCH) | 5 | re-runs only: moves a recovered item into its plan position |
-| `gh issue edit --type Project` | 5 | applies the native issue type to the tracking issue |
+| `gh issue create` | 6 | the tracking issue, then one issue per work item |
+| `gh issue edit <parent> --add-sub-issue` | 6 | links each work item as a native sub-issue, in plan order |
+| `gh api …/issues/<parent>/sub_issues/priority` (PATCH) | 6 | re-runs only: moves a recovered item into its plan position |
+| `gh issue edit --type Project` | 6 | applies the native issue type to the tracking issue |
 
-A filed issue can be closed but not unfiled, so **do not run step 5 headlessly** — the approval gate after step 4 is the safety model.
+A filed issue can be closed but not unfiled, so **do not run step 6 headlessly** — the approval gate after step 5 is the safety model.
 
 ## 1. Read the report
 
@@ -58,7 +58,7 @@ Reports use several priority vocabularies, sometimes more than one at once. Read
 |---|---|
 | `P0`, 🔴, `GC`/`T0`, `high-priority`, `GAP-n (High)`, "Blocker" | high value — in |
 | `MERGE`, `MERGE AFTER MINOR CHANGES` (PR triage) | in: the work item is landing it |
-| `NEEDS MAINTAINER DECISION` | in, as a *decision* item (see step 4) |
+| `NEEDS MAINTAINER DECISION` | in, as a *decision* item (see step 5) |
 | `CLOSE`, `FIXED`, ledger lines under "Resolved:" | out — hygiene the report already dispatched |
 | Quality ★★ or below | usually out — the report itself says not to act on it as written; include only if the *underlying problem* independently clears the bar |
 | `P2`/`P3`, `low-priority`, `T2`/`T3` | out, unless several cluster into one coherent phase |
@@ -76,23 +76,33 @@ The report is a snapshot and is stale by construction. For each candidate, check
 
 Drop what no longer holds, and record every drop with its reason in the draft's method note — the user should see what was filtered out, not just what survived.
 
-## 4. Draft the work package (local files only)
+## 4. Decide membership
+
+Step 2 is a quality bar and step 3 a truth bar; neither asks whether a finding belongs to *this* project. A report bundle covers a repository over a window, which is not a project, so a goal written from whatever survived describes the list instead of constraining it — and a package built that way passes every structural check while being a repository sweep with a goal fitted afterwards, which is exactly what the QEP-6 field test produced ([qeps#19](https://github.com/QuantEcon/qeps/issues/19), amendment 9).
+
+So, before drafting, write the project's **definition of done** in one sentence — what has to be true for the tracker to close — from the report's framing of the problem, not from the survivors. Then test each survivor against it using [QEP-6 §1](https://github.com/QuantEcon/qeps/pull/18)'s membership criterion, which is cited rather than restated here except for its diagnostic, because the diagnostic is the working tool: **if the goal must be widened to justify an item's membership, the item is not a member.**
+
+- **Two definitions of done are two packages**, whatever the count. Fifteen items that all serve one goal are a large project, not a bad one; the ~15 figure in the gotchas is a prompt to re-ask this question, never the criterion, and splitting by phase or by size leaves each half with the same fitted-afterwards goal.
+- **Non-members that still clear step 2's bar are filed as ordinary issues and left unparented.** An unparented issue is the normal case (§1), and a skill that has just filtered a report will otherwise parent everything it kept.
+- **The method note records each exclusion** as *kept, not a member of this project*, distinct from step 3's *dropped, no longer holds* — the user should be able to see both lists and disagree with either.
+
+## 5. Draft the work package (local files only)
 
 Write drafts into `<bundle>/workplan/`: `00-tracking.md`, then `NN-<slug>.md` per sub-issue. The shape follows the worked exemplar, [QuantEcon.py#925](https://github.com/QuantEcon/QuantEcon.py/issues/925) with sub-issue [#926](https://github.com/QuantEcon/QuantEcon.py/issues/926):
 
 - **Tracking issue**: Background (why now, with sources) → **`## Where we stand (verified <date>)`** → a findings/gaps table with severity → a **phase table** (`Phase | Intent | Exit criterion`) → a sequencing paragraph (what gates what, what can land immediately) → what does *not* need to change → sources, including the report bundle this package came from and the snapshot SHA. That heading is the project tracker contract's status stamp and its form is exact — see **The tracker contract** below. The phase table carries what the sub-issue list cannot — what each phase is for and when it is finished — and **never an `Issue` or `Status` column**: membership, order and state are the sub-issue list's, and a body that repeats them is the mirror [QEP-6 §7](https://github.com/QuantEcon/qeps/pull/18) forbids, one that can visibly disagree with the live list rendered on the same page. When step 3 left genuine unknowns, phase 0 is the phase that converts them into knowns, and the dependent items say they are gated on it.
-- **Plan order**: the draft file order *is* the plan order — `NN-<slug>.md` files numbered in the order the work should happen, each phase's items contiguous — because the sub-issue list is the plan under [QEP-6 §3](https://github.com/QuantEcon/qeps/pull/18): position is sequence, and the topmost open item is next. Step 5 files and links in that order and checks the result against it. The `NN-` prefix is a draft filename and nothing else — it never reaches an issue title, since §3 bans sequence tokens in titles and milestone names outright.
+- **Plan order**: the draft file order *is* the plan order — `NN-<slug>.md` files numbered in the order the work should happen, each phase's items contiguous — because the sub-issue list is the plan under [QEP-6 §3](https://github.com/QuantEcon/qeps/pull/18): position is sequence, and the topmost open item is next. Step 6 files and links in that order and checks the result against it. The `NN-` prefix is a draft filename and nothing else — it never reaches an issue title, since §3 bans sequence tokens in titles and milestone names outright.
 - **Sub-issues**: open with `Part of #<tracking> (Phase k).`, then the problem with its evidence as SHA-pinned permalinks, the proposed fix, and an **acceptance criteria** checklist. A finding the report left as a judgement call becomes a *decision* sub-issue — the question, the options, and the report's lean — never a silently chosen fix.
 - **A work item that is an existing issue** — landing PR #n, deciding issue #m, a finding the repo had already filed — is linked, not re-created, and linking is claiming: sub-issue membership is single-parent, so adding an issue here removes it from whatever tracker holds it now. Read its parent at draft time, `gh issue view <n> --repo <o>/<r> --json parent --jq '.parent.number // empty'`, and where that is non-empty the method note says so in terms the user can act on: *item #n is currently a work item of #p; adding it here removes it from #p.* The approval that follows then covers the detachment knowingly, or the item stays where it is and the package cites it instead.
 - **Labels per [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)**: exactly one type label per issue (`bug`/`enhancement`/`infrastructure`/`maintenance`/`discuss`…), priority labels only for the genuine outliers — there is deliberately no `medium-priority`, unlabelled *is* the middle. Check the labels exist in the target repo (`gh label list`); if not, flag that the repo hasn't adopted the QEP-2 set and propose only labels it has.
-- **The tracker contract**: what this skill produces *is* a project tracker — one issue, its direct sub-issues the work — so it is drafted to conform with [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2), which states the rules once and is not restated here. Three bear on the draft: the stamp heading above in its exact form; the work in **native sub-issues**, never body checkboxes, since checkbox progress publishes as `null`; and the native `Project` issue type, applied at step 5.
+- **The tracker contract**: what this skill produces *is* a project tracker — one issue, its direct sub-issues the work — so it is drafted to conform with [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2), which states the rules once and is not restated here. Three bear on the draft: the stamp heading above in its exact form; the work in **native sub-issues**, never body checkboxes, since checkbox progress publishes as `null`; and the native `Project` issue type, applied at step 6.
 - **The tracker structure**: [QEP-6](https://github.com/QuantEcon/qeps/pull/18) (draft) rules what the tracker body may and may not carry, and this skill follows it wherever it goes further than C2. The two disagree in one place worth knowing: C2 forbids nothing in the body beyond the stamp and never *reads* a plan table, so a roster of work items there is C2-conformant, while QEP-6 §7 forbids it. QEP-6's Adoption clause 3 rules that QEP-6 is authoritative for tracker structure until C2's planned handover to it; this skill applies that ruling rather than choosing between the two, and says so here so that a reader who checks the draft against C2 alone is not surprised.
 - **[QEP-1](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0001-purpose-and-process.md) check**: if the package crosses repositories or changes how the whole team works, it may warrant a QEP rather than (or before) a pile of issues — say so instead of filing.
 - Every body will be GitHub-rendered, so the [rules for writing to GitHub](https://github.com/QuantEcon/skills/blob/main/AGENTS.md#writing-to-github) apply: one unbroken line per paragraph, no prose in fenced blocks, and never a closing keyword before an `owner/repo#N` reference.
 
-Present the drafts — including the method note listing what was extracted, what was dropped in step 3 and why — and **wait for approval** before step 5.
+Present the drafts — including the method note listing what was extracted, what was dropped in step 3 and why, and what was kept but excluded in step 4 — and **wait for approval** before step 6.
 
-## 5. File it (on approval)
+## 6. File it (on approval)
 
 The tracking issue is written **once**: its body names no sub-issue numbers, so nothing has to be filled in after the children exist, and there is no second body write to lose the stamp in.
 
@@ -104,7 +114,7 @@ The tracking issue is written **once**: its body names no sub-issue numbers, so 
    gh issue edit <parent-number> --repo <o>/<r> --add-sub-issue <child-number>
    ```
 
-   The verb takes plain issue numbers (`gh` ≥ 2.94); no database-id lookup on this path. It also **replaces an existing parent unconditionally** — `--add-sub-issue` and `--parent` both send `replace_parent=true` with no opt-out, so on an already-parented issue the same call succeeds and steals it. Issues created in step 2 are parentless and safe. For anything else, the parent read in step 4 is the guard, and it has to have happened: never link an issue whose parent this run has not read. (The raw REST `POST …/sub_issues` behaves differently — it omits `replace_parent` and fails on a parented child — which is why the skill uses one method, the verb, with one guard, rather than two methods with two behaviours.)
+   The verb takes plain issue numbers (`gh` ≥ 2.94); no database-id lookup on this path. It also **replaces an existing parent unconditionally** — `--add-sub-issue` and `--parent` both send `replace_parent=true` with no opt-out, so on an already-parented issue the same call succeeds and steals it. Issues created in item 2 above are parentless and safe. For anything else, the parent read in step 5 is the guard, and it has to have happened: never link an issue whose parent this run has not read. (The raw REST `POST …/sub_issues` behaves differently — it omits `replace_parent` and fails on a parented child — which is why the skill uses one method, the verb, with one guard, rather than two methods with two behaviours.)
 4. Apply the tracker's native type: `gh issue edit <parent> --repo <o>/<r> --type Project`. It is org-level and label-free, so QEP-2's set is untouched; if the type is missing the call fails harmlessly — report it and carry on, since an untyped tracker is a finding rather than a failure.
 5. Read back and confirm every sub-issue is listed, **in draft order**, and the stamp heading is intact. `gh api repos/<o>/<r>/issues/<parent>/sub_issues --jq '.[].number'` returns the list in position order, which is what the rendered page shows. Check on GitHub, not on the projects dashboard: its collector re-sorts children by issue number until [status-projects#19](https://github.com/QuantEcon/status-projects/issues/19) ships, so a tracker in plan order and one in arbitrary order publish identically there.
 
@@ -118,7 +128,7 @@ gh api --method PATCH repos/<o>/<r>/issues/<parent-number>/sub_issues/priority \
   -F sub_issue_id=<child-id> -F after_id=<predecessor-id>
 ```
 
-Then run the step-5 read-back again. The reprioritise write is reflected in the list read-back, and REST, GraphQL and the rendered page all return the same order.
+Then run the item-5 read-back again. The reprioritise write is reflected in the list read-back, and REST, GraphQL and the rendered page all return the same order.
 
 When everything is filed, say plainly that the tracker is **not on the projects dashboard until it is registered**: a row in [`projects.yml`](https://github.com/QuantEcon/status-projects/blob/main/projects.yml) carrying its slug, programme, stage, owner, one public sentence and the tracker in `Owner/repo#N` form, landed as a pull request against `QuantEcon/status-projects` and gated by that repo's validator. Offer to draft the row; leave opening the PR to the user. Then offer — don't do unasked — to move the bundle into its tree's `_processed/`, which is the local convention for "actioned".
 
@@ -127,5 +137,5 @@ When everything is filed, say plainly that the tracker is **not on the projects 
 - **The reprioritise call mixes two kinds of integer.** The parent in the path is an issue *number*; `sub_issue_id` and `after_id` in the body are database *ids*, ten-digit and unrelated to the numbers. Both are bare integers and the API cannot tell a transposition from a request, so read the ids from the `sub_issues` listing in the same breath as the call. This is the only place the skill needs a database id; linking takes numbers.
 - **Linking is claiming, and the theft is silent.** In the QEP-6 field test ([qeps#19](https://github.com/QuantEcon/qeps/issues/19), finding 1) ten items linked into a new tracker were detached from the org's QEP-2 rollout tracker by that act alone, leaving it with one closed child and a published 100%. No error, no warning, in a repository nobody was watching. One `--json parent` read per pre-existing item is the whole cost of not doing that; QEP-6 Adoption clause 2 makes it an obligation on conform tooling, and for the create path this skill is that tooling.
 - **The exemplar's quality bar is the target.** #926 carries benchmarks, a rewritten implementation, and pinned permalinks because the report behind it did; a sub-issue only ever restates *the report's* evidence and your step-3 verification — it does not decorate a thin finding into looking like a thick one.
-- **A package that wants more than ~15 sub-issues is a signal**, not an achievement — raise the bar in step 2 or split by phase into separate packages. (GitHub's hard cap is 100 sub-issues per parent, but the readable limit is far lower.)
+- **A package that wants more than ~15 sub-issues is a signal**, not an achievement — go back to step 4 and ask whether the survivors answer to one definition of done. Usually they answer to two, and the phase boundary turns out to be the membership boundary: an oversized package is most often a membership problem wearing a size costume. Split by definition of done, never by count. (GitHub's hard cap is 100 sub-issues per parent, but the readable limit is far lower.)
 - **Reports disagree with each other.** When two bundles cover the same item with different verdicts, the later snapshot wins, but say in the draft that an earlier report disagreed — the divergence is itself information.
