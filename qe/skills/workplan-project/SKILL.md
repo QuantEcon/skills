@@ -29,7 +29,7 @@ Steps 1–4 write only local draft files, next to the report. Step 5 acts on a t
 |---|---|---|
 | `gh issue create` | 5 | the tracking issue, then one issue per work item |
 | `gh api …/issues/<parent>/sub_issues` (POST) | 5 | links each work item as a native sub-issue |
-| `gh issue edit` | 5 | fills the created sub-issue numbers back into the tracking issue's plan table |
+| `gh issue edit --type Project` | 5 | applies the native issue type to the tracking issue |
 
 A filed issue can be closed but not unfiled, so **do not run step 5 headlessly** — the approval gate after step 4 is the safety model.
 
@@ -79,10 +79,11 @@ Drop what no longer holds, and record every drop with its reason in the draft's 
 
 Write drafts into `<bundle>/workplan/`: `00-tracking.md`, then `NN-<slug>.md` per sub-issue. The shape follows the worked exemplar, [QuantEcon.py#925](https://github.com/QuantEcon/QuantEcon.py/issues/925) with sub-issue [#926](https://github.com/QuantEcon/QuantEcon.py/issues/926):
 
-- **Tracking issue**: Background (why now, with sources) → **`## Where we stand (verified <date>)`** → a findings/gaps table with severity → a **work plan table** (`Phase | Issue | Work item`) → a sequencing paragraph (what gates what, what can land immediately) → what does *not* need to change → sources, including the report bundle this package came from and the snapshot SHA. That heading is the project tracker contract's status stamp and its form is exact — see **The tracker contract** below. When step 3 left genuine unknowns, phase 0 is the phase that converts them into knowns, and the dependent items say they are gated on it.
+- **Tracking issue**: Background (why now, with sources) → **`## Where we stand (verified <date>)`** → a findings/gaps table with severity → a **phase table** (`Phase | Intent | Exit criterion`) → a sequencing paragraph (what gates what, what can land immediately) → what does *not* need to change → sources, including the report bundle this package came from and the snapshot SHA. That heading is the project tracker contract's status stamp and its form is exact — see **The tracker contract** below. The phase table carries what the sub-issue list cannot — what each phase is for and when it is finished — and **never an `Issue` or `Status` column**: membership, order and state are the sub-issue list's, and a body that repeats them is the mirror [QEP-6 §7](https://github.com/QuantEcon/qeps/pull/18) forbids, one that can visibly disagree with the live list rendered on the same page. When step 3 left genuine unknowns, phase 0 is the phase that converts them into knowns, and the dependent items say they are gated on it.
 - **Sub-issues**: open with `Part of #<tracking> (Phase k).`, then the problem with its evidence as SHA-pinned permalinks, the proposed fix, and an **acceptance criteria** checklist. A finding the report left as a judgement call becomes a *decision* sub-issue — the question, the options, and the report's lean — never a silently chosen fix.
 - **Labels per [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)**: exactly one type label per issue (`bug`/`enhancement`/`infrastructure`/`maintenance`/`discuss`…), priority labels only for the genuine outliers — there is deliberately no `medium-priority`, unlabelled *is* the middle. Check the labels exist in the target repo (`gh label list`); if not, flag that the repo hasn't adopted the QEP-2 set and propose only labels it has.
 - **The tracker contract**: what this skill produces *is* a project tracker — one issue, its direct sub-issues the work — so it is drafted to conform with [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2), which states the rules once and is not restated here. Three bear on the draft: the stamp heading above in its exact form; the work in **native sub-issues**, never body checkboxes, since checkbox progress publishes as `null`; and the native `Project` issue type, applied at step 5.
+- **The tracker structure**: [QEP-6](https://github.com/QuantEcon/qeps/pull/18) (draft) rules what the tracker body may and may not carry, and this skill follows it wherever it goes further than C2. The two disagree in one place worth knowing: C2 forbids nothing in the body beyond the stamp and never *reads* a plan table, so a roster of work items there is C2-conformant, while QEP-6 §7 forbids it. QEP-6's Adoption clause 3 rules that QEP-6 is authoritative for tracker structure until C2's planned handover to it; this skill applies that ruling rather than choosing between the two, and says so here so that a reader who checks the draft against C2 alone is not surprised.
 - **[QEP-1](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0001-purpose-and-process.md) check**: if the package crosses repositories or changes how the whole team works, it may warrant a QEP rather than (or before) a pile of issues — say so instead of filing.
 - Every body will be GitHub-rendered, so the [rules for writing to GitHub](https://github.com/QuantEcon/skills/blob/main/AGENTS.md#writing-to-github) apply: one unbroken line per paragraph, no prose in fenced blocks, and never a closing keyword before an `owner/repo#N` reference.
 
@@ -90,20 +91,19 @@ Present the drafts — including the method note listing what was extracted, wha
 
 ## 5. File it (on approval)
 
-Creation order resolves the numbering chicken-and-egg:
+The tracking issue is written **once**: its body names no sub-issue numbers, so nothing has to be filled in after the children exist, and there is no second body write to lose the stamp in.
 
-1. Create the tracking issue with `—` in the plan table's Issue column.
-2. Create each sub-issue (`gh issue create --repo <o>/<r> --title … --body-file … --label …`); each already cites `Part of #<tracking>`.
-3. `gh issue edit` the tracking issue to fill the real numbers into the plan table.
-4. Link each as a **native sub-issue** — this is what makes GitHub render the progress bar and the sub-issue list:
+1. Create the tracking issue (`gh issue create --repo <o>/<r> --title … --body-file … --label …`).
+2. Create each sub-issue the same way; each already cites `Part of #<tracking>`.
+3. Link each as a **native sub-issue** — this is what makes GitHub render the progress bar and the sub-issue list:
 
    ```bash
    id=$(gh api repos/<o>/<r>/issues/<child-number> --jq .id)
    gh api repos/<o>/<r>/issues/<parent-number>/sub_issues -F sub_issue_id="$id"
    ```
 
-5. Apply the tracker's native type: `gh issue edit <parent> --repo <o>/<r> --type Project`. It is org-level and label-free, so QEP-2's set is untouched; if the type is missing the call fails harmlessly — report it and carry on, since an untyped tracker is a finding rather than a failure.
-6. Read the tracking issue back and confirm every sub-issue is listed, and that the stamp heading survived the step-3 edit intact.
+4. Apply the tracker's native type: `gh issue edit <parent> --repo <o>/<r> --type Project`. It is org-level and label-free, so QEP-2's set is untouched; if the type is missing the call fails harmlessly — report it and carry on, since an untyped tracker is a finding rather than a failure.
+5. Read the tracking issue back and confirm every sub-issue is listed and the stamp heading is intact.
 
 **Re-runs are safe if you look first**: before each create, `gh issue list --repo <o>/<r> --search "<title> in:title"` — file only what is missing, and edit rather than duplicate.
 
