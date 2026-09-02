@@ -7,7 +7,7 @@ description: Turn an audit or review report into a QEP-compliant work project �
 
 Automates the loop **read a report bundle → extract the high-value findings → re-verify each against the repo as it is today → draft a work project → (on approval) file it as a tracking issue with sub-issues**.
 
-The `workplan-*` family is two skills: this one builds a **project** (tracker + sub-issues, the phased-package shape) from a report; [`workplan`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan/SKILL.md) carries the single **work-plan issue** (the cross-session state carrier) through its whole lifecycle — create, read, resume, update, close-and-succeed.
+The `workplan-*` family is three skills: this one builds a **project** (tracker + sub-issues, the phased-package shape) from a report; [`workplan`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan/SKILL.md) carries the single **work-plan issue** (the cross-session state carrier) through its whole lifecycle — create, read, resume, update, close-and-succeed; [`workplan-roadmap`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-roadmap/SKILL.md) draws the project this skill files as mermaid flowcharts.
 
 > **Status: merged, no validated run yet.** First-run validation — a real bundle, from an installed plugin — is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 

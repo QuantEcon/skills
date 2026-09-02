@@ -6,6 +6,18 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.9.0 — 2026-09-02
+
+The work-plan family gains a third skill, extracted from a hand run: the roadmap drawn for the Lectures monorepo project from its tracker ([project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30), members-only). Tracked in [#63](https://github.com/QuantEcon/skills/issues/63).
+
+**Added**
+
+- `/qe:workplan-roadmap` — draw or update a project's `ROADMAP.md`: two GitHub-rendered mermaid flowcharts (the route — phases, decision gates, the pathways each gate can choose — and every tracker sub-issue with its dependencies), a table of what each gate can decide, and a node index. It snapshots the tracker with the new `scripts/workplan/tracker-snapshot.sh` (direct sub-issues in plan order, with the `Decision` role read from the native issue type or the QEP-6 body marker), diffs the snapshot against the roadmap's node index, and reports the *structural* changes only — an item merely closing is not one, by the file's own update rule. The file, the commit and the pull request are written after approval; the tracker itself is never edited. The roadmap lives beside the plan in the tracker's repository, never on the projects dashboard, because [C2 §2.2](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) withholds a private tracker's children from the public site.
+
+**Changed**
+
+- `workplan` and `workplan-project` now describe the family as three skills and link the third.
+
 ## 0.8.0 — 2026-08-26
 
 The work-plan skills gain a second reader. Since 2026-08-24 the [projects dashboard](https://quantecon.github.io/status-projects/) parses every registered project tracker nightly and publishes a per-tracker compliance block, so a tracker these skills produce is now read by a machine as well as by the next session. The two ends are pointed at one contract — [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2), which states the rules once and which the skills link to rather than restate ([#49](https://github.com/QuantEcon/skills/issues/49) item 2).

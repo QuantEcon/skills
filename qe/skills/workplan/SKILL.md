@@ -9,7 +9,7 @@ One skill for the whole lifecycle of the **work-plan issue**: the single GitHub 
 
 > **A fresh agent, given only the issue, can resume the work without the old conversation.**
 
-The `workplan-*` family is two skills: this one carries the plan through `create` → `read` → `resume` → `update` → `close`-and-succeed; [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a **project** (tracker + sub-issues) from an audit or review report.
+The `workplan-*` family is three skills: this one carries the plan through `create` → `read` → `resume` → `update` → `close`-and-succeed; [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a **project** (tracker + sub-issues) from an audit or review report; [`workplan-roadmap`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-roadmap/SKILL.md) draws a project's tracker as mermaid flowcharts of phases, gates, pathways and work items — the natural follow-on to a `read` or `resume` that re-sequenced the plan.
 
 > **Status: `update` and `resume` validated from an installed plugin (2026-08-20, and again 2026-08-25); `create`, `read` and `close` have no run yet.** Tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
