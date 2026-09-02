@@ -9,9 +9,9 @@ Automates the loop **read a report bundle → extract the high-value findings �
 
 The `workplan-*` family is three skills: this one builds a **project** (tracker + sub-issues, the phased-package shape) from a report; [`workplan`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan/SKILL.md) carries the single **work-plan issue** (the cross-session state carrier) through its whole lifecycle — create, read, resume, update, close-and-succeed; [`workplan-roadmap`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-roadmap/SKILL.md) draws the project this skill files as mermaid flowcharts.
 
-> **Status: merged, no validated run yet.** First-run validation — a real bundle, from an installed plugin — is tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
+> **Status: merged, no validated run yet.** First-run validation — a real bundle, from an installed plugin — is tracked in [#65](https://github.com/QuantEcon/skills/issues/65).
 
-Requires `gh`, authenticated: step 3 reads the target repo, step 6 writes to it. The reports themselves are local files — typically bundles under `~/work/quantecon/_audits/` and `~/work/quantecon/_reviews/`, many produced by the [`audit`](https://github.com/QuantEcon/skills/tree/main/audit) plugin, but any evidence-cited report works.
+Requires `gh`, authenticated: step 3 reads the target repo, step 6 writes to it. The reports themselves are local files — typically bundles under `~/work/quantecon/_audits/` and `~/work/quantecon/_reviews/`, many produced by [`/qe:audit-issues`](https://github.com/QuantEcon/skills/blob/main/qe/skills/audit-issues/SKILL.md), but any evidence-cited report works.
 
 ## Invocation
 
