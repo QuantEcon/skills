@@ -28,7 +28,8 @@ Steps 1–4 write only local draft files, next to the report. Step 5 acts on a t
 | Call | Step | What it does |
 |---|---|---|
 | `gh issue create` | 5 | the tracking issue, then one issue per work item |
-| `gh api …/issues/<parent>/sub_issues` (POST) | 5 | links each work item as a native sub-issue |
+| `gh issue edit <parent> --add-sub-issue` | 5 | links each work item as a native sub-issue, in plan order |
+| `gh api …/issues/<parent>/sub_issues/priority` (PATCH) | 5 | re-runs only: moves a recovered item into its plan position |
 | `gh issue edit --type Project` | 5 | applies the native issue type to the tracking issue |
 
 A filed issue can be closed but not unfiled, so **do not run step 5 headlessly** — the approval gate after step 4 is the safety model.
@@ -80,6 +81,7 @@ Drop what no longer holds, and record every drop with its reason in the draft's 
 Write drafts into `<bundle>/workplan/`: `00-tracking.md`, then `NN-<slug>.md` per sub-issue. The shape follows the worked exemplar, [QuantEcon.py#925](https://github.com/QuantEcon/QuantEcon.py/issues/925) with sub-issue [#926](https://github.com/QuantEcon/QuantEcon.py/issues/926):
 
 - **Tracking issue**: Background (why now, with sources) → **`## Where we stand (verified <date>)`** → a findings/gaps table with severity → a **phase table** (`Phase | Intent | Exit criterion`) → a sequencing paragraph (what gates what, what can land immediately) → what does *not* need to change → sources, including the report bundle this package came from and the snapshot SHA. That heading is the project tracker contract's status stamp and its form is exact — see **The tracker contract** below. The phase table carries what the sub-issue list cannot — what each phase is for and when it is finished — and **never an `Issue` or `Status` column**: membership, order and state are the sub-issue list's, and a body that repeats them is the mirror [QEP-6 §7](https://github.com/QuantEcon/qeps/pull/18) forbids, one that can visibly disagree with the live list rendered on the same page. When step 3 left genuine unknowns, phase 0 is the phase that converts them into knowns, and the dependent items say they are gated on it.
+- **Plan order**: the draft file order *is* the plan order — `NN-<slug>.md` files numbered in the order the work should happen, each phase's items contiguous — because the sub-issue list is the plan under [QEP-6 §3](https://github.com/QuantEcon/qeps/pull/18): position is sequence, and the topmost open item is next. Step 5 files and links in that order and checks the result against it. The `NN-` prefix is a draft filename and nothing else — it never reaches an issue title, since §3 bans sequence tokens in titles and milestone names outright.
 - **Sub-issues**: open with `Part of #<tracking> (Phase k).`, then the problem with its evidence as SHA-pinned permalinks, the proposed fix, and an **acceptance criteria** checklist. A finding the report left as a judgement call becomes a *decision* sub-issue — the question, the options, and the report's lean — never a silently chosen fix.
 - **Labels per [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)**: exactly one type label per issue (`bug`/`enhancement`/`infrastructure`/`maintenance`/`discuss`…), priority labels only for the genuine outliers — there is deliberately no `medium-priority`, unlabelled *is* the middle. Check the labels exist in the target repo (`gh label list`); if not, flag that the repo hasn't adopted the QEP-2 set and propose only labels it has.
 - **The tracker contract**: what this skill produces *is* a project tracker — one issue, its direct sub-issues the work — so it is drafted to conform with [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2), which states the rules once and is not restated here. Three bear on the draft: the stamp heading above in its exact form; the work in **native sub-issues**, never body checkboxes, since checkbox progress publishes as `null`; and the native `Project` issue type, applied at step 5.
@@ -94,24 +96,34 @@ Present the drafts — including the method note listing what was extracted, wha
 The tracking issue is written **once**: its body names no sub-issue numbers, so nothing has to be filled in after the children exist, and there is no second body write to lose the stamp in.
 
 1. Create the tracking issue (`gh issue create --repo <o>/<r> --title … --body-file … --label …`).
-2. Create each sub-issue the same way; each already cites `Part of #<tracking>`.
-3. Link each as a **native sub-issue** — this is what makes GitHub render the progress bar and the sub-issue list:
+2. Create each sub-issue the same way, **in draft order**; each already cites `Part of #<tracking>`.
+3. Link each as a **native sub-issue**, in the same order — this is what makes GitHub render the progress bar and the sub-issue list, and linking appends, so linking in draft order produces plan order:
 
    ```bash
-   id=$(gh api repos/<o>/<r>/issues/<child-number> --jq .id)
-   gh api repos/<o>/<r>/issues/<parent-number>/sub_issues -F sub_issue_id="$id"
+   gh issue edit <parent-number> --repo <o>/<r> --add-sub-issue <child-number>
    ```
 
+   The verb takes plain issue numbers (`gh` ≥ 2.94); no database-id lookup on this path.
 4. Apply the tracker's native type: `gh issue edit <parent> --repo <o>/<r> --type Project`. It is org-level and label-free, so QEP-2's set is untouched; if the type is missing the call fails harmlessly — report it and carry on, since an untyped tracker is a finding rather than a failure.
-5. Read the tracking issue back and confirm every sub-issue is listed and the stamp heading is intact.
+5. Read back and confirm every sub-issue is listed, **in draft order**, and the stamp heading is intact. `gh api repos/<o>/<r>/issues/<parent>/sub_issues --jq '.[].number'` returns the list in position order, which is what the rendered page shows. Check on GitHub, not on the projects dashboard: its collector re-sorts children by issue number until [status-projects#19](https://github.com/QuantEcon/status-projects/issues/19) ships, so a tracker in plan order and one in arbitrary order publish identically there.
 
-**Re-runs are safe if you look first**: before each create, `gh issue list --repo <o>/<r> --search "<title> in:title"` — file only what is missing, and edit rather than duplicate.
+**Re-runs are safe if you look first, and place what they file**: before each create, `gh issue list --repo <o>/<r> --search "<title> in:title"` — file only what is missing, and edit rather than duplicate. A recovered item then has to be **moved into its plan position**, because linking appends it to the bottom whatever phase it belongs to — a phase-2 item recovered on a re-run lands after phase 4, silently, and the tracker no longer states the plan. Reordering is the one sub-issue operation with no `gh` verb; it is the reprioritise API, and it wants database ids, not numbers:
+
+```bash
+# database ids of the parent's current children, in list order
+gh api repos/<o>/<r>/issues/<parent-number>/sub_issues --jq '.[] | "\(.number) \(.id)"'
+# place the recovered item directly after its intended predecessor
+gh api --method PATCH repos/<o>/<r>/issues/<parent-number>/sub_issues/priority \
+  -F sub_issue_id=<child-id> -F after_id=<predecessor-id>
+```
+
+Then run the step-5 read-back again. The reprioritise write is reflected in the list read-back, and REST, GraphQL and the rendered page all return the same order.
 
 When everything is filed, say plainly that the tracker is **not on the projects dashboard until it is registered**: a row in [`projects.yml`](https://github.com/QuantEcon/status-projects/blob/main/projects.yml) carrying its slug, programme, stage, owner, one public sentence and the tracker in `Owner/repo#N` form, landed as a pull request against `QuantEcon/status-projects` and gated by that repo's validator. Offer to draft the row; leave opening the PR to the user. Then offer — don't do unasked — to move the bundle into its tree's `_processed/`, which is the local convention for "actioned".
 
 ## Gotchas
 
-- **`sub_issue_id` is the issue's database `id`, not its number.** Posting the issue *number* either fails or links the wrong issue — always resolve via `--jq .id` first.
+- **The reprioritise call mixes two kinds of integer.** The parent in the path is an issue *number*; `sub_issue_id` and `after_id` in the body are database *ids*, ten-digit and unrelated to the numbers. Both are bare integers and the API cannot tell a transposition from a request, so read the ids from the `sub_issues` listing in the same breath as the call. This is the only place the skill needs a database id; linking takes numbers.
 - **The exemplar's quality bar is the target.** #926 carries benchmarks, a rewritten implementation, and pinned permalinks because the report behind it did; a sub-issue only ever restates *the report's* evidence and your step-3 verification — it does not decorate a thin finding into looking like a thick one.
 - **A package that wants more than ~15 sub-issues is a signal**, not an achievement — raise the bar in step 2 or split by phase into separate packages. (GitHub's hard cap is 100 sub-issues per parent, but the readable limit is far lower.)
 - **Reports disagree with each other.** When two bundles cover the same item with different verdicts, the later snapshot wins, but say in the draft that an earlier report disagreed — the divergence is itself information.
