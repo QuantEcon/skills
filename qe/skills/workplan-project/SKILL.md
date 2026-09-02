@@ -27,10 +27,10 @@ Steps 1–5 write only local draft files, next to the report. Step 6 acts on a t
 
 | Call | Step | What it does |
 |---|---|---|
-| `gh issue create` | 6 | the tracking issue, then one issue per work item |
-| `gh issue edit <parent> --add-sub-issue` | 6 | links each work item as a native sub-issue, in plan order |
-| `gh api …/issues/<parent>/sub_issues/priority` (PATCH) | 6 | re-runs only: moves a recovered item into its plan position |
-| `gh issue edit --type Project` | 6 | applies the native issue type to the tracking issue |
+| `gh issue create` | 6 | the tracking issue, one issue per work item, and any step-4 non-member findings, filed unparented |
+| `gh issue edit <parent-number> --add-sub-issue` | 6 | links each work item as a native sub-issue, in plan order |
+| `gh api …/issues/<parent-number>/sub_issues/priority` (PATCH) | 6 | re-runs only: moves a recovered item into its plan position |
+| `gh issue edit <parent-number> --type Project` | 6 | applies the native issue type to the tracking issue |
 
 A filed issue can be closed but not unfiled, so **do not run step 6 headlessly** — the approval gate after step 5 is the safety model.
 
@@ -116,8 +116,8 @@ The tracking issue is written **once**: its body names no sub-issue numbers, so 
    ```
 
    The verb takes plain issue numbers (`gh` ≥ 2.94); no database-id lookup on this path. It also **replaces an existing parent unconditionally** — `--add-sub-issue` and `--parent` both send `replace_parent=true` with no opt-out, so on an already-parented issue the same call succeeds and steals it. Issues created in item 2 above are parentless and safe. For anything else, the parent read in step 5 is the guard, and it has to have happened: never link an issue whose parent this run has not read. (The raw REST `POST …/sub_issues` behaves differently — it omits `replace_parent` and fails on a parented child — which is why the skill uses one method, the verb, with one guard, rather than two methods with two behaviours.)
-4. Apply the tracker's native type: `gh issue edit <parent> --repo <o>/<r> --type Project`. It is org-level and label-free, so QEP-2's set is untouched; if the type is missing the call fails harmlessly — report it and carry on, since an untyped tracker is a finding rather than a failure.
-5. Read back and confirm every sub-issue is listed, **in draft order**, and the stamp heading is intact. `gh api repos/<o>/<r>/issues/<parent>/sub_issues --jq '.[].number'` returns the list in position order, which is what the rendered page shows. Check on GitHub, not on the projects dashboard: its collector re-sorts children by issue number until [status-projects#19](https://github.com/QuantEcon/status-projects/issues/19) ships, so a tracker in plan order and one in arbitrary order publish identically there.
+4. Apply the tracker's native type: `gh issue edit <parent-number> --repo <o>/<r> --type Project`. It is org-level and label-free, so QEP-2's set is untouched; if the type is missing the call fails harmlessly — report it and carry on, since an untyped tracker is a finding rather than a failure.
+5. Read back and confirm every sub-issue is listed, **in draft order**, and the stamp heading is intact. `gh api repos/<o>/<r>/issues/<parent-number>/sub_issues --jq '.[].number'` returns the list in position order, which is what the rendered page shows. Check on GitHub, not on the projects dashboard: its collector re-sorts children by issue number until [status-projects#19](https://github.com/QuantEcon/status-projects/issues/19) ships, so a tracker in plan order and one in arbitrary order publish identically there.
 
 **Re-runs are safe if you look first, and place what they file**: before each create, `gh issue list --repo <o>/<r> --search "<title> in:title"` — file only what is missing, and edit rather than duplicate. An issue the search finds is one the drafts did not know about, so its parent has not been read: read it now, and if it is set, **stop before linking** and bring it back to the user with the parent named — the approval covered filing the package, not detaching someone else's work item. A detachment that goes ahead is recorded in the method note and in the tracking issue's sources, so the change is visible to whoever owns the other tracker. A recovered item then has to be **moved into its plan position**, because linking appends it to the bottom whatever phase it belongs to — a phase-2 item recovered on a re-run lands after phase 4, silently, and the tracker no longer states the plan. Reordering is the one sub-issue operation with no `gh` verb; it is the reprioritise API, and it wants database ids, not numbers:
 
