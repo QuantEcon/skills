@@ -18,7 +18,9 @@ If the repo's own type is ambiguous, say so once and audit it as the closest fam
 
 ## Labels: recommend, never apply
 
-The standard set is [QEP-2 (Draft, qeps#2)](https://github.com/QuantEcon/qeps/pull/2) — 19 core labels plus 2 lecture-extension labels — re-recording the settled decision in [meta#324](https://github.com/QuantEcon/meta/issues/324). Because QEP-2 is still a draft, doctrine rule 6 applies: recommend only already-canonical labels, mark anything else *post-acceptance*.
+The standard set is [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md) — 19 core labels plus 2 lecture-extension labels — re-recording the settled decision in [meta#324](https://github.com/QuantEcon/meta/issues/324). It is **Accepted** (qeps#2, merged), so doctrine rule 6's draft caveat no longer applies: the whole set is canonical and may be recommended without a *post-acceptance* mark.
+
+The machine-readable set is [`qep-0002-labels.yml`](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-labels.yml) beside the QEP, kept in lockstep with its tables by CI, and **that file is the authority**. The `qe` CLI vendors it verbatim with a pin to the `qeps` revision it came from, and a weekly job compares the vendored blob against upstream — comparing content rather than the commit, so it fires when the schema moves and not when some other QEP is edited. So `qe gh labels check` speaks for the current standard rather than a hand-kept copy, and its verdict is the one to cite. (An earlier gap, where the plugin-era manifest omitted four labels that had to be created by hand, is what that vendoring closed.)
 
 Application is owned by the `qe` CLI, not by an audit:
 
