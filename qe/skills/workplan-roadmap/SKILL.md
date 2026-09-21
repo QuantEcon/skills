@@ -9,7 +9,7 @@ Automates the loop **snapshot the tracker → compare with the roadmap → repor
 
 The `workplan-*` family is three skills: [`workplan`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan/SKILL.md) carries the work-plan issue through its lifecycle, [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report, and this one draws the project the tracker describes. It reads what `workplan-project` writes and what `/qe:workplan read` reviews; the natural moment to run it is right after a tracker review has re-sequenced or re-scoped the plan.
 
-> **Status: procedure extracted from a hand run, no run as an installed skill yet.** The worked example is the roadmap drawn for the Lectures monorepo project from its tracker — [QuantEcon/project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30), merged 2026-09-02 (members-only). First-run validation is tracked in [#63](https://github.com/QuantEcon/skills/issues/63).
+> **Status: procedure extracted from a hand run, no run as an installed skill yet; the snapshot script it reads had a live run on 2026-09-21 against a private tracker, through the REST API.** The worked example is the roadmap drawn for the Lectures monorepo project from its tracker — [QuantEcon/project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30), merged 2026-09-02 (members-only). First-run validation is tracked in [#63](https://github.com/QuantEcon/skills/issues/63).
 
 Requires `gh`, authenticated, and `python3`. `mmdc` (mermaid-cli) is optional and used only to check that the diagrams compile.
 
