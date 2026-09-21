@@ -168,11 +168,16 @@ def main(argv: list[str] | None = None) -> int:
     for c in kids:
         for b in (c["blocked_by"]["open"] or []):
             edges.append((c, b))
+    # A table is one block but many statements: check it row by row, so a phase
+    # table naming several items in different rows is not read as one sentence.
+    units = []
+    for para in paragraphs(body):
+        units.extend(para.splitlines() if para.lstrip().startswith("|") else [para])
     restated = []
     for c, b in edges:
         cn, bn = str(c["number"]), b.split("#")[1]
-        for para in paragraphs(body):
-            if GATE_WORDS.search(para) and re.search(rf"#{cn}\b", para) and re.search(rf"#{bn}\b", para):
+        for unit in units:
+            if GATE_WORDS.search(unit) and re.search(rf"#{cn}\b", unit) and re.search(rf"#{bn}\b", unit):
                 restated.append(f"{c['ref']} ← {b}")
                 break
     if restated:
