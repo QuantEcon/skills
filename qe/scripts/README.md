@@ -1,6 +1,6 @@
 # qe plugin — scripts
 
-Each skill family's deterministic machinery lives in its own subdirectory: [`benchmark/`](benchmark/README.md) (the scoring engine and calibration behind `/qe:benchmark`), [`audit/`](audit/README.md) (the tracker-snapshot fetcher behind `/qe:audit-issues`), and `workplan/` (`tracker-snapshot.sh`, which dumps a project tracker's body and direct sub-issues in plan order for `/qe:workplan-roadmap`; read-only, `--help` for the argument forms). `fetch-copilot.sh` predates that layout and stays at the top level, where `/qe:copilot-review` already points.
+Each skill family's deterministic machinery lives in its own subdirectory: [`benchmark/`](benchmark/README.md) (the scoring engine and calibration behind `/qe:benchmark`), [`audit/`](audit/README.md) (the tracker-snapshot fetcher behind `/qe:audit-issues`), and [`workplan/`](workplan/) — `tracker_snapshot.py` (a project tracker and its direct sub-issues in plan order, through the REST API only, as text or as the `.qe/snapshot.json` QEP-7 names; `tracker-snapshot.sh` is a shim over it), `tracker_lint.py` (report-only readability and structure checks over a snapshot) and `tracker_digest.py` (the one-screen digest, computed from structure and written to stdout or `.qe/DIGEST.md`) behind `/qe:workplan` and `/qe:workplan-roadmap`; all read-only, `--help` for the argument forms. `fetch-copilot.sh` predates that layout and stays at the top level, where `/qe:copilot-review` already points.
 
 ## `fetch-copilot.sh`
 
