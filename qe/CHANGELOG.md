@@ -6,6 +6,14 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.1 — 2026-10-20
+
+`workplan`'s discovery, used when no issue is named, now finds a repository's long-lived trackers as well as its period plan ([#80](https://github.com/QuantEcon/skills/issues/80)).
+
+**Changed**
+
+- **Discovery reads the declared trackers and the `Project` type, and asks when they disagree.** Candidates now come from `.qe/project.yml` ([QEP-7](https://github.com/QuantEcon/qeps/pull/40) Appendix A, draft — both the single `tracker:` and the `projects:` list, since QEP-7 has not chosen between them, [qeps#39](https://github.com/QuantEcon/qeps/issues/39)), from open `Project`-typed issues, and from the work-plan title search as before. One candidate proceeds. Several are named, each with the source that found it, and the user picks; `.qe/NEXT-STEPS.md`'s reading order, where the repository keeps one, gives the recommendation. Before, the title search alone decided, so `update` could re-date a period plan while the registered tracker stayed unstamped (#80), and in QuantEcon/action-translation, whose `.qe/project.yml` declares two trackers, it found only the parked one, the only one whose title starts "Work plan".
+
 ## 0.10.0 — 2026-09-02
 
 `workplan-project` is brought into line with [QEP-6](https://github.com/QuantEcon/qeps/pull/18) (draft), the standard for project-tracker structure and order, following the six findings its field test ([qeps#19](https://github.com/QuantEcon/qeps/issues/19)) filed against the skill — [#69](https://github.com/QuantEcon/skills/issues/69) to [#74](https://github.com/QuantEcon/skills/issues/74), adopted into [#63](https://github.com/QuantEcon/skills/issues/63) as phase 1. The skill has still not run against a real bundle ([#65](https://github.com/QuantEcon/skills/issues/65)); this release changes what that run will produce. Where C2 and QEP-6 disagree the skill now says so and cites QEP-6's Adoption clause 3, which rules QEP-6 authoritative for structure until the contract's handover.

@@ -1,6 +1,6 @@
 ---
 name: workplan
-description: Create, read, resume, update, or close the work-plan tracking issue — the single GitHub issue that carries state between agent sessions — one skill for the artifact's whole lifecycle. Reading validates the plan against live state and recommends next steps, writing nothing; every other verb drafts locally and writes only after approval. Use when asked to create a work plan, show or check the plan, see what's on it or what's next, resume from a plan, record session state, or close out and hand over to the next session. Takes a verb and optionally the plan issue's number or URL, or discovers the repo's single open work-plan issue.
+description: Create, read, resume, update, or close the work-plan tracking issue — the single GitHub issue that carries state between agent sessions — one skill for the artifact's whole lifecycle. Reading validates the plan against live state and recommends next steps, writing nothing; every other verb drafts locally and writes only after approval. Use when asked to create a work plan, show or check the plan, see what's on it or what's next, resume from a plan, record session state, or close out and hand over to the next session. Takes a verb and optionally the plan issue's number or URL, or discovers it from the repository's declared trackers (`.qe/project.yml`), its open `Project` issues and its open work plan, asking when they name more than one.
 ---
 
 # workplan
@@ -26,7 +26,7 @@ Observed practice across the org's work-plan issues (exemplars: the [project-tra
 - **A plan is not a dumping ground.** Work that is real but not agreed goes to its own labelled issue; the "explicitly not doing" section exists so deferrals are decisions, not omissions.
 - **Two genres, one lifecycle each.** A *period plan* (a session's or week's work) closes with a ledger and is succeeded; a *long-lived tracker* (a project-duration state register) is resumed and updated but never session-closed.
 - **Succession never copies.** The successor is built from the carry-forward register — unfinished and deferred items plus what the closing session surfaced — and opens "continuing from #N".
-- **One open period plan per repo at a time.** This is what makes "resume the session" — and this skill's issue discovery — unambiguous.
+- **One open period plan per repo at a time.** This is what makes "resume the session" unambiguous. A repository may also keep long-lived trackers beside it, which is why discovery asks rather than assumes (see Invocation).
 - **Period plans stay untyped; long-lived trackers carry the native `Project` issue type.** Neither takes a type *label* — [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)'s set has none that fits, which is [qeps#11](https://github.com/QuantEcon/qeps/issues/11)'s field report, and the answer turned out not to be a label at all. `Project` is a native org-level issue type, enabled 2026-08-24, so it filters as `type:Project` org-wide and leaves the label vocabulary untouched.
 
 ## The tracker contract
@@ -53,7 +53,15 @@ None of this applies to a *period plan*, which is a session's working document a
 /qe:workplan [create [owner/repo] | read [--full] | resume [--full] | update | close] [issue# | url]
 ```
 
-Both arguments are optional. With no issue, discovery looks for the repo's open plan (`gh issue list --state open --search "work plan in:title"`, plus `TRACKING:`/`PLAN:` title prefixes): exactly one hit proceeds; several is a finding to surface; zero means there is no plan yet — that is `create`'s job, offer it. With no verb: a look-shaped request — status, what's next, where things were left — is `read`; anything else, ask which moment this is rather than inferring, because the cost of running `close` when the user meant `update` is a wrongly closed plan.
+Both arguments are optional. With no issue, discovery gathers candidates from three sources, counting an issue found by more than one of them once:
+
+- **The repository's declared trackers**, where it has a `.qe/project.yml` ([QEP-7](https://github.com/QuantEcon/qeps/pull/40) Appendix A, draft). A project's tracker is its `tracker:`, in `Owner/repo#N` form. A repository that hosts more than one project lists them under `projects:`, one `tracker:` per entry, in no meaningful order. QEP-7 has a live instance of each shape and has not yet chosen between them ([qeps#39](https://github.com/QuantEcon/qeps/issues/39)), so read both. A declared tracker may live in another repository. One that is closed, or that cannot be read, is a finding: the file is stale.
+- **Open issues of the native `Project` type** in the repository: `gh issue list --state open --search "type:Project"`.
+- **The open period plan**, by title: `gh issue list --state open --search "work plan in:title"`, plus `TRACKING:`/`PLAN:` title prefixes.
+
+Exactly one candidate proceeds. Several is a finding to surface, not a choice to make: name each with the source that found it, and ask which one this session means. A title match alone can name the wrong issue: a period plan while the registered tracker stays unstamped ([#80](https://github.com/QuantEcon/skills/issues/80)), or a parked tracker whose title happens to start "Work plan". Where the repository keeps `.qe/NEXT-STEPS.md`, the curated reading order across its trackers (QEP-7 §4), recommend the tracker it puts first. Zero candidates means there is no plan yet — that is `create`'s job, offer it. Naming the issue skips discovery, and it is the only route to a tracker in another repository that this one does not declare.
+
+With no verb: a look-shaped request — status, what's next, where things were left — is `read`; anything else, ask which moment this is rather than inferring, because the cost of running `close` when the user meant `update` is a wrongly closed plan.
 
 ## What this skill writes
 
