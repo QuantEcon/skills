@@ -6,6 +6,12 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.1 — 2026-10-22
+
+**Fixed**
+
+- `scripts/fetch-copilot.sh` and `scripts/workplan/tracker-snapshot.sh` pass an explicit `mktemp` template under `${TMPDIR:-/tmp}` so Claude Code's macOS sandbox can create the temp path (skills#86). Repo `scripts/validate.py` now fails on any untemplated `mktemp` in plugin `scripts/`.
+
 ## 0.10.0 — 2026-09-02
 
 `workplan-project` is brought into line with [QEP-6](https://github.com/QuantEcon/qeps/pull/18) (draft), the standard for project-tracker structure and order, following the six findings its field test ([qeps#19](https://github.com/QuantEcon/qeps/issues/19)) filed against the skill — [#69](https://github.com/QuantEcon/skills/issues/69) to [#74](https://github.com/QuantEcon/skills/issues/74), adopted into [#63](https://github.com/QuantEcon/skills/issues/63) as phase 1. The skill has still not run against a real bundle ([#65](https://github.com/QuantEcon/skills/issues/65)); this release changes what that run will produce. Where C2 and QEP-6 disagree the skill now says so and cites QEP-6's Adoption clause 3, which rules QEP-6 authoritative for structure until the contract's handover.
