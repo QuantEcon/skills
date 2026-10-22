@@ -81,7 +81,7 @@ if [ -z "$pr" ]; then
   [ -n "$pr" ] || die "no PR found for the current branch in $repo — pass a number: fetch-copilot.sh $repo 42"
 fi
 
-tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+tmp="$(mktemp -d "${TMPDIR:-/tmp}/copilot.XXXXXX")"; trap 'rm -rf "$tmp"' EXIT
 
 # Resolve the PR before reporting on it. PR numbers collide across repos, so a
 # wrong-repo lookup otherwise yields a plausible "no Copilot review found" for a

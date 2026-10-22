@@ -61,7 +61,7 @@ query='query($owner:String!,$name:String!,$num:Int!){
 json=$(gh api graphql -F owner="$owner" -F name="$name" -F num="$num" -f query="$query" 2>&1) \
   || { printf 'gh: %s\n' "$json" >&2; die "could not read $repo#$num"; }
 
-tmp=$(mktemp); trap 'rm -f "$tmp"' EXIT; printf '%s' "$json" > "$tmp"
+tmp=$(mktemp "${TMPDIR:-/tmp}/tracker-snapshot.XXXXXX"); trap 'rm -f "$tmp"' EXIT; printf '%s' "$json" > "$tmp"
 BODIES=$bodies python3 - "$repo" "$num" "$tmp" <<'PY'
 import json, os, re, sys
 repo, num, path = sys.argv[1], sys.argv[2], sys.argv[3]

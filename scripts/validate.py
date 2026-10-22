@@ -120,6 +120,32 @@ def resolve_source(entry, name):
     return None
 
 
+def check_untemplated_mktemp(plugin_dir):
+    """Fail on untemplated mktemp in plugin scripts/ (skills#86).
+
+    On macOS, bare `mktemp` / `mktemp -d` write under the Darwin per-user temp
+    dir and ignore TMPDIR, so Claude Code's sandbox refuses them. An explicit
+    template under ${TMPDIR:-/tmp}/….XXXXXX stays inside the allowed tree.
+    """
+    scripts_dir = plugin_dir / "scripts"
+    if not scripts_dir.is_dir():
+        return
+    for path in sorted(scripts_dir.rglob("*.sh")):
+        text = path.read_text(encoding="utf-8")
+        rel = path.relative_to(ROOT)
+        for lineno, line in enumerate(text.splitlines(), 1):
+            code = line.split("#", 1)[0]
+            if not re.search(r"(?<![\w-])mktemp(?![\w-])", code):
+                continue
+            if "XXXXXX" in code:
+                continue
+            error(
+                f"{rel}:{lineno}: untemplated mktemp ignores TMPDIR on macOS "
+                f"Claude Code sandbox; pass a template under "
+                f"${{TMPDIR:-/tmp}}/….XXXXXX (skills#86)"
+            )
+
+
 def check_plugin(entry):
     if not isinstance(entry, dict):
         error(f"marketplace.json: plugin entry must be an object, got {type(entry).__name__}")
@@ -155,6 +181,8 @@ def check_plugin(entry):
         )
     if manifest.get("description") != entry.get("description"):
         error(f"plugin `{name}`: description differs between plugin.json and marketplace.json")
+
+    check_untemplated_mktemp(plugin_dir)
 
     skills_dir = plugin_dir / "skills"
     if not skills_dir.is_dir():
