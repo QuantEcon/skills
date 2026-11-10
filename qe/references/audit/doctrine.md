@@ -6,7 +6,7 @@ The method every skill in this plugin follows. Skills own their subject matter �
 
 1. **Never trust an artifact's claim about its own state.** Every "fixed in X", "scheduled into Y", "superseded by Z" is a hypothesis until checked against the current default branch, `CHANGELOG.md`, and merged PRs. Every verified claim carries a citation that resolves on the ref the audit named — the accepted forms and the reachability rule are [§2](#2-evidence-classes).
 2. **Check both directions.** Open items that are actually resolved, *and* closed items whose fix never really landed. An audit that only prunes is half an audit.
-3. **Read every thread, closed ones included.** Closed threads carry decisions, deferred remainders, and agreed-but-never-filed work. Skipping the closed side was the one gap in this runbook's first execution, and it is the default failure mode — the snapshot captures closed threads precisely so there is no cost excuse.
+3. **Read every thread, closed ones included.** Closed threads carry decisions, deferred remainders, and agreed-but-never-filed work. Skipping the closed side is the default failure mode — the snapshot captures closed threads precisely so there is no cost excuse.
 4. **Distinguish guarded from fixed.** "Now fails loudly" is not "root cause resolved". Record which kind of remainder each item carries.
 5. **Respect explicit maintainer intent.** A "keeping this open because…" comment beats tidiness. Note it and move on; never recommend against a stated decision without new evidence.
 6. **Draft policies are conditional.** Where the governing policy is itself a draft or an open PR, recommend only what is already canonical, mark the rest *post-acceptance*, and never pre-empt the policy's own tooling.
@@ -27,7 +27,7 @@ An unqualified claim is a defect. `[inferred]` is legitimate and often the most 
 
 **Every `[verified]` citation is relative to one named ref, and must be reachable from it.** An audit states the ref it verified against — the default branch at the snapshot commit — and that ref is what makes its citations checkable. A citation the reader cannot resolve there is not a weaker citation; it is a false one, and worse than an untagged claim, because the tag is what invited the trust.
 
-The failure is easy to miss because it resolves for whoever wrote it. Run 1's headline finding cited a commit that is real, does touch the file, and exists only on an unmerged branch — while the report's own header said "verified against `main` @ `2c3d624`" ([defect 1](https://github.com/QuantEcon/skills/issues/21)). A working tree carrying extra branches, or a `gh` call that searches the whole repository rather than one ref, will both produce citations that a reader checking out the stated ref finds nothing at.
+The failure is easy to miss because it resolves for whoever wrote it: a commit can be real, touch the right file, and exist only on an unmerged branch. A working tree carrying extra branches, or a `gh` call that searches the whole repository rather than one ref, will both produce citations that a reader checking out the stated ref finds nothing at.
 
 So, before tagging anything `[verified]`:
 
@@ -43,18 +43,16 @@ The same question applies to the other citation forms, mechanically or by eye: a
 
 That boundary is what makes the family safe to run headlessly and safe to point at any repo in the org. Every action an audit recommends lands as a proposal in the report, executed later by a human or by a separate, deliberately-invoked step. An audit that half-applied its own findings would also be an audit whose report no longer describes the repo it was run against.
 
-**A run may write its own working directory**, including inside the audited checkout. An audit that produces a report necessarily produces files, and what this boundary protects is the repo's *content and history*, not its untracked filesystem. So: the working directory stays untracked, nothing is added to `.gitignore` — that would itself be an edit to a tracked file — and committing or publishing the bundle is a human step taken after reading it. Prefer a location the repo already ignores where one exists; a skill's own working-directory rule says where. This resolves a contradiction with [deliverables.md](deliverables.md), which delivers the bundle *into* the audited repo's notes system: the rule is about mutation, not about writing.
+**A run may write its own working directory**, including inside the audited checkout. An audit that produces a report necessarily produces files, and what this boundary protects is the repo's *content and history*, not its untracked filesystem. So: the working directory stays untracked, nothing is added to `.gitignore` — that would itself be an edit to a tracked file — and committing or publishing the bundle is a human step taken after reading it. Prefer a location the repo already ignores where one exists; a skill's own working-directory rule says where. The rule is about mutation, not about writing: [deliverables.md](deliverables.md) delivers the bundle *into* the audited repo's notes system.
 
 Corollary: an audit never writes into the plugin directory, and its outputs never live in `QuantEcon/skills`. See [deliverables.md](deliverables.md) for where they go.
 
 ## 4. Checkpointing
 
-An audit's intermediate work is worth writing down — but not for the reason this section used to give. It claimed bulk audits outlive sessions: context running out, rate limits biting, machines sleeping. The first measured run refuted all three at once — 230 items in 22 minutes, with none of those mechanisms in play ([run record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md)). The rule survived the measurement; its justification did not, and a doctrine that demands evidence for every claim owes one here.
+**Write each phase's output to the working directory before starting the next**, for three reasons that hold however short the run:
 
-**Write each phase's output to the working directory before starting the next**, for three reasons that hold at any duration:
-
-1. **The checkpoint is evidence, not insurance.** A per-item verification log is what the final enumeration is assembled *from*, and what a reviewer counts against the coverage numbers — run 1's 56-of-56 reconciliation was done against the log, not the report. This is the strongest of the three, and unlike the claim it replaces it can be checked.
-2. **Interruption does not care how long the run is.** A cancelled session, a tool error, a rate limit. Twenty-two minutes of item-by-item judgement is still expensive to re-derive.
+1. **The checkpoint is evidence, not insurance.** A per-item verification log is what the final enumeration is assembled *from*, and what a reviewer counts against the coverage numbers. This is the strongest of the three.
+2. **Interruption does not care how long the run is.** A cancelled session, a tool error, a rate limit. Item-by-item judgement is expensive to re-derive even from a short run.
 3. **The cost is asymmetric.** A line per item is nearly free; the phase is not.
 
 How a skill divides itself into phases is its own business — the division below is one that worked, not a template to fill. Note what reason 1 implies, though: a checkpoint written and then superseded minutes later without ever being read earns nothing. Name artifacts where they carry evidence, not at every phase boundary out of symmetry.
