@@ -11,7 +11,7 @@ One skill for the whole lifecycle of the **work-plan issue**: the single GitHub 
 
 Two siblings. [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a **project** from an audit or review report: phases and sub-issues someone works through over weeks, where this skill carries the one issue the next session resumes from. The two compose — a project tracker, plus period plans that work through it and cite it (the workspace-lectures pattern: tracker [#14](https://github.com/QuantEcon/workspace-lectures/issues/14), weekly plans alongside). [`workplan-roadmap`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-roadmap/SKILL.md) draws a project's tracker as mermaid flowcharts — the natural follow-on to a `read` or `resume` that re-sequenced the plan.
 
-> **Status: `update` and `resume` validated from an installed plugin (2026-08-20, and again 2026-08-25); `create`, `read` and `close` have no run yet.** Tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
+> **Status: `update` and `resume` validated from an installed plugin; `create`, `read` and `close` have no run yet.** Tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
 Requires `gh`, authenticated (`read` uses it for reading only).
 
@@ -27,11 +27,11 @@ Observed practice across the org's work-plan issues (exemplars: the [project-tra
 - **Two genres, one lifecycle each.** A *period plan* (a session's or week's work) closes with a ledger and is succeeded; a *long-lived tracker* (a project-duration state register) is resumed and updated but never session-closed.
 - **Succession never copies.** The successor is built from the carry-forward register — unfinished and deferred items plus what the closing session surfaced — and opens "continuing from #N".
 - **One open period plan per repo at a time.** This is what makes "resume the session" — and this skill's issue discovery — unambiguous.
-- **Period plans stay untyped; long-lived trackers carry the native `Project` issue type.** Neither takes a type *label* — [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)'s set has none that fits, which is [qeps#11](https://github.com/QuantEcon/qeps/issues/11)'s field report, and the answer turned out not to be a label at all. `Project` is a native org-level issue type, enabled 2026-08-24, so it filters as `type:Project` org-wide and leaves the label vocabulary untouched.
+- **Period plans stay untyped; long-lived trackers carry the native `Project` issue type.** Neither takes a type *label* — [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)'s set has none that fits. `Project` is a native org-level issue type, so it filters as `type:Project` org-wide and leaves the label vocabulary untouched.
 
 ## The tracker contract
 
-A long-lived tracker is not only read by the next session. Since 2026-08-24 it is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only; the interface C2 implements is planned as a public QEP that C2 will cite, and this section re-points at that once it lands). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
+A long-lived tracker is not only read by the next session. It is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
 
 - **The stamp is a heading**, written in one of these two forms:
 
@@ -95,7 +95,7 @@ Shared machinery for `read`, `resume`, `update`, and `create`'s session-bootstra
 
 **3. Draft the body** — from the exemplars, a live-state table over dependency-ordered blocks:
 
-- **Title**: match the host repo's existing chain; default `Work plan — <scope>: <what leads>` for a period plan (the QEP will settle one form).
+- **Title**: match the host repo's existing chain; default `Work plan — <scope>: <what leads>` for a period plan.
 - **Opening line**: where the plan came from — "continuing from #N (closed <date> with its ledger)" for succession, or the triage/session that produced it — plus the convention line: *this body is the single source of truth for the session, revised in place against live state before working it.*
 - **`## Where we stand (verified <date>)`**, in the contract's exact form, carrying the live-state table below it: the step-2 baseline, every row stamped. This heading is the plan's own revision stamp and the dashboard's anchor at once, so it is the one piece of the body whose wording is not yours to vary.
 - **Work blocks, ordered by dependency, not size**, each naming its gate, with the **front of the plan explicit**: what leads next session, and why.
