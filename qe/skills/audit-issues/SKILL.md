@@ -61,7 +61,7 @@ State which was used in the report's method section. Everything the run produces
 python ${CLAUDE_PLUGIN_ROOT}/scripts/audit/fetch_tracker.py OWNER/REPO --out <dir>/snapshot
 ```
 
-Preflight fails in the first minute on missing `gh`, missing auth, or an invisible repo — read the error rather than working around it. The snapshot captures issues and PRs in any state with full comment threads, so closed threads cost nothing extra to read and there is no excuse for skipping them.
+Preflight fails in the first minute on missing `gh`, missing auth, or an invisible repo — read the error rather than working around it. The snapshot captures issues and PRs in any state with full comment threads, which is what makes [doctrine rule 3](../../references/audit/doctrine.md#1-what-makes-a-bulk-audit-trustworthy) free to follow.
 
 Two things REST does not return, so the snapshot cannot hold them: **native sub-issue links** and **Projects membership**. Fetch those with `gh api graphql` where a parent/tracker issue depends on them, and list them in the coverage statement either way.
 
