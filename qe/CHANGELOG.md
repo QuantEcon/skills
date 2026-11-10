@@ -6,6 +6,16 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.3 — 2026-11-10
+
+`audit-issues` and the audit doctrine drop their run history, with no change to the procedure. Third of the per-skill pass begun in 0.10.1.
+
+**Changed**
+
+- **The skill's intro and banner no longer quote run 1.** The intro says a run takes tens of minutes and scales with the open count; the measured figures for both runs are in the [catalog](https://github.com/QuantEcon/skills/blob/main/CATALOG.md) and the run records. The banner now reads operational and points at the catalog for what the runs covered.
+- **The doctrine states its rules without the narrative that produced them.** The off-ref citation rule (§2), the resume rule and the checkpointing reasons (§4) each keep the general reason; the account of run 1's two defects, and of the justification §4 used to give, stays in the [run 1 record](https://github.com/QuantEcon/skills/blob/main/reviews/audit-run-action-translation-2026-07-28.md) and the audit 0.2.0 entry below.
+- Phase 1 cites doctrine rule 3 instead of restating it.
+
 ## 0.10.2 — 2026-11-10
 
 `benchmark`'s `SKILL.md` drops its validation history and the plugin's benchmark README stops restating the triage procedure, with no change to either mode. Second of the per-skill pass begun in 0.10.1.
