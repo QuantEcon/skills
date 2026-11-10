@@ -6,6 +6,17 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.1 — 2026-11-10
+
+`copilot-review`'s `SKILL.md` drops what the agent does not act on, with no change to the procedure. First of a per-skill pass over the plugin: a skill file loads whole on every invocation, so it carries what the agent needs at run time and nothing else.
+
+**Changed**
+
+- **The status banner states status only.** When it was validated and against what is recorded under 0.2.1 below. The one fact the banner held that was written nowhere else is kept here: the skill was promoted from a personal skill that had been in daily use.
+- **Script internals moved to the script.** Four gotchas described what `fetch-copilot.sh` already handles — the three login strings one GitHub App reports, the null `line` on an outdated comment, the paginated reply set that makes re-runs safe, and stub re-reviews. The first two are now comments at the code they explain; the other two already were.
+- **The remaining gotchas sit where they are acted on**: checking the header on cross-repo work in step 1, and replying through `/replies` rather than a top-level comment in step 4.
+- **Troubleshooting is one sentence.** The section restated the script's error messages, each of which names its own fix.
+
 ## 0.10.0 — 2026-09-02
 
 `workplan-project` is brought into line with [QEP-6](https://github.com/QuantEcon/qeps/pull/18) (draft), the standard for project-tracker structure and order, following the six findings its field test ([qeps#19](https://github.com/QuantEcon/qeps/issues/19)) filed against the skill — [#69](https://github.com/QuantEcon/skills/issues/69) to [#74](https://github.com/QuantEcon/skills/issues/74), adopted into [#63](https://github.com/QuantEcon/skills/issues/63) as phase 1. The skill has still not run against a real bundle ([#65](https://github.com/QuantEcon/skills/issues/65)); this release changes what that run will produce. Where C2 and QEP-6 disagree the skill now says so and cites QEP-6's Adoption clause 3, which rules QEP-6 authoritative for structure until the contract's handover.
