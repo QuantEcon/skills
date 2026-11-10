@@ -5,9 +5,9 @@ description: "Audit every issue in a GitHub repository, open and closed — veri
 
 # qe:audit-issues
 
-Whole-tracker review of one repository. It works from a frozen snapshot and checkpoints as it goes. One measured run, on a 230-item tracker with 56 open issues: **22 minutes end to end**, of which phase 2 — verifying those 56 — was about 9, or roughly **10 seconds per open issue**. The two figures answer different questions: budget the total from the whole run, and scale it by the *open* count, since that is what phase 2 walks. Phase 2 also carries nearly all of the judgement, which is what makes a run expensive to re-derive rather than long to sit through.
+Whole-tracker review of one repository. It works from a frozen snapshot and checkpoints as it goes. A run takes tens of minutes and scales with the *open* count, since that is what phase 2 walks; phase 2 also carries nearly all of the judgement, which is what makes a run expensive to re-derive rather than long to sit through.
 
-> **Status: first runbook of the `audit` family.** The procedure below is the QuantEcon-adapted form of a runbook that has been executed once end to end; the gap that execution found (closed threads unread) is now doctrine rule 3 and is closed by the snapshot. Plan and open questions: [issue #12](https://github.com/QuantEcon/skills/issues/12).
+> **Status: operational**, run as a skill against two repo types; what those runs did and did not cover is in the [catalog](https://github.com/QuantEcon/skills/blob/main/CATALOG.md). Tracking: [#12](https://github.com/QuantEcon/skills/issues/12), [#16](https://github.com/QuantEcon/skills/issues/16).
 
 ## Invocation
 
@@ -53,7 +53,7 @@ State which was used in the report's method section. Everything the run produces
 
 **Append to the checkpoint as you go, not when the phase ends** ([doctrine §4](../../references/audit/doctrine.md#4-checkpointing)). Phase 2 carries nearly all the judgement, so it is both the phase an interruption lands inside rather than between, and the phase whose log the catalog is later assembled from.
 
-**Both passes are checkpointed, and the resume rule reads `issues.json`.** Phase 2 walks two sets — the open issues and the closed ones — and each has its own section in `findings.md`. On restart, partition `issues.json` by state and, for each partition independently, resume at the lowest number with no entry under the matching heading; re-verify the last entry in each rather than trusting a possibly truncated write. Do not infer progress from the file's length or from a single block: run 1 wrote only the open set to `findings.md` and sent the 62 closed issues straight to the catalog, so a resume would have re-verified all 62 from scratch while reporting itself complete ([defect 2](https://github.com/QuantEcon/skills/issues/21)).
+**Both passes are checkpointed, and the resume rule reads `issues.json`.** Phase 2 walks two sets — the open issues and the closed ones — and each has its own section in `findings.md`. On restart, partition `issues.json` by state and, for each partition independently, resume at the lowest number with no entry under the matching heading; re-verify the last entry in each rather than trusting a possibly truncated write. Do not infer progress from the file's length or from a single block: a log holding only the open set reads as complete, and a resume from it re-verifies the whole closed side while reporting itself done.
 
 ## Phase 1 — snapshot
 
