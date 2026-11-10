@@ -6,6 +6,17 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.5 — 2026-11-10
+
+`workplan-project`'s `SKILL.md` states each rule once, at the step that acts on it, with no change to the procedure. Fifth of the per-skill pass begun in 0.10.1. The skill has still not run against a real bundle ([#65](https://github.com/QuantEcon/skills/issues/65)); that run now validates the shorter text.
+
+**Changed**
+
+- **The gotchas section is dissolved into the steps.** Disagreeing reports are handled in step 1, the ~15 sub-issue signal in step 4, the evidence bar and the parent read in step 5, and the number and database-id mix-up beside the reprioritise call in step 6.
+- **Rules keep their reason and lose the argument for them**: what the QEP-6 field test produced, why the exemplar's defect is named, why the two Appendix A sections are listed and why one link method was chosen. The field-test account is in [qeps#19](https://github.com/QuantEcon/qeps/issues/19) and under 0.10.0 below.
+- **The C2 and QEP-6 disagreement is still named**, in about half the words.
+- The family paragraph names the two siblings in one sentence.
+
 ## 0.10.4 — 2026-11-10
 
 `workplan`'s `SKILL.md` loses its dates and one repeated description, with no change to any verb. Fourth of the per-skill pass begun in 0.10.1.
