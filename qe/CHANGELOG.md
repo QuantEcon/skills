@@ -6,6 +6,15 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.6 — 2026-11-10
+
+`workplan-roadmap`'s `SKILL.md` gets the same pass as its siblings and changes least: it was written last, under the no-history rule. Sixth and last of the per-skill pass begun in 0.10.1. No change to the procedure.
+
+**Changed**
+
+- The family paragraph names the two siblings in one clause instead of describing all three skills.
+- The banner drops the worked example's merge date, and the status gotcha drops the note on who caught it; both are under 0.9.0 below or in [project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30).
+
 ## 0.10.5 — 2026-11-10
 
 `workplan-project`'s `SKILL.md` states each rule once, at the step that acts on it, with no change to the procedure. Fifth of the per-skill pass begun in 0.10.1. The skill has still not run against a real bundle ([#65](https://github.com/QuantEcon/skills/issues/65)); that run now validates the shorter text.
