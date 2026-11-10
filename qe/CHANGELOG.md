@@ -17,6 +17,10 @@ Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every comm
 - **The triage checks and decision rule are stated once**, in the skill. The README restated them and quoted the rubric weights; it now links to the skill and to the framework. Check 4 gains the list of concepts a conversion forces on readers, which only the README had.
 - The skill no longer notes that the rubric is to be distilled into the QuantEcon manual ([QuantEcon.manual#104](https://github.com/QuantEcon/QuantEcon.manual/issues/104)); that is a plan, recorded here and not an instruction.
 
+**Fixed**
+
+- `references/benchmark/examples/README.md` headed the two worked examples with their pre-v2 verdicts, "mixed/wash" and "net regression". Both committed scorecards say **no-conversion**, with those bands as candidate quality for the record; the headings now lead with the decision, as the skill requires of every report.
+
 ## 0.10.1 — 2026-11-10
 
 `copilot-review`'s `SKILL.md` drops what the agent does not act on, with no change to the procedure. First of a per-skill pass over the plugin: a skill file loads whole on every invocation, so it carries what the agent needs at run time and nothing else.
