@@ -7,9 +7,9 @@ description: Draw or update a project's ROADMAP.md — mermaid flowcharts of its
 
 Automates the loop **snapshot the tracker → compare with the roadmap → report the structural changes → (on approval) redraw, commit, open the PR**. The output is one Markdown file, `ROADMAP.md`, whose diagrams are plain ```` ```mermaid ```` fences that GitHub renders in the file view with no build step.
 
-The `workplan-*` family is three skills: [`workplan`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan/SKILL.md) carries the work-plan issue through its lifecycle, [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a project (tracker + sub-issues) from a report, and this one draws the project the tracker describes. It reads what `workplan-project` writes and what `/qe:workplan read` reviews; the natural moment to run it is right after a tracker review has re-sequenced or re-scoped the plan.
+It draws what [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) files and what [`/qe:workplan read`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan/SKILL.md) reviews; the natural moment to run it is right after a tracker review has re-sequenced or re-scoped the plan.
 
-> **Status: procedure extracted from a hand run, no run as an installed skill yet.** The worked example is the roadmap drawn for the Lectures monorepo project from its tracker — [QuantEcon/project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30), merged 2026-09-02 (members-only). First-run validation is tracked in [#63](https://github.com/QuantEcon/skills/issues/63).
+> **Status: procedure extracted from a hand run, no run as an installed skill yet.** The worked example is the roadmap drawn for the Lectures monorepo project from its tracker — [QuantEcon/project-monorepo#30](https://github.com/QuantEcon/project-monorepo/pull/30) (members-only). First-run validation is tracked in [#63](https://github.com/QuantEcon/skills/issues/63).
 
 Requires `gh`, authenticated, and `python3`. `mmdc` (mermaid-cli) is optional and used only to check that the diagrams compile.
 
@@ -127,7 +127,7 @@ If the repository has an open PR that rewrites the plan documents (a review pass
 
 ## Gotchas
 
-- **Status creeps back in.** "(adopted)", "next", "done" in a node or a table row is a status claim, and Copilot caught exactly that on the worked example. Options a decision has not yet recorded are "the plan's choice, to be recorded"; the next item is whatever the tracker lists first.
+- **Status creeps back in.** "(adopted)", "next", "done" in a node or a table row is a status claim. Options a decision has not yet recorded are "the plan's choice, to be recorded"; the next item is whatever the tracker lists first.
 - **Names must match across the two diagrams and the gates table.** Route labels especially — "C migrate-first" in one figure and "Route C · migrate-series-first" in another reads as two routes.
 - **Related work is not the project.** Prerequisites to a *later* project (a cutover, say) belong dashed beyond the final gate, not as gates on this project's items — the tracker's *Related work* section usually says which.
 - **Standing items outside the definition of done** (the tracker's *Out of scope* list) are named in the text under the node index and left out of both diagrams; drawing them suggests they gate something.
