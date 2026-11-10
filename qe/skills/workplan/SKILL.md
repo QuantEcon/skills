@@ -9,9 +9,9 @@ One skill for the whole lifecycle of the **work-plan issue**: the single GitHub 
 
 > **A fresh agent, given only the issue, can resume the work without the old conversation.**
 
-The `workplan-*` family is three skills: this one carries the plan through `create` → `read` → `resume` → `update` → `close`-and-succeed; [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a **project** (tracker + sub-issues) from an audit or review report; [`workplan-roadmap`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-roadmap/SKILL.md) draws a project's tracker as mermaid flowcharts of phases, gates, pathways and work items — the natural follow-on to a `read` or `resume` that re-sequenced the plan.
+Two siblings. [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md) builds a **project** from an audit or review report: phases and sub-issues someone works through over weeks, where this skill carries the one issue the next session resumes from. The two compose — a project tracker, plus period plans that work through it and cite it (the workspace-lectures pattern: tracker [#14](https://github.com/QuantEcon/workspace-lectures/issues/14), weekly plans alongside). [`workplan-roadmap`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-roadmap/SKILL.md) draws a project's tracker as mermaid flowcharts — the natural follow-on to a `read` or `resume` that re-sequenced the plan.
 
-> **Status: `update` and `resume` validated from an installed plugin (2026-08-20, and again 2026-08-25); `create`, `read` and `close` have no run yet.** Tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
+> **Status: `update` and `resume` validated from an installed plugin; `create`, `read` and `close` have no run yet.** Tracked in [#3](https://github.com/QuantEcon/skills/issues/3).
 
 Requires `gh`, authenticated (`read` uses it for reading only).
 
@@ -19,7 +19,7 @@ Requires `gh`, authenticated (`read` uses it for reading only).
 
 Observed practice across the org's work-plan issues (exemplars: the [project-translation#37](https://github.com/QuantEcon/project-translation/issues/37) session chain, the [workspace-lectures#48](https://github.com/QuantEcon/workspace-lectures/issues/48) weekly series, [skills#25](https://github.com/QuantEcon/skills/issues/25)). Formalising it as a QEP is planned; until that lands, this section records the practice — and once it lands, this section becomes a pointer.
 
-- **The body is the single source of truth for current state, revised in place.** It never accumulates narrative, and it stamps its own revision under a `## Where we stand (verified YYYY-MM-DD)` heading — with time and timezone, not a bare date, when sessions run close together (see the date-rollover gotcha below). The heading text and what may sit inside the parentheses are fixed by the tracker contract, not by taste; see below.
+- **The body is the single source of truth for current state, revised in place.** It never accumulates narrative, and it stamps its own revision under a `## Where we stand (verified YYYY-MM-DD)` heading — with time and timezone, not a bare date, when sessions run close together: across a Sydney date rollover, revisions dated a day apart have been fourteen hours apart. The heading text and what may sit inside the parentheses are fixed by the tracker contract, not by taste; see below.
 - **Comments are revision logs**: what changed and why — especially premises that *inverted* rather than merely aged.
 - **Claims are verified against live state, never assumed or carried forward.** The artifact's whole value is that a future session can trust it blind; one unverified "fact" poisons that.
 - **New defects become their own issues, not plan paragraphs.** A problem a session discovers is filed as a linked issue (the exemplars file them same-day) and the plan cites it; prose-only findings are how things get lost.
@@ -27,11 +27,11 @@ Observed practice across the org's work-plan issues (exemplars: the [project-tra
 - **Two genres, one lifecycle each.** A *period plan* (a session's or week's work) closes with a ledger and is succeeded; a *long-lived tracker* (a project-duration state register) is resumed and updated but never session-closed.
 - **Succession never copies.** The successor is built from the carry-forward register — unfinished and deferred items plus what the closing session surfaced — and opens "continuing from #N".
 - **One open period plan per repo at a time.** This is what makes "resume the session" — and this skill's issue discovery — unambiguous.
-- **Period plans stay untyped; long-lived trackers carry the native `Project` issue type.** Neither takes a type *label* — [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)'s set has none that fits, which is [qeps#11](https://github.com/QuantEcon/qeps/issues/11)'s field report, and the answer turned out not to be a label at all. `Project` is a native org-level issue type, enabled 2026-08-24, so it filters as `type:Project` org-wide and leaves the label vocabulary untouched.
+- **Period plans stay untyped; long-lived trackers carry the native `Project` issue type.** Neither takes a type *label* — [QEP-2](https://github.com/QuantEcon/qeps/blob/main/qeps/qep-0002-standard-github-labels.md)'s set has none that fits. `Project` is a native org-level issue type, so it filters as `type:Project` org-wide and leaves the label vocabulary untouched.
 
 ## The tracker contract
 
-A long-lived tracker is not only read by the next session. Since 2026-08-24 it is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only; the interface C2 implements is planned as a public QEP that C2 will cite, and this section re-points at that once it lands). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
+A long-lived tracker is not only read by the next session. It is also read nightly by the [projects dashboard](https://quantecon.github.io/status-projects/), whose collector parses registered trackers and publishes a per-tracker compliance block. The rules it parses by are stated once, upstream, in [`docs/contracts/tracker.md`](https://github.com/QuantEcon/status-projects/blob/main/docs/contracts/tracker.md) (C2 — `status-projects` is private, so that link is members-only). Everything below is what the skill needs in order to *write* a conformant tracker without reading C2; C2 owns the parser grammar and stays the authority:
 
 - **The stamp is a heading**, written in one of these two forms:
 
@@ -74,7 +74,7 @@ Every body and comment is GitHub-rendered, so the [rules for writing to GitHub](
 
 Shared machinery for `read`, `resume`, `update`, and `create`'s session-bootstrap source:
 
-- **Anchor**: the body's own revision stamp — the `## Where we stand (verified …)` heading makes the "since when" explicit. Accept the `> **Updated …**` banner as a fallback, and the issue's last-edit time when neither is present. Read the date from the stamp only: a `verified` in prose, a table cell or a checklist item is not a stamp, and taking one as the anchor silently mis-scopes the sweep.
+- **Anchor**: the body's own revision stamp — the `## Where we stand (verified …)` heading makes the "since when" explicit. Accept the `> **Updated …**` banner as a fallback, and the issue's last-edit time when neither is present. Read the date from the stamp only — free text is never one, per the tracker contract — since a wrong anchor silently mis-scopes the sweep.
 - **Sweep**: everything since the anchor, scoped by the plan's own link graph — plans routinely live in one repo while the work spans several. Commits on default branches, PRs opened/merged/closed, issues filed/edited/closed (`gh search issues/prs --updated ">STAMP"`, `git log` where a clone exists).
 - **Attribute honestly.** Traces since the anchor include other people's, bots', and parallel sessions' work. An update records what *happened*; it claims as this session's only what this session did.
 - **The conversation supplies only what traces cannot**: decisions made, dead ends worth not repeating, things learned, and the resume pointer. Every claim that *can* carry a trace citation (a PR, commit, or issue number) must.
@@ -95,7 +95,7 @@ Shared machinery for `read`, `resume`, `update`, and `create`'s session-bootstra
 
 **3. Draft the body** — from the exemplars, a live-state table over dependency-ordered blocks:
 
-- **Title**: match the host repo's existing chain; default `Work plan — <scope>: <what leads>` for a period plan (the QEP will settle one form).
+- **Title**: match the host repo's existing chain; default `Work plan — <scope>: <what leads>` for a period plan.
 - **Opening line**: where the plan came from — "continuing from #N (closed <date> with its ledger)" for succession, or the triage/session that produced it — plus the convention line: *this body is the single source of truth for the session, revised in place against live state before working it.*
 - **`## Where we stand (verified <date>)`**, in the contract's exact form, carrying the live-state table below it: the step-2 baseline, every row stamped. This heading is the plan's own revision stamp and the dashboard's anchor at once, so it is the one piece of the body whose wording is not yours to vary.
 - **Work blocks, ordered by dependency, not size**, each naming its gate, with the **front of the plan explicit**: what leads next session, and why.
@@ -123,8 +123,3 @@ Same mechanics at opposite ends of the session: sweep since the anchor, revise t
 - Draft the **closing ledger** (shipped / decided / carried forward) and the successor, via `create`'s succession source.
 - On approval, in this order: create the successor, post the ledger citing it, close the old plan — at every step the open end is findable.
 - Only a *period plan* closes. A long-lived tracker gets `read`, `resume` and `update` only; say so rather than offering `close`.
-
-## Gotchas
-
-- **Date rollovers mislead.** The exemplar chain records a "2026-08-19/2026-08-20" revision pair that was actually fourteen hours apart (a Sydney date rolling over) — hence the convention's time-and-timezone stamps.
-- **This skill vs [`workplan-project`](https://github.com/QuantEcon/skills/blob/main/qe/skills/workplan-project/SKILL.md)**: phases and sub-issues someone works through over weeks → `workplan-project`; one issue the next session resumes from → `create`. The two compose: a project tracker plus period plans that work through it and reference it (the workspace-lectures pattern: tracker [#14](https://github.com/QuantEcon/workspace-lectures/issues/14), weekly plans alongside).
