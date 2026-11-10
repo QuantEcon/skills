@@ -6,6 +6,17 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.4 — 2026-11-10
+
+`workplan`'s `SKILL.md` loses its dates and one repeated description, with no change to any verb. Fourth of the per-skill pass begun in 0.10.1.
+
+**Changed**
+
+- **Dates and provenance leave the skill**: the banner's validation dates, when the `Project` issue type was enabled, when the dashboard began reading trackers, and two notes on what a future QEP will settle. The dates are under 0.5.0 and 0.8.0 below.
+- **The family is described once.** The opening paragraph and the closing gotcha both explained how this skill differs from `workplan-project`; they are one paragraph at the top.
+- **The gotchas section is gone.** Its other entry, the date rollover, is now the reason attached to the convention's time-and-timezone rule.
+- The anchor rule cites the tracker contract for what counts as a stamp instead of restating it.
+
 ## 0.10.3 — 2026-11-10
 
 `audit-issues` and the audit doctrine drop their run history, with no change to the procedure. Third of the per-skill pass begun in 0.10.1.
