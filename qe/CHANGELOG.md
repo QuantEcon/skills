@@ -8,7 +8,11 @@ Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every comm
 
 ## 0.10.6 — 2026-11-10
 
-`workplan-roadmap`'s `SKILL.md` gets the same pass as its siblings and changes least: it was written last, under the no-history rule. Sixth and last of the per-skill pass begun in 0.10.1. No change to the procedure.
+`workplan-roadmap` gives one answer on out-of-scope work, and its `SKILL.md` gets the same pass as its siblings. Sixth and last of the per-skill pass begun in 0.10.1.
+
+**Fixed**
+
+- **Out-of-scope work is named in the text and never drawn.** The skill gave three answers: step 2 drew it dashed beyond the final gate or omitted it, step 4's route diagram drew it dashed at the edges, and a gotcha left it out of both diagrams. The gotcha's answer stands, because a drawn node suggests the item gates something; steps 2 and 4 now say so and the gotcha is folded into them. Related work is still drawn dashed, since it does bear on the project's order.
 
 **Changed**
 

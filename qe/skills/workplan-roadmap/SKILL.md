@@ -64,7 +64,7 @@ The header gives the tracker's state, issue type, repository visibility, stamp d
 
 ## 2. Read the structure
 
-From the **tracker body**: the goal line; the *Plan* section's phases with their intent and exit criteria; the *Gates* paragraph (which decisions are phase-level gates, and what they hold back); the *sequencing rationale* (the sentences that justify cross-phase pathways — "X can begin as soon as Y exists"); *Related work* (drawn dashed, outside the project); *Out of scope* (drawn dashed, beyond the final gate, or omitted). These are the fixed shapes of a QEP-6 tracker body, so they are usually headings you can grep for.
+From the **tracker body**: the goal line; the *Plan* section's phases with their intent and exit criteria; the *Gates* paragraph (which decisions are phase-level gates, and what they hold back); the *sequencing rationale* (the sentences that justify cross-phase pathways — "X can begin as soon as Y exists"); *Related work* (drawn dashed, outside the project); *Out of scope* (named in the text under the node index and never drawn — a node suggests the item gates something). These are the fixed shapes of a QEP-6 tracker body, so they are usually headings you can grep for.
 
 From each **sub-issue body**, the edges. An edge is drawn only when the text supports it, and the phrase is noted in the draft so a reviewer can check it:
 
@@ -101,10 +101,10 @@ Report the classification before drafting anything, in tracker order, each row c
 The shape that has worked once, offered as a starting point rather than a template to satisfy:
 
 1. **Header** — one italic paragraph on what the file shows and where status and rationale live; a `Last updated: YYYY-MM-DD` line naming the tracker and the sub-issue count it was drawn from; a *How to read it* list (node shapes, edge kinds, the update rule).
-2. **§1 The route** — phases as single nodes, each gate as a diamond, one labelled edge per gate outcome, the cross-phase pathways as labelled edges, related work and out-of-scope work dashed at the edges.
+2. **§1 The route** — phases as single nodes, each gate as a diamond, one labelled edge per gate outcome, the cross-phase pathways as labelled edges, related work dashed at the edges.
 3. **§2 The work items** — one node per sub-issue grouped in a subgraph per phase, decisions as diamonds, dependency edges, gates joining the phases.
 4. **§3 What each gate can decide** — a table: gate, options, what each outcome unlocks or closes. When a gate has recorded its decision, the outcome and date go here.
-5. **Node index** — every node: issue link, phase, role. This is the table step 3 diffs against, so it must be complete.
+5. **Node index** — every node: issue link, phase, role. This is the table step 3 diffs against, so it must be complete. The tracker's *Out of scope* items are named in a sentence beneath it.
 
 Mermaid details that cost time when got wrong:
 
@@ -130,5 +130,4 @@ If the repository has an open PR that rewrites the plan documents (a review pass
 - **Status creeps back in.** "(adopted)", "next", "done" in a node or a table row is a status claim. Options a decision has not yet recorded are "the plan's choice, to be recorded"; the next item is whatever the tracker lists first.
 - **Names must match across the two diagrams and the gates table.** Route labels especially — "C migrate-first" in one figure and "Route C · migrate-series-first" in another reads as two routes.
 - **Related work is not the project.** Prerequisites to a *later* project (a cutover, say) belong dashed beyond the final gate, not as gates on this project's items — the tracker's *Related work* section usually says which.
-- **Standing items outside the definition of done** (the tracker's *Out of scope* list) are named in the text under the node index and left out of both diagrams; drawing them suggests they gate something.
 - **A closed tracker still draws** — as a record of how the work was structured — but the header should say the project is closed and the gates table should carry every recorded outcome.
