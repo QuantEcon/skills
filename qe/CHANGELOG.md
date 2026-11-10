@@ -6,6 +6,21 @@ Versions are [semver](https://semver.org) as a user of this plugin experiences i
 
 Repository: [QuantEcon/skills](https://github.com/QuantEcon/skills) ([every commit that touched this plugin](https://github.com/QuantEcon/skills/commits/main/qe)). How a release is made: [developing-skills § Versioning and releases](https://github.com/QuantEcon/skills/blob/main/docs/developing-skills.md#versioning-and-releases).
 
+## 0.10.2 — 2026-11-10
+
+`benchmark`'s `SKILL.md` drops its validation history and the plugin's benchmark README stops restating the triage procedure, with no change to either mode. Second of the per-skill pass begun in 0.10.1.
+
+**Changed**
+
+- **The status banner states status and tracking only.** Who developed the system and on which pull requests is in `references/benchmark/README.md`; what each release wired up is in the entries below.
+- **The dated validation notes leave the skill.** The blind-triage validation table is in `references/benchmark/README.md`, the cross-machine `ge_arrow` reproduction in [its run record](https://github.com/QuantEcon/skills/blob/main/reviews/validation-run-ge_arrow-2026-07-22.md), and the per-example verdicts in the worked examples. The calibration section is now a pointer to them. The instruction the validation paragraph carried stays: triage cannot predict conversion-quality defects, and the advice must say so.
+- **The triage checks and decision rule are stated once**, in the skill. The README restated them and quoted the rubric weights; it now links to the skill and to the framework. Check 4 gains the list of concepts a conversion forces on readers, which only the README had.
+- The skill no longer notes that the rubric is to be distilled into the QuantEcon manual ([QuantEcon.manual#104](https://github.com/QuantEcon/QuantEcon.manual/issues/104)); that is a plan, recorded here and not an instruction.
+
+**Fixed**
+
+- `references/benchmark/examples/README.md` headed the two worked examples with their pre-v2 verdicts, "mixed/wash" and "net regression". Both committed scorecards say **no-conversion**, with those bands as candidate quality for the record; the headings now lead with the decision, as the skill requires of every report.
+
 ## 0.10.1 — 2026-11-10
 
 `copilot-review`'s `SKILL.md` drops what the agent does not act on, with no change to the procedure. First of a per-skill pass over the plugin: a skill file loads whole on every invocation, so it carries what the agent needs at run time and nothing else.

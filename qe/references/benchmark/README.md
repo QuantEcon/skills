@@ -1,6 +1,6 @@
 # The benchmark skill
 
-Evaluation tooling for QuantEcon lecture code rewrites — the question it answers is never "is JAX faster?" but **"does this implementation earn its place in this lecture?"** Lectures are teaching materials first and programs second; the rubric weights readability (0.25) above efficiency (0.15) on purpose. Shipped as `/qe:benchmark` in the `qe` plugin; until qe 0.7.0 this was the separate `benchmark` plugin's `/benchmark:review-acceleration`.
+Evaluation tooling for QuantEcon lecture code rewrites — the question it answers is never "is JAX faster?" but **"does this implementation earn its place in this lecture?"** Lectures are teaching materials first and programs second; the rubric weights readability above efficiency on purpose ([EVALUATION_FRAMEWORK.md §1](EVALUATION_FRAMEWORK.md)). Shipped as `/qe:benchmark` in the `qe` plugin; until qe 0.7.0 this was the separate `benchmark` plugin's `/benchmark:review-acceleration`.
 
 One skill, two modes — triage is the front door, since most questions arrive before any code is written:
 
@@ -20,14 +20,7 @@ Status: operational for workspace runs since benchmark 0.3.0, which wired the sk
 
 ### Triage mode — before any code is written
 
-The decision criteria are canonical in the manual's JAX style page — [when to use JAX, when not to](https://manual.quantecon.org/styleguide/jax.html) — and the advice cites them; the skill's contribution is the measurement layer that tests whether they hold. Four checks, using only the existing lecture — no candidate is built:
-
-1. **Baseline as-used total** — replay the lecture's real call sequence (the NumPy half of an `as_used_total.py` template). This bounds the entire possible win: a lecture whose compute totals 30ms has nothing to give.
-2. **Workload-pattern match** — against the two calibrated poles: **aiyagari-shaped** (large fixed-shape arrays, many re-solves, stable static args → measured ~24× as-used win) vs **ge_arrow-shaped** (tiny models, fresh static args per call → measured ~45× as-used loss).
-3. **Crossover comparison** — the lecture's problem sizes vs the warm crossover-n from the scaling data.
-4. **Readability-cost forecast** — which concepts the conversion would force on readers (static args, `lax` carries, checkify, the float32/x64 distinction), against the prerequisite-concept bands.
-
-Then the decision rule ([EVALUATION_FRAMEWORK.md §1](EVALUATION_FRAMEWORK.md)): the rubric weights readability above efficiency on purpose, so **a conversion that costs meaningful readability cannot break even on speed alone** — the weight algebra behind that lives in the framework, not here; it must also win on logic & design and ergonomics, and those structural wins are usually achievable in plain NumPy.
+The decision criteria are canonical in the manual's JAX style page — [when to use JAX, when not to](https://manual.quantecon.org/styleguide/jax.html) — and the advice cites them; the skill's contribution is the measurement layer that tests whether they hold: four checks using only the existing lecture, with no candidate built, then a decision rule from the framework. The checks and the rule are stated once, in the [skill's triage section](../../skills/benchmark/SKILL.md).
 
 **Validation (2026-07-21):** triage applied blind (baseline-side data only) to the three known cases reproduces every known verdict:
 

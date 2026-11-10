@@ -22,7 +22,7 @@ The measurement standard throughout: **as-used, fresh-process** — replay the l
 
 ---
 
-## Example 1 — `ge_arrow` (lecture-python.myst#717) → **2.85/5, mixed/wash**
+## Example 1 — `ge_arrow` (lecture-python.myst#717) → **no-conversion** (candidate quality 2.85/5, mixed/wash)
 
 ### The economics
 
@@ -53,7 +53,7 @@ Weighted: correctness 3 (logic identical under x64 but ships float32 with unflag
 
 ---
 
-## Example 2 — `markov_asset` (lecture-python.myst#654) → **2.25/5, net regression**
+## Example 2 — `markov_asset` (lecture-python.myst#654) → **no-conversion** (candidate quality 2.25/5, net regression)
 
 ### The economics
 
