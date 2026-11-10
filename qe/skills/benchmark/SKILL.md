@@ -45,7 +45,7 @@ The decision criteria themselves are canonical in the manual's JAX style page �
 1. **Baseline as-used total**: adapt just the baseline half of an `as_used_total.py` template and replay the lecture's real call sequence — this bounds the maximum possible win (a 30 ms lecture has nothing to give).
 2. **Pattern-match** against the calibrated poles: aiyagari-shaped (large fixed shapes, many re-solves, stable static args → ~24× win) vs ge_arrow-shaped (tiny models, fresh static args per call → ~45× loss).
 3. **Crossover check**: the lecture's problem sizes vs warm crossover-n.
-4. **Readability-cost forecast**: which prerequisite concepts the conversion would force.
+4. **Readability-cost forecast**: which prerequisite concepts the conversion would force on readers (static args, `lax` carries, checkify, the float32/x64 distinction), against the framework's prerequisite-concept bands.
 
 Decision rule ([framework §1](../../references/benchmark/EVALUATION_FRAMEWORK.md)): the rubric weights readability above efficiency on purpose, so a conversion that costs meaningful readability cannot break even on speed alone — the weight algebra behind that is the framework's, not restated here — and structural wins are usually achievable in the baseline library. Report a recommendation — **convert or don't-convert** — with the binding constraint named, not a scorecard. Triage cannot predict conversion-quality defects — a build bug is a property of the PR, not the lecture — and the advice must say so.
 
