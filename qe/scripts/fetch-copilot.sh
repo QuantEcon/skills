@@ -99,6 +99,12 @@ printf '# %s  (repo from: %s)\n' "$info" "$origin"
 # Copilot writes its real overview — the change summary and the per-file table —
 # only in its FIRST review. Every re-review after a push is a ~120-character
 # stub, so taking the last review renders the summary as nothing at all.
+#
+# One GitHub App, three login strings: GraphQL (gh pr view --json reviews)
+# reports "copilot-pull-request-reviewer", the REST reviews endpoint
+# "copilot-pull-request-reviewer[bot]", and the REST comments endpoint
+# "Copilot". The overview here and the inline comments below are therefore
+# filtered on different strings; user.node_id confirms identity if ever needed.
 printf '\n## Overview\n'
 gh pr view "$pr" --repo "$repo" --json reviews --jq '
   [.reviews[]
@@ -124,6 +130,9 @@ gh api --paginate "repos/$repo/pulls/$pr/comments?per_page=100" \
   --jq '.[] | select(.in_reply_to_id) | "\(.in_reply_to_id)\t\(.user.login)"' \
   | sort -u > "$tmp/replied"
 
+# .line is null on an outdated comment — one whose code has since changed
+# underneath it — hence the original_line fallback. Multi-line comments are not
+# the cause: those carry start_line plus a real line.
 gh api --paginate "repos/$repo/pulls/$pr/comments?per_page=100" --jq '
   .[] | select(.user.login == "Copilot")
   | "== ID \(.id)  \(.path // "?"):\(.line // .original_line // "?")",
